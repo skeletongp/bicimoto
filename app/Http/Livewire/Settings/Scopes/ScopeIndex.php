@@ -44,6 +44,11 @@ class ScopeIndex extends Component
         }
         if (count($keys )) {
             
+            foreach ($keys as $ind=> $key) {
+              if(!$key){
+                unset($keys[$ind]);
+              }
+            }
             if ($keys[0]) {
                 $this->store->scope()->sync(
                     $keys
