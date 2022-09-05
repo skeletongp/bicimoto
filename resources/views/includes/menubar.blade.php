@@ -90,14 +90,14 @@
                             <x-side-link routeName='products.index' icon='far w-10 text-center fa-layer-group fa-lg'
                                 text='Productos' activeRoute="products.*" scope="Productos" />
                         @endcan
-                        @canany(['Ver Recursos', 'Crear Recursos', 'Borrar Recursos', 'Editar Recursos'])
+                       {{--  @canany(['Ver Recursos', 'Crear Recursos', 'Borrar Recursos', 'Editar Recursos'])
                             <x-side-link routeName='recursos.index' icon='far w-10 text-center fa-warehouse-alt fa-lg'
                                 text='Recursos' activeRoute="recursos.*" scope="Recursos" />
                         @endcanany
                         @canany(['Ver Procesos', 'Crear Procesos'])
                             <x-side-link routeName='procesos.index' icon='far w-10 text-center fa-copy fa-lg' text='Procesos'
                                 activeRoute="procesos.*" scope="Procesos" />
-                        @endcanany
+                        @endcanany --}}
                         @can('Ver Gastos')
                             <x-side-link routeName='provisions.index' icon='far w-10 text-center fa-calendar-alt fa-lg'
                                 text='Compras' activeRoute="provisions.*" scope="Gastos" />

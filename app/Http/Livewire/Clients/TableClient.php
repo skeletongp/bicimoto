@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Clients;
 
+use App\Http\Classes\NumberColumn as ClassesNumberColumn;
 use App\Http\Helper\Universal;
 use App\Models\Client;
 use App\Models\User;
@@ -18,44 +19,37 @@ class TableClient extends LivewireDatatable
     public $padding = "px-2";
 
     public function builder()
-    {
-        $clients = auth()->user()->store->clients()->with('image','contable')->whereNull('deleted_at');
+    {   
+        $store= auth()->user()->store;
+        $clients=Client::where('clients.store_id',$store->id)
+        ->leftJoin('contacts','contacts.id','=','clients.contact_id')
+        ->leftJoin('invoices','invoices.client_id','=','clients.id')
+        ->groupBy('clients.id');
+        $this->perPage=10;
         return $clients;
     }
 
     public function columns()
     {
-        $clients = $this->builder()->get()->toArray();
         return [
-            Column::callback('id', function ($id) use ($clients) {
-                $result = arrayFind($clients, 'id', $id);
-                if ($result['image']) {
-                    return view('components.avatar', ['url'=>route('clients.show',$id),'avatar' => $result['image']['path']]);
-                } else {
-                    return view('components.avatar', ['url'=>route('clients.show',$id),'avatar' => env('NO_IMAGE')]);
-                }
+            Column::callback('id', function ($id)  {
+                return view('components.view',['url'=>route('clients.show',$id),'id'=>$id]);
+              
             }),
-            Column::callback(["name", 'code', "id"], function ($name, $code, $id) use ($clients) {
-                $result = arrayFind($clients, 'id', $id);
-                if ($name) {
-                    return ellipsis($code.'-'.$name, 25);
-                }
-                return ellipsis($result['contact']['fullname'], 25);
-            })->searchable()->label('Nombre'),
-            Column::name('email')->label('Correo Electrónico')->searchable()->headerAlignCenter(),
-            Column::callback(['limit'], function ($limit) {
-                return '$' . formatNumber($limit);
-            })->label('Crédito')->searchable()->headerAlignCenter(),
-            Column::callback(['updated_at', 'id'], function ($updated, $id) use ($clients) {
-                $client = arrayFind($clients, 'id', $id);
-                return  '$' . formatNumber($client['contable']['balance']);
-            })->label('Deuda')->headerAlignCenter(),
-            Column::name('phone')->label('Teléfono')->searchable()->headerAlignCenter(),
-            Column::name('RNC')->label('No. Documento')->searchable()->headerAlignCenter(),
-            Column::name('created_at')->callback(['created_at', 'id'], function ($created, $id) use ($clients) {
-                $client = arrayFind($clients, 'id', $id);
-                return view('pages.clients.actions', compact('client'));
-            })->label('Acciones')->headerAlignCenter(),
+            Column::callback(['contacts.fullname'], function ( $name)  {
+                $name=ellipsis($name,20);
+                return $name;
+            })->label('Nombre')->searchable(),
+            Column::name('contacts.email')->label('Correo Electrónico')->searchable(),
+            ClassesNumberColumn::name('limit')->label('Crédito')->searchable()->formatear('money'),
+            ClassesNumberColumn::name('invoices.rest:sum')->label('Deuda')->searchable()->formatear('money'),
+            Column::name('contacts.phone')->label('Teléfono')->searchable()->headerAlignCenter(),
+            Column::name('contacts.cedula')->label('Cédula')->searchable()->headerAlignCenter(),
+            Column::callback(['created_at', 'id'], function ($created, $id)  {
+                return view('pages.clients.actions', ['client_id'=>$id]);
+            })->label('Acciones')->headerAlignCenter(), 
+            
+            
         ];
     }
 }

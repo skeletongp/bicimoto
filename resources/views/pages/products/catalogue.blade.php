@@ -129,14 +129,14 @@ setlocale(LC_MONETARY, 'en_IN');
             <tr class="item">
                 <td class="title">
                     <img src="{{ auth()->user()->store->logo }}" alt="Company logo"
-                        style=" max-width: 150px; max-height: 100px" />
+                        style=" max-width: 200px; max-height: 100px" />
                 </td>
                 <td colspan="2" style="text-align:right; line-height: 20px ">
                     <b style="text-transform: uppercase; font-size:x-large"> {!! auth()->user()->store->name !!}</b><br />
                     <i>{!! auth()->user()->store->lema !!}</i><br />
                     <b>Tel.: </b>{{ auth()->user()->store->phone }}<br />
                     <b>Rnc: </b>{{ auth()->user()->store->rnc }}<br />
-                    {{ auth()->user()->store->address }}<br />
+                    <div style="max-width:70%; float: right">{{ auth()->user()->store->address }}</div><br />
                     <br />
 
                 </td>
@@ -176,10 +176,9 @@ setlocale(LC_MONETARY, 'en_IN');
                                     style="text-transform: uppercase; font-size:medium; color: #8E1301">{{ ellipsis($product->name, 30) }}</b><br>
                                 <b style="color: #555">Cód.: </b>{{ $product->code }}<br>
                                 <br>
-                                <b style="color: #555">Unidad:</b> {{ $unit->name }}<br>
-                                <b style="color: #555">Detalle: </b> ${{ formatNumber($unit->pivot->price_menor) }}<br>
-                                <b style="color: #555">Mayoreo: </b> ${{ formatNumber($unit->pivot->price_mayor) }}<br>
-                                <b style="color: #555">Cant. Min.: </b> {{ formatNumber($unit->pivot->min) }}<br>
+                                <b style="color: #555">Medida:</b> {{ $unit->name }}<br>
+                                <b style="color: #555">Contado: </b> ${{ formatNumber($unit->pivot->price_menor) }}<br>
+                                <b style="color: #555">Crédito: </b> ${{ formatNumber($unit->pivot->price_mayor) }}<br>
                             </td>
                         @else
                             <td style="padding:15px; width:30%">
@@ -187,10 +186,9 @@ setlocale(LC_MONETARY, 'en_IN');
                                     style="text-transform: uppercase; font-size:medium; color: #8E1301">{{ ellipsis($product->name, 30) }}</b><br>
                                 <b style="color: #555">Cód.: </b>{{ $product->code }}<br>
                                 <br>
-                                <b style="color: #555">Unidad:</b> {{ $unit->name }}<br>
-                                <b style="color: #555">Detalle: </b> ${{ formatNumber($unit->pivot->price_menor) }}<br>
-                                <b style="color: #555">Mayoreo: </b> ${{ formatNumber($unit->pivot->price_mayor) }}<br>
-                                <b style="color: #555">Cant. Min.: </b> {{ formatNumber($unit->pivot->min) }}<br>
+                                <b style="color: #555">Medida:</b> {{ $unit->name }}<br>
+                                <b style="color: #555">Contado: </b> ${{ formatNumber($unit->pivot->price_menor) }}<br>
+                                <b style="color: #555">Crédito: </b> ${{ formatNumber($unit->pivot->price_mayor) }}<br>
                             </td>
                             <td style="padding:15px; text-align:center">
                                 <img style="border-radius: 50%; width:8rem; height:8rem" src="{{ $product->photo }}"

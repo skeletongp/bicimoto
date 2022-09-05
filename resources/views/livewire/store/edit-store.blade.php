@@ -66,7 +66,13 @@
                         <x-input-error for="store.phone"></x-input-error>
                     </div>
                     <div class="w-full">
-                        <x-input class="text-2xl" label="RNC/ID" wire:model.defer="store.rnc" id="store.rnc">
+                        <x-input type="tel" class="text-2xl" label="No. Teléfono 2" wire:model.defer="store.phone2"
+                            id="store.phone2">
+                        </x-input>
+                        <x-input-error for="store.phone2"></x-input-error>
+                    </div>
+                    <div class="w-full">
+                        <x-input class="text-2xl" label="RNC" wire:model.defer="store.rnc" id="store_rnc">
                         </x-input>
                         <x-input-error for="store.rnc"></x-input-error>
                     </div>
@@ -92,6 +98,13 @@
             <livewire:settings.scopes.scope-index />
         @endcan
     </div>
+    @push('js')
+        <script>
+            $('#store_rnc').formatPhoneNumber({
+                    format: '#-##-#####-#'
+                })
+        </script>
+    @endpush
 
 
 </div>

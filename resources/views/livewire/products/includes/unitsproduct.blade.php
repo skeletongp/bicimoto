@@ -11,10 +11,7 @@
                 </x-select>
                 <x-input-error for="unit_id">Requerido</x-input-error>
             </div>
-            <div>
-                <x-base-input type="number" id="unit_min" wire:model.defer="unit_min" label="Cant. Min."></x-base-input>
-                <x-input-error for="unit_min">Requerido</x-input-error>
-            </div>
+           
 
 
         </div>
@@ -25,12 +22,12 @@
                 <x-input-error for="unit_cost">Verifique el costo</x-input-error>
             </div>
             <div class="pt-4 w-1/4">
-                <x-base-input type="number" label="Precio Mayor" type="number" step="any" min="0" id="unit_price_mayor"
+                <x-base-input type="number" label="Crédito" type="number" step="any" min="0" id="unit_price_mayor"
                     name="unit_price_mayor" wire:model.lazy="unit_price_mayor"></x-base-input>
                 <x-input-error for="unit_price_mayor">Verifique el precio</x-input-error>
             </div>
             <div class="pt-4 w-1/4">
-                <x-base-input type="number" label="Precio Detalle" type="number" step="any" min="0" id="unit_price_menor"
+                <x-base-input type="number" label="Contado" type="number" step="any" min="0" id="unit_price_menor"
                     name="unit_price_menor" wire:model.lazy="unit_price_menor"></x-base-input>
                 <x-input-error for="unit_price_menor">Verifique el precio</x-input-error>
             </div>

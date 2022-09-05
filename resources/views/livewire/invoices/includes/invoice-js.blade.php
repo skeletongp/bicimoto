@@ -62,12 +62,10 @@
             conector.texto(obj.store.name.toUpperCase() + "\n");
             conector.establecerEnfatizado(0);
             conector.establecerTamanioFuente(1, 1)
-            if (obj.payment.ncf) {
                 conector.texto('RNC: ')
                 conector.texto(obj.store.rnc + "\n");
                 conector.texto(obj.store.phone + "\n");
                 conector.texto(obj.store.address + "\n");
-            }
             align(conector, 'center');
             conector.texto('--------------------------------------');
             conector.feed(1);
@@ -78,7 +76,6 @@
             align(conector, 'left');
             conector.establecerEnfatizado(1);
             conector.texto("CONDICIÓN: ");
-            align(conector, 'right');
             conector.establecerEnfatizado(0);
             conector.texto(obj.condition.toUpperCase())
             conector.feed(1);
@@ -129,23 +126,23 @@
             conector.texto('--------------------------------------');
             conector.feed(1);
             /* Fin detalle */
-
+            console.log(obj)
 
             /* Datos del cliente */
             align(conector, 'left');
             conector.establecerEnfatizado(1);
             conector.texto('CLIENTE: ')
             conector.establecerEnfatizado(0);
-            conector.texto(obj.name ? obj.name.toUpperCase() : obj.client.name.toUpperCase());
+            conector.texto(obj.name ? obj.name.toUpperCase() : obj.client.contact.fullname.toUpperCase());
             conector.feed(1);
 
             conector.establecerEnfatizado(1);
-            conector.texto('RNC: ');
+            conector.texto('CÉD: ');
             conector.establecerEnfatizado(0);
             if (obj.rnc) {
                 conector.texto(obj.rnc);
             } else {
-                conector.texto(obj.client.rnc ? obj.client.rnc : '0000000000')
+                conector.texto(obj.client.contact.cedula ? obj.client.contact.cedula : '0000000000')
             }
 
             conector.texto(' / ');
@@ -153,13 +150,13 @@
             conector.establecerEnfatizado(1);
             conector.texto('TEL: ');
             conector.establecerEnfatizado(0);
-            conector.texto(obj.client.phone);
+            conector.texto(obj.client.contact.phone);
             conector.feed(1);
 
             conector.establecerEnfatizado(1);
             conector.texto('DIR: ');
             conector.establecerEnfatizado(0);
-            conector.texto(obj.client.address ? obj.client.address : 'N/D');
+            conector.texto(obj.client.contact.address ? obj.client.contact.address : 'N/D');
             conector.feed(1);
 
             align(conector, 'center');
@@ -175,7 +172,7 @@
             if (creditNote) {
                 conector.texto('NOTA DE CRÉDITO')
             } else {
-                conector.texto(obj.comprobante ? obj.comprobante.type : 'DOCUMENTO CONDUCE')
+                conector.texto(obj.comprobante ? obj.comprobante.type : 'FACTURA NO APTA PARA CREDITO FISCAL')
             }
             conector.establecerTamanioFuente(1, 1)
             conector.feed(2);
@@ -324,7 +321,7 @@
             } else {
                 conector.feed(1);
             }
-            conector.texto('FAVOR REVISAR LA MERCANCÍA AL MOMENTO DE  RECIBIR. NO SE ACEPTAN DEVOLUCIONES \n');
+            conector.texto('FAVOR REVISAR LA MERCANCÍA AL MOMENTO DE \n RECIBIR. NO SE ACEPTAN DEVOLUCIONES \n');
             conector.texto('-------- GRACIAS POR PREFERIRNOS --------\n');
             conector.feed(2);
             /* Fin sección */

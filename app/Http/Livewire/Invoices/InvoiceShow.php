@@ -3,12 +3,14 @@
 namespace App\Http\Livewire\Invoices;
 
 use App\Http\Livewire\General\Authorize;
+use App\Http\Livewire\Invoices\ShowIncludes\ShowAttach;
 use App\Http\Livewire\Invoices\ShowIncludes\Showclient;
 use App\Http\Livewire\Invoices\ShowIncludes\ShowCredit;
 use App\Http\Livewire\Invoices\ShowIncludes\ShowPayments;
 use App\Http\Livewire\Invoices\ShowIncludes\ShowProducts;
 use App\Http\Livewire\Invoices\ShowIncludes\ShowResume;
 use App\Http\Livewire\Invoices\ShowIncludes\ShowUsers;
+use App\Models\Image;
 use App\Models\Invoice;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -16,7 +18,7 @@ use Livewire\WithFileUploads;
 
 class InvoiceShow extends Component
 {
-    use Showclient, Authorize, ShowProducts, ShowUsers, ShowPayments, WithFileUploads, ShowCredit, ShowResume;
+    use Showclient, Authorize, ShowProducts, ShowUsers, ShowPayments, WithFileUploads, ShowCredit, ShowResume, ShowAttach;
 
     public Invoice $invoice;
     public $includeName = "showresume";
@@ -24,6 +26,7 @@ class InvoiceShow extends Component
     public $action;
     public $lastPayment;
     public $details;
+    public $attachs, $document;
 
     protected $rules = [
         'client' => 'required',
@@ -50,20 +53,29 @@ class InvoiceShow extends Component
         $this->includeName = $name;
         $this->includeTitle = $title;
         $this->render();
+        if ($name == 'showclient') {
+            return redirect()->route('invoices.show', [$this->invoice, 'includeName' => 'showclient', 'includeTitle' => 'Cliente']);
+        }
     }
     public function loadClient()
     {
         $store = auth()->user()->store;
         $this->clients = clientWithCode($store->id);
-        $this->client = $this->invoice->client()
-            ->join('payments', 'payments.payer_id', '=', 'clients.code')
-            ->where('payments.payer_type', 'App\Models\Client')
-            ->selectRaw('clients.* , sum(payments.payed-payments.cambio) as gasto')
-            ->first()
-            ->toArray();
-        $this->client['balance'] = '$' . formatNumber($this->client['limit']);
-        $this->client['gasto'] = '$' . formatNumber($this->client['gasto']);
-        $this->client_code = $this->client['code'];
+        $client = $this->invoice->client
+            ->load('contact');
+        $contact = $client->contact;
+        $this->client = [
+            'name' => $contact->fullname,
+            'address' => $contact->address,
+            'phone' => $contact->phone,
+            'email' => $contact->email,
+            'rnc' => $contact->cedula ?: 'N/D',
+            'id' => $client->id,
+            'balance' => '$' . formatNumber($client->limit),
+            'gasto' => '$' . formatNumber($client->payments()->sum('payed')),
+            'limit' => $client->limit,
+            'contact' => $contact->contact,
+        ];
     }
     public function loadProducts()
     {
@@ -76,6 +88,12 @@ class InvoiceShow extends Component
     public function loadContable()
     {
         $this->contable = $this->invoice->contable->toArray();
+    }
+    public function loadAttach()
+    {
+        $images=Image::get();
+        //$this->attachs = $this->invoice->images;
+        $this->attachs = $images;
     }
 
     public function loadPayments()
@@ -93,6 +111,10 @@ class InvoiceShow extends Component
     }
     public function loadResume()
     {
+    }
+    public function loadDocuments()
+    {
+        $this->document = $this->invoice->client->pdfs()->first();
     }
     public function loadData($includeName)
     {
@@ -113,7 +135,12 @@ class InvoiceShow extends Component
             case 'showpayments':
                 $this->loadPayments();
                 break;
-            
+            case 'showattach':
+                $this->loadAttach();
+                break;
+            case 'showdocuments':
+                $this->loadDocuments();
+                break;
             case 'showresume':
                 $this->loadResume();
                 break;

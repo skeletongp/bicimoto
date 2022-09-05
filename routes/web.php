@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ChequeController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\CuadreController;
@@ -20,14 +19,16 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
-use App\Models\Count;
+use App\Http\Livewire\Clients\CreateClient;
+use App\Models\Contact;
+use App\Models\Contrato;
 use App\Models\Invoice;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
-use Sawirricardo\Whatsapp\Data\TextMessageData;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,9 +62,13 @@ Route::middleware(['auth'])->group(function () {
 
         Route::controller(InvoiceController::class)->group(function () {
             Route::get('invoices', 'index')->name('invoices.index');
+            Route::get('invoices/amortizacion/{invoice}', 'amortizacion')->name('invoices.amortizacion');
             Route::get('invoices/create', 'create')->name('invoices.create');
             Route::get('invoices/orders', 'orders')->name('orders');
+            Route::get('invoices/cuotas/{invoice}', 'cuotas')->name('invoices.cuotas');
             Route::get('invoices/show/{invoice}', 'show')->name('invoices.show');
+            Route::get('invoices/pendientes', 'pendientes')->name('invoices.pendientes');
+            Route::get('invoices/carta/{invoice}/{to?}', 'carta')->name('invoices.carta');
         });
 
         Route::controller(CotizeController::class)->group(function () {
@@ -88,7 +93,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::controller(ClientController::class)->group(function () {
             Route::get('clients', 'index')->name('clients.index');
-            Route::get('clients/paymany/{invoices}', 'paymany')->name('clients.paymany');
+            Route::get('clients/paymany/{cuotas}', 'paymany')->name('clients.paymany');
             Route::get('clients/invoices/{client_id}', 'invoices')->name('clients.invoices');
             Route::get('clients/{client_id}', 'show')->name('clients.show');
         });
@@ -156,12 +161,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('prueba', function (Request $request) {
+   
     
-   dd(Cache::get('spatie.permission.cache'));
     return view('prueba');
 })->name('prueba');
-
-
-
 
 

@@ -26,11 +26,11 @@ Breadcrumbs::for('clients', function ($trail) {
 });
 Breadcrumbs::for('clients.show', function ($trail, $client) {
     $trail->parent('clients');
-    $trail->push($client->name, route('clients.show', $client), ['icon'=>'fas fa-user']);
+    $trail->push($client->contact->fullname, route('clients.show', $client), ['icon'=>'fas fa-user']);
 });
-Breadcrumbs::for('clients.paymany', function ($trail,  $invoices) {
+Breadcrumbs::for('clients.paymany', function ($trail,  $cuotas) {
     $trail->parent('clients');
-    $trail->push('Cobrar facturas', route('clients.paymany', $invoices), ['icon'=>'fas fa-dollar-sign']);
+    $trail->push('Cobrar cuotas', route('clients.paymany', $cuotas), ['icon'=>'fas fa-dollar-sign']);
 });
 // Proveedores
 Breadcrumbs::for('providers', function ($trail) {
@@ -46,6 +46,10 @@ Breadcrumbs::for('invoices', function ($trail) {
 Breadcrumbs::for('invoices.create', function ($trail) {
     $trail->parent('invoices');
     $trail->push('Nueva Factura', route('invoices.create'));
+});
+Breadcrumbs::for('invoices.pendientes', function ($trail) {
+    $trail->parent('invoices');
+    $trail->push('Pagarés Pendientes', route('invoices.pendientes'));
 });
 Breadcrumbs::for('invoices.orders', function ($trail) {
     $trail->parent('invoices');

@@ -127,5 +127,12 @@ public $primaryKey  = 'id';
     {
         return $this->hasOne(Creditnote::class);
     }
+    public function cuotas()
+    {
+        return $this->hasMany(Cuota::class);
+    }
+    public function contrato(){
+        return $this->hasOne(Contrato::class);
+    }
    
 }

@@ -26,19 +26,21 @@ class CuadreController extends Controller
         $place = auth()->user()->place;
         $payments = $place->payments()->where('payable_type', Invoice::class)
             ->where('payments.day', $day)
-            ->join('invoices', 'invoices.id', '=', 'payments.payable_id')
-            ->join('clients', 'clients.id', '=', 'payments.payer_id')
-            ->join('moso_master.users', 'users.id', '=', 'payments.contable_id')
+            ->leftJoin('invoices', 'invoices.id', '=', 'payments.payable_id')
+            ->leftJoin('clients', 'clients.id', '=', 'payments.payer_id')
+            ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
+            ->leftJoin('moso_master.users', 'users.id', '=', 'payments.contable_id')
             ->orderBy('payments.created_at', 'desc')
-            ->select('payments.*', 'invoices.name as name', 'invoices.number', 'clients.name as client_name')
+            ->select('payments.*', 'invoices.name as name', 'invoices.number', 'contacts.fullname as client_name')
             ->with('payer', 'payable')->get();
        
         $gastos = $place->payments()->where('payable_type', Outcome::class)
             ->join('invoices', 'invoices.id', '=', 'payments.payable_id')
             ->join('clients', 'clients.id', '=', 'payments.payer_id')
+            ->join('contacts', 'contacts.id', '=', 'clients.contact_id')
             ->join('moso_master.users', 'users.id', '=', 'payments.contable_id')
             ->orderBy('payments.created_at', 'desc')
-            ->select('payments.*', 'invoices.name as name', 'invoices.number', 'clients.name as client_name')
+            ->select('payments.*', 'invoices.name as name', 'invoices.number', 'contacts.fullname as client_name')
             ->with('payer', 'payable')->get();
         $invoices = $place->invoices()->where('invoices.day', Carbon::now()->format('Y-m-d'))->get();
         $cuadre = $this->createCuadre($invoices, $payments, $day);

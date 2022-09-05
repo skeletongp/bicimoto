@@ -28,10 +28,11 @@ class OrderView extends LivewireDatatable
         $invoices =
             Invoice::where('invoices.place_id', $place->id)
             ->join('clients', 'clients.id', '=', 'invoices.client_id')
+            ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
             ->leftJoin('payments', 'payments.payable_id', '=', 'invoices.id')
             ->leftJoin('moso_master.users', 'users.id', '=', 'invoices.seller_id')
             ->where('payments.payable_type', 'App\Models\Invoice')
-            ->select('invoices.*', 'clients.name as client_name')
+            ->select('invoices.*')
             ->orderBy('invoices.id', 'desc')->where('status', 'waiting');
 
         return $invoices;
@@ -48,8 +49,8 @@ class OrderView extends LivewireDatatable
                 return ltrim(substr($number, strpos($number, '-') + 1), '0');
             })->label("Nro.")->searchable(),
             TimeColumn::name('created_at')->label("Hora"),
-            Column::callback(['clients.name', 'name'], function ($cltname, $name) {
-                return ellipsis($name ?: $cltname, 16);
+            Column::callback(['contacts.name','contacts.lastname', 'name'], function ($cltname, $lastname, $name) {
+                return ellipsis($name ?: $cltname.' '.$lastname, 16);
             })->label('Cliente')->searchable(),
             Column::callback(['payments.total'], function ($total) {
                 return '$' . formatNumber($total);

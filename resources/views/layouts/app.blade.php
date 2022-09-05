@@ -72,20 +72,11 @@
             </footer>
         </div>
     </div>
-    {{-- <div class="landscape:hidden">
-        <h1>Por favor, gire su pantalla para ustilizar el sistema</h1>
-    </div> --}}
-    {{-- <div class="flex justify-center items-center sm:hidden w-screen h-screen">
-        <h1 class=" font-bold text-3xl uppercase text-center max-w-lg leading-12">Este tamaño de pantalla no es
-            compatible. Utilice un monitor más
-            grande o
-            aplique zoom out al sistema</h1>
-    </div> --}}
+
     @livewireScripts
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/mobius1-selectr@latest/dist/selectr.min.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -94,6 +85,9 @@
 
     <link rel="stylesheet" type="text/css" href="https://printjs-4de6.kxcdn.com/print.min.css">
     <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script>
+        
+    </script>
     @stack('js')
     <x-livewire-alert::scripts />
     <script>
@@ -187,21 +181,29 @@
             $('#generalLoad').removeClass('hidden');
         })
         id = parseInt({{ auth()->user()->place_id }});
-       /*  var channel = Echo.private(`invoices.${id}`);
-        channel.listen("NewInvoice", function(data) {
-            store_id = parseInt({{ optional(auth()->user()->store)->id }});
-            if (data.invoice.store_id == store_id) {
-                Livewire.emit('showAlert', 'Nuevo pedido pendiente', 'success')
-            }
+        /*  var channel = Echo.private(`invoices.${id}`);
+         channel.listen("NewInvoice", function(data) {
+             store_id = parseInt({{ optional(auth()->user()->store)->id }});
+             if (data.invoice.store_id == store_id) {
+                 Livewire.emit('showAlert', 'Nuevo pedido pendiente', 'success')
+             }
 
-        }); */
+         }); */
         window.onbeforeunload = function() {
             $('#generalLoad').removeClass('hidden');
+            setTimeout(() => {
+                $('#generalLoad').addClass('hidden');
+            }, 4500);
         }
         $(document).ready(function() {
             $('input[type=tel]').each(function() {
                 $(this).formatPhoneNumber({
                     format: '(###) ###-####'
+                })
+            })
+            $('.cedula').each(function() {
+                $(this).formatPhoneNumber({
+                    format: '###-#######-#'
                 })
             })
         })
@@ -220,11 +222,18 @@
         </x-button>
         <div class="flex p-4 justify-between fixed right-0 bottom-0">
             @can('Cobrar Facturas')
-                <x-button type="button" id="hOpenCajon">
-                    <small class="flex items-center space-x-1">
-                        <span class="fas fa-cash-register text-xl"></span>
-                    </small>
-                </x-button>
+                <a href="{{ route('invoices.pendientes') }}"
+                    class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-2.5 py-1.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700">
+                    Pagarés
+                    <span
+                        class="inline-flex justify-center items-center ml-2  w-6 h-6 rounded-full bg-red-400 text-xs  text-white font-bold ">
+                        {{ \Cache::get('cuotasvencidas' . env('STORE_ID')) }}
+                    </span>
+                    <span
+                        class="inline-flex justify-center items-center ml-2  w-6 h-6 rounded-full bg-green-500 text-xs  text-white font-bold ">
+                        {{ \Cache::get('cuotasactivas' . env('STORE_ID')) }}
+                    </span>
+                </a>
             @endcan
         </div>
     </div>

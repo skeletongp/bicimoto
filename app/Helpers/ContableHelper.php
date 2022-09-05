@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 function setContable($model, String $code, String $origin, $name = null, $place_id = null, $borrable = NULL)
 {
     if (!$place_id) {
-        $place_id = auth()->user()->place_id;
+        $place_id = optional(auth()->user())->place_id?:1;
     }
     if ($model->fullname) {
         $model->name = $model->fullname;

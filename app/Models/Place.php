@@ -104,9 +104,9 @@ protected $connection="mysql";
     }
     public function cash()
     {
-        return $this->morphOne(Count::class, 'contable')
-        ->where('code','100-01')->first();
+        return $this->findCount('100-01');
     }
+
     public function chica()
     {
         return $this->morphOne(Count::class, 'contable')
@@ -167,6 +167,10 @@ protected $connection="mysql";
     function recurrents()
     {
         return $this->hasMany(Recurrent::class);
+    }
+    public function results()
+    {
+        return $this->hasMany(Result::class);
     }
     
 }

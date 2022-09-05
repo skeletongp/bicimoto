@@ -3,71 +3,56 @@
 namespace App\Http\Livewire\Clients;
 
 use App\Models\Client;
+use App\Models\Contact;
 use App\Models\CountMain;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class CreateClient extends Component
 {
-    public $form, $avatar, $photo_path, $store_id, $role, $cltDocType, $name, $lastname, $cellphone, $cedula;
+    public $form, $avatar, $photo_path, $store_id, $role,  $name, $lastname, $cellphone, $code;
     use WithFileUploads;
-
-    public function mount(){
-        $this->form['special']=0;
-    }
 
     public function render()
     {
+
         $store = auth()->user()->store;
-        if(!Cache::get('clientCount'.env('STORE_ID'))){
-            Cache::put('clientCount'.env('STORE_ID'),$store->clients()->withTrashed()->count());
-        }
-        $num = Cache::get('clientCount'.env('STORE_ID')) + 1;
+        $num = $store->clients()->count() + 1;
         $code = str_pad($num, 3, '0', STR_PAD_LEFT);
-        $this->form['code'] = $code;
+        $this->code = $code;
         return view('livewire.clients.create-client');
     }
     protected $rules = [
-        'form.name' => 'max:50',
-        'form.email' => 'required|email|max:100|unique:clients,email',
+        'form.name' => 'required|max:50',
+        'form.lastname' => 'required|max:50',
+        'form.email' => 'required|email|max:100|unique:contacts,email',
         'form.address' => 'required|string|max:100',
-        'form.limit' => 'required|numeric|min:0',
         'form.phone' => 'required|string|max:25',
-        'form.rnc' => 'required|string|max:25',
-        'form.special' => 'required',
-        'name' => 'required|string|max:50',
-        'lastname' => 'required|string|max:75',
-        'cellphone' => 'required|string|max:25',
-        'cltDocType' => 'required',
+        'form.nacionality' => 'required|string|max:50',
+        'form.genre' => 'required|string|max:25',
+        'form.civil_status' => 'required|string|max:25',
+        'form.cedula' => 'required|string|max:25',
+        'form.cellphone' => 'required|string|max:25',
     ];
     public function createClient()
     {
-        if (empty($this->form['limit'])) {
-            $this->form['limit'] = 0.00;
-        }
+      
         $store = auth()->user()->store;
         $this->validate();
-        $client = $store->clients()->create($this->form);
-            $client->contact()->create([
-                'name' => $this->name,
-                'lastname' => $this->lastname,
-                'cellphone' => $this->cellphone,
-                'cedula' => $this->cedula,
-                'phone'=>$this->form['phone'],
-            ]);
+        $client = $store->clients()->create();
+        $contact=Contact::create($this->form);
+          $client->contact()->associate($contact);
+        $client->save();
         if ($this->photo_path) {
             $client->image()->create([
                 'path' => $this->photo_path
             ]);
         }
-        setContable($client, '101', 'debit', $client->contact->fullname.'-'.$client->name, null, true);
+        setContable($client, '101', 'debit', $contact->name.' '.$contact->lastname, null, true);
         $this->emit('realoadClients');
 
         $this->reset();
         $this->render();
-        Cache::forget('clientCount'.env('STORE_ID'));
-        Cache::forget('clientsWithCode_'.env('STORE_ID'));
         $this->emit('showAlert', 'Cliente registrado exitosamente', 'success');
         $this->emit('refreshLivewireDatatable');
     }
@@ -79,8 +64,8 @@ class CreateClient extends Component
     }
     function loadFromRNC()
     {
-        if (array_key_exists('rnc', $this->form)) {
-            $rnc=str_replace('-', '', $this->form['rnc']);
+        if (array_key_exists('cedula', $this->form)) {
+            $rnc=str_replace('-', '', $this->form['cedula']);
             $client = getApi('contribuyentes/' . $rnc);
             if ($client && array_key_exists('model', $client)) {
                 $client = $client['model'];

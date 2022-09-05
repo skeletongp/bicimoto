@@ -70,12 +70,12 @@
                                 <x-input-error for="unit.{{ $unt->id }}.cost">Requerido</x-input-error>
                             </div>
                             <div class="max-w-xs w-1/4">
-                                <x-base-input label="Detalle" type="number" id="price{{ $unt->id }}.menor"
+                                <x-base-input label="Contado" type="number" id="price{{ $unt->id }}.menor"
                                     wire:model.defer="unit.{{ $unt->id }}.price_menor"></x-base-input>
                                 <x-input-error for="unit.{{ $unt->id }}.price_menor">Min. 1</x-input-error>
                             </div>
                             <div class="max-w-xs w-1/4">
-                                <x-base-input label="Mayor" type="number" id="price{{ $unt->id }}.mayor"
+                                <x-base-input label="Crédito" type="number" id="price{{ $unt->id }}.mayor"
                                     wire:model.defer="unit.{{ $unt->id }}.price_mayor"></x-base-input>
                                 <x-input-error for="unit.{{ $unt->id }}.price_mayor">Min. 1</x-input-error>
                             </div>

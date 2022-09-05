@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('rnc')->comment('Para colocar rnc de cliente genérico')->nullable();
             $table->enum('type', Invoice::TYPES)->default('B00');
             $table->enum('status',['waiting','anulada','cerrada']);
-            $table->enum('condition',['De Contado','1 A 15 Días','16 A 30 Días', '31 a 45 Días']);
+            $table->enum('condition',['De Contado','A Crédito']);
             $table->enum('payway',['Efectivo','Tarjeta','Transferencia', 'Mixto']);
             $table->decimal('rest', 14,4)->comment('Deuda pendiente de la factura');
             $table->decimal('gasto', 14,4)->comment('Costo de compra de los productos');

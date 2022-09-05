@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Invoices\Includes;
 
 use App\Models\Client;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 trait ClientSectionTrait
@@ -12,23 +13,21 @@ trait ClientSectionTrait
 
     public function changeClient()
     {
-       
         $code = str_pad($this->client_code, 4, '0', STR_PAD_LEFT);
         $client = Client::where('code', $code)->with('contact')->first();
-        
-
         if ($client) {
+            $contact=$client->contact;
             $this->client = [
-                'fullname' => $client->fullname,
-                'address' => $client->address,
-                'phone' => $client->phone,
-                'special' => $client->special,
+                'fullname' => $contact->fullname,
+                'address' => $contact->address,
+                'phone' => $contact->phone,
+                'special' => $contact->special,
                 'email' => $client->email,
-                'rnc' => $client->rnc,
+                'rnc' => $contact->cedula,
                 'id' => $client->id,
                 'balance' => '$' . formatNumber($client->debt),
                 'limit' => $client->limit,
-                'name' => $client->name,
+                'name' => $contact->name,
                 'code' => $client->code,
             ];
             $this->emit('focusCode');
@@ -36,7 +35,7 @@ trait ClientSectionTrait
                 $this->name=$client->name;
             }
             $this->client_code = $code;
-            $this->clientNameCode = $code.' - '.$client->name;
+            $this->clientNameCode = $code.' - '.$contact->fullname;
         }
     }
     public function updatingClientNameCode($value){
@@ -49,18 +48,17 @@ trait ClientSectionTrait
     }
     public function realoadClients()
     {
-        $this->clients = auth()->user()->store->clients()->orderBy('name')->pluck('name', 'code');
+        Cache::forget('clientsWithCode_'.env('STORE_ID'));
     }
 
     public function updatedClientCode()
     {
-        $this->clients = auth()->user()->store->clients()->orderBy('name')->pluck('name', 'code');
         $this->changeClient();
     }
-    public function rncEnter()
+    /* public function rncEnter()
     {
         $url='contribuyentes/'.$this->name;
-        $client=Client::whereRaw("REPLACE(rnc,'-','')=?", [$this->name])
+        $client=Client::whereRaw("REPLACE(cedula,'-','')=?", [$this->name])
         ->orWhere('name',$this->name)->first();
         if ($client) {
             $this->client_code=$client->code;
@@ -72,7 +70,7 @@ trait ClientSectionTrait
         if (array_key_exists('model', $client)) {
             $this->loadFromRNC($client['model']);
         }
-    }
+    } */
     public function loadFromRNC($client)
     {
        $this->rnc=$client['id'];

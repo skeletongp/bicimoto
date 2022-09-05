@@ -14,6 +14,9 @@ class ClientObserver
     }
     public function creating(Client $client)
     {
+        if($client->code){
+            return;
+        }
         Cache::forget('clients' . $client->store_id);
         Cache::forget('store_' . $client->store_id);
         Cache::forget('place_' . $client->store_id);

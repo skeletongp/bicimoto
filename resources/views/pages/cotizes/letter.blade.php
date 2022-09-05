@@ -175,7 +175,8 @@
             {!! $cotize->store->rnc ? '<b>RNC  :</b> ' . $cotize->store->rnc . '<br />' : '' !!}
             <b>TEL:</b> {{ $cotize->store->phone }} <br>
             <b>EMAIL: </b>{{ $cotize->store->email }}<br />
-            {{ $cotize->store->address }}
+           <span style="width: 50%">
+            {{ ellipsis($cotize->store->address,30) }}</span>
         </div>
         <br>
         <table>
@@ -183,7 +184,7 @@
                 <td colspan="4">
                     <table>
                         <tr>
-                            <td class="title" style="padding-top:10px">
+                            <td class="title" style="padding-top:0px">
                                 <img src="{{ $cotize->store->logo }}" alt=" "
                                     style=" max-width: 300px; max-height: 100px" />
                             </td>

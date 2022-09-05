@@ -33,7 +33,7 @@ class InvoiceHistory extends LivewireDatatable
                 return " 
                 <a href=".$result['pdf']['pathLetter']." download  >
                 <span class='far fa-file-pdf text-red-600 text-xl mr-2'></span>
-                <span class='far fa-download text-blue-600 text-lg'></span>
+             
                  </a>";
             })->label('PDF'),
             Column::callback(['tarjeta', 'id'], function ($tarjeta, $id) use ($payments) {
@@ -47,7 +47,7 @@ class InvoiceHistory extends LivewireDatatable
                 } else {
                     return ' ';
                 }
-            })->label('Foto'),
+            })->label('Contrato'),
         ];
     }
 }

@@ -40,10 +40,25 @@ class CountView extends LivewireDatatable
             Column::callback(['origin'], function($origin){
                 return $origin=='debit'?"Deudor":"Acreedor";
             })->label('Origen'),
-            NumberColumn::name('balance')->label('Balance')->formatear('money', 'font-bold'),
+            NumberColumn::name('balance')->label('Balance')->formatear('money', 'font-bold')->enableSummary(),
 
 
 
         ];
+    }
+    public function summarize($column)
+    {
+        
+        $results = json_decode(json_encode($this->results->items()), true);
+        foreach ($results as $key => $value) {
+            $val = json_decode(json_encode($value), true);
+            $results[$key][$column] = preg_replace("/[^0-9 .]/", '', $val[$column]);
+        }
+        try {
+
+            return "<h1 class='font-bold text-right'>" . '$' . formatNumber(array_sum(array_column($results, $column))) . "</h1>";;
+        } catch (\TypeError $e) {
+            return '';
+        }
     }
 }

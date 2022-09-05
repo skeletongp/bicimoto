@@ -45,21 +45,7 @@
             <hr>
         </div>
         <div class="flex space-x-4 col-span-3">
-            <div class="flex space-x-4 w-full">
-                <div class="w-full">
-                    <x-base-select wire:model.defer="form.type" label="Tipo de producto">
-                        <option value="Producto">Producto</option>
-                        <option value="Servicio">Servicio</option>
-                    </x-base-select>
-                    <x-input-error for="form.type"></x-input-error>
-                </div>
-                <div class="w-full">
-                    <x-base-select wire:model.defer="form.origin" label="Origen del producto">
-                        <option value="Comprado">Comprado</option>
-                        <option value="Procesado">Procesado</option>
-                    </x-base-select>
-                </div>
-            </div>
+          
             <div class="h-full flex items-end ">
                 <label for="photo" class="flex items-center space-x-4  cursor-pointer ">
                     <span class="fas fa-image text-xl"></span>

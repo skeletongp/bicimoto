@@ -6,6 +6,8 @@ use App\Events\NewInvoice;
 use App\Models\Comprobante;
 use App\Models\Detail;
 use App\Models\Invoice;
+use App\Models\Store;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +30,8 @@ trait GenerateInvoiceTrait
             $detail['detailable_type'] = Invoice::class;
             $taxes = empty($detail['taxes']) ? [] : $detail['taxes'];
                 $detail['total'] = $detail['subtotal'] - $detail['discount'];
-            $det = Detail::create(Arr::except($detail, 'taxes','product_name','unit_name'));
+                $detail['user_id'] = 1;
+            $det = Detail::create(Arr::except($detail, ['taxes','product_name','product_code','unit_name','unit_pivot_id']));
             if ($invoice->type != 'B00' && $invoice->type != 'B14') {
                 $det->taxes()->sync($taxes);
                 $det->taxtotal = $det->taxes->sum('rate') * $det->subtotal;
@@ -83,13 +86,14 @@ trait GenerateInvoiceTrait
 
     public function sendInvoice()
     {
-        $store=auth()->user()->store;
+        $store=optional(auth()->user())->store?:Store::find(env('STORE_ID'));
+        $place=optional(auth()->user())->place?:$store->places->first();
         $this->checkCompAmount($store);
         if (!count($this->details)) {
             return;
         }
         $total = array_sum(array_column($this->details, 'subtotal'));
-        $user = auth()->user();
+        $user = auth()->user()?:User::first();
         $comp_id = null;
         if ($this->type != 'B00' ) {
             $comp_id = $this->comprobante_id;
@@ -127,8 +131,8 @@ trait GenerateInvoiceTrait
         }
         event(new NewInvoice($invoice));
         $this->reset('form', 'details', 'producto', 'price', 'client', 'client_code', 'product_code', 'product_name', 'name');
-        $this->invoice = $invoice->load('seller', 'contable', 'client', 'details.product.units', 'details.taxes', 'details.unit', 'payment', 'store.image', 'payments.pdf', 'comprobante', 'pdf', 'place.preference');
-        if (auth()->user()->place->preference->print_order=='yes') {
+        $this->invoice = $invoice->load('seller', 'contable', 'client.contact', 'details.product.units', 'details.taxes', 'details.unit', 'payment', 'store.image', 'payments.pdf', 'comprobante', 'pdf', 'place.preference');
+        if ($place->preference->print_order=='yes') {
             $this->emit('printOrder', $this->invoice);
         }
         $dataFile = file_get_contents(storage_path('app/public/local/details.json'));
@@ -136,6 +140,10 @@ trait GenerateInvoiceTrait
         $name=$invoice->name?:$invoice->client->name;
         unset($data[$this->localDetail]);
         file_put_contents(storage_path('app/public/local/details.json'), json_encode($data));
+        if($place->preference->instant=='yes'){
+            $this->instant=true;
+            $this->emit('modalOpened');
+        }
         $this->mount();
     }
     public function createPayment($invoice)

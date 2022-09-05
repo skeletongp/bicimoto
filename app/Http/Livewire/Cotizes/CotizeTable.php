@@ -20,6 +20,7 @@ class CotizeTable extends LivewireDatatable
         $place=auth()->user()->place;
         $cotizes=Cotize::where('cotizes.place_id',$place->id)
         ->join('clients','cotizes.client_id','=','clients.id')
+        ->join('contacts','clients.contact_id','=','contacts.id')
         ->join('moso_master.users','cotizes.user_id','=','moso_master.users.id')
         ->join('moso_master.stores','cotizes.store_id','=','moso_master.stores.id')
         ->leftjoin('details','cotizes.id','=','details.detailable_id')
@@ -34,7 +35,7 @@ class CotizeTable extends LivewireDatatable
     {
         return [
             DateColumn::name('created_at')->label('Fecha'),
-            Column::callback('clients.name', function($client){
+            Column::callback('contacts.fullname', function($client){
                 return ellipsis($client, 30);
             })->label('Cliente'),
             Column::name('users.fullname')->label('Usuario'),

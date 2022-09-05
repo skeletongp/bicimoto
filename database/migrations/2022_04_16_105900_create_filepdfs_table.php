@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('note')->comment('Nota o descripción opcional')->nullable();
             $table->string('pathThermal')->comment('Ruta del archivo térmico');
             $table->string('pathLetter')->comment('Ruta del archivo en carta');
+            $table->integer('reference_id')->comment('Referencia del archivo')->nullable();
             $table->morphs('fileable');
             $table->softDeletes();
             $table->timestamps();

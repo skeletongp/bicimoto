@@ -44,10 +44,7 @@
             conect.cortar();
             /* Encabezado Negocio */
             align(conect, 'center');
-            if (order.store.image) {
-                conect.imagenDesdeUrl(order.store.image.path);
-                conect.feed(1)
-            }
+           
             conect.establecerEnfatizado(1);
             conect.establecerTamanioFuente(1.3, 2)
             conect.texto(order.store.name.toUpperCase() + "\n");
@@ -89,16 +86,16 @@
             conect.establecerEnfatizado(1);
             conect.texto('CLIENTE: ')
             conect.establecerEnfatizado(0);
-            conect.texto(order.name ? order.name.toUpperCase() : order.client.name.toUpperCase());
+            conect.texto(order.name ? order.name.toUpperCase() : order.client.contact.name.toUpperCase());
             conect.feed(1);
 
             conect.establecerEnfatizado(1);
-            conect.texto('RNC: ');
+            conect.texto('CÉD: ');
             conect.establecerEnfatizado(0);
             if (order.rnc) {
                 conect.texto(order.rnc);
             } else {
-                conect.texto(order.client.rnc ? order.client.rnc : '0000000000')
+                conect.texto(order.client.contact.cedula ? order.client.contact.cedula : '0000000000')
             }
 
             conect.texto(' / ');
@@ -106,13 +103,13 @@
             conect.establecerEnfatizado(1);
             conect.texto('TEL: ');
             conect.establecerEnfatizado(0);
-            conect.texto(order.client.phone);
+            conect.texto(order.client.contact.phone);
             conect.feed(1);
 
             conect.establecerEnfatizado(1);
             conect.texto('DIR: ');
             conect.establecerEnfatizado(0);
-            conect.texto(order.client.address ? order.client.address : 'N/D');
+            conect.texto(order.client.contact.address ? order.client.contact.address : 'N/D');
             conect.feed(1);
 
             align(conect, 'center');

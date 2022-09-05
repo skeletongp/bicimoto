@@ -19,8 +19,9 @@ class OtherSeeder extends Seeder
     {
         $place=Place::first();
         $store=Store::find(env('STORE_ID'));
-        $this->createBanks($place, $store);
-        $this->createComprobantes($store);
+       // $this->createBanks($place, $store);
+        $this->createdProducts($place, $store);
+        //$this->createComprobantes($store);
        
     }
     public function createComprobantes($store)
@@ -35,32 +36,25 @@ class OtherSeeder extends Seeder
     }
     public function createdProducts($place, $store)
     {
-        $pierna=$store->products()->create([
-            'name'=>'Piernas de cerdo ahumada',
+        $prestamo=$store->products()->create([
+            'name'=>'Financimiento',
             'code'=>'001',
-            'type'=>'Producto'
+            'type'=>'Servicio'
         ]);
-        $this->assignUnit(1,$place, $pierna, 65,80,80,50);
+        $this->assignUnit(1,$place, $prestamo, 50000,50000,50000,1,0);
 
-        $chuleta=$store->products()->create([
-            'name'=>'Chuleta Ahumada Importada',
-            'code'=>'002',
-            'type'=>'Producto'
-        ]);
-        $this->assignUnit(1,$place, $chuleta, 55,76,40,35);
-
-        
     }
-    public function assignUnit($unit_id,$place,$product, $price_mayor, $price_menor, $min, $cost){
+    public function assignUnit($unit_id,$place,$product, $price_mayor, $price_menor, $special, $min, $cost){
         ProductPlaceUnit::create([
             'product_id'=>$product->id,
             'place_id'=>$place->id,
             'unit_id'=>$unit_id,
             'price_mayor'=>$price_mayor,
             'price_menor'=>$price_menor,
+            'price_special'=>$special,
             'min'=>$min,
             'cost'=>$cost,
-            'margin'=>($price_menor/$cost)-1,
+            'margin'=>1,
         ]);
     }
     public function createBanks($place, $store)
@@ -76,7 +70,7 @@ class OtherSeeder extends Seeder
             'titular'=>'Ismael Contreras',
         ]);
 
-        setContable($popular,'100','debit', $popular->bank_name, $place->id,true);
-        setContable($reservas,'100','debit', $reservas->bank_name, $place->id,true);
+        setContable($popular,'100','debit', $popular->bank_name, $place->id,false);
+        setContable($reservas,'100','debit', $reservas->bank_name, $place->id,false);
     }
 }

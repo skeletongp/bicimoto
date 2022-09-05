@@ -62,6 +62,7 @@ trait ShowCredit
     }
     public function printCreditNote(){
         $invoice=$this->invoice;
+       
         $this->emit('changeInvoice', $invoice, true, true);
     }
 

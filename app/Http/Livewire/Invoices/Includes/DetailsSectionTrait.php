@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire\Invoices\Includes;
 
+use App\Models\Place;
+use App\Models\User;
+
 trait DetailsSectionTrait
 {
     public $producto;
@@ -16,7 +19,8 @@ trait DetailsSectionTrait
     public function setProduct($product_code)
     {
         $code = str_pad($product_code, 3, '0', STR_PAD_LEFT);
-        $product = auth()->user()->place->products()->where('code', $code)->first();
+        $place=optional(auth()->user())->place?:Place::first();
+        $product = $place->products()->where('code', $code)->first();
         $this->producto = $product;
         if ($product) {
             $productLoad = [
@@ -47,6 +51,7 @@ trait DetailsSectionTrait
        /*  } */
         $this->emit('focusCode');
     }
+    
     public function updatedCant()
     {
         if ($this->producto) {
@@ -54,8 +59,10 @@ trait DetailsSectionTrait
             $min = $unt->min;
             if ($this->client && $this->client['special']) {
                 $this->price = $unt->price_special;
-            } elseif ($this->cant >= $min) {
+            } elseif ($this->condition == 'A Credito') {
                 $this->price = $unt->price_mayor;
+            } else{
+                $this->price = $unt->price_menor;
             }
             $pr = removeComma($this->price);
             $sub = removeComma(formatNumber((floatVal($this->cant)  * $pr) * (1 - ($this->discount / 100))));
@@ -68,6 +75,7 @@ trait DetailsSectionTrait
     }
     public function confirmedAddItems()
     {
+        $user=optional(auth()->user())?:User::first();
         $this->price = str_replace(',', '', $this->price);
         $this->form['id'] = count($this->details);
         $this->form['cant'] = $this->cant;
@@ -81,9 +89,9 @@ trait DetailsSectionTrait
         $this->form['utility'] = ($this->form['cant'] * $this->form['price']) - ($this->form['cant'] * $this->form['cost']);
         $this->form['unit_id'] = $this->unit->id;
         $this->form['unit_pivot_id'] = $this->pivot_id;
-        $this->form['user_id'] = auth()->user()->id;
-        $this->form['store_id'] = auth()->user()->store->id;
-        $this->form['place_id'] = auth()->user()->place->id;
+        $this->form['user_id'] = $user->id;
+        $this->form['store_id'] = env('STORE_ID');
+        $this->form['place_id'] = optional($user->place)->id?:1;
         $this->form['product_name'] = $this->product['name'];
         $this->form['product_code'] = $this->product['code'];
         $this->form['taxes'] = $this->product['taxes'];
@@ -136,7 +144,8 @@ trait DetailsSectionTrait
     }
     public function freshUnitId()
     {
-        $unit = auth()->user()->place->units()->wherePivot('id', $this->unit_id)->first();
+        $place=optional(auth()->user())->place?:Place::first();
+        $unit = $place->units()->wherePivot('id', $this->unit_id)->first();
         if ($unit) {
             $this->unit = $unit;
             $this->price = $unit->pivot->price_menor;

@@ -29,7 +29,8 @@ class InvoiceView extends Component
     }
     public function setPDF($id)
     {
-        $invoice = Invoice::whereId($id)->with('seller','contable','client','details.product.units','details.taxes','details.unit', 'payment','store.image','payments.pdf', 'comprobante','pdf','place.preference','creditnote')->first();
+        $invoice = Invoice::whereId($id)->with('seller','contable','client.contact','details.product.units','details.taxes','details.unit', 'payment','store.image','payments.pdf', 'comprobante','pdf','place.preference','creditnote')->first();
+     
         $this->emit('changeInvoice', $invoice, false);
         $this->pdfLetter = $invoice->pdfLetter;
         $this->pdfThermal = $invoice->pdfThermal;

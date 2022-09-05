@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Invoices\Includes;
 
 use App\Models\Invoice;
+use App\Models\Store;
 use Carbon\Carbon;
 
 trait InvoiceData
@@ -12,7 +13,8 @@ trait InvoiceData
 
     public function checkComprobante($type): bool
     {
-        $comprobante = auth()->user()->store->comprobantes()
+        $store = optional(auth()->user())->store?:Store::first();
+        $comprobante = $store->comprobantes()
             ->where('type', array_search($type, Invoice::TYPES))->where('status', 'disponible')
             ->orderBy('number')->first();
         if ($comprobante) {
@@ -40,20 +42,6 @@ trait InvoiceData
     }
     public function updatedCondition()
     {
-        $cond = $this->condition;
-        switch ($cond) {
-            case '1 A 15 DÍAS':
-                $this->vence = Carbon::now()->addDays(15)->format('Y-m-d');
-                break;
-            case '16 A 30 DÍAS':
-                $this->vence = Carbon::now()->addDays(30)->format('Y-m-d');
-                break;
-            case '31 A 45 DÍAS':
-                $this->vence = Carbon::now()->addDays(45)->format('Y-m-d');
-                break;
-            default:
-                $this->vence = Carbon::now()->addDays(30)->format('Y-m-d');
-                break;
-        }
+        $this->updatedCant();
     }
 }

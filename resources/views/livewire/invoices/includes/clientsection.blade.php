@@ -17,7 +17,7 @@
 
     </div>
    
-        <x-base-input wire:keydown.enter.prevent='rncEnter' wire:model.defer="name" placeholder="Cliente Genérico" class="py-1" label="Nombre/RNC" id="clt.inv.name">
+        <x-base-input  wire:model.defer="name" placeholder="Cliente Genérico" class="py-1" label="Nombre/RNC" id="clt.inv.name">
         </x-base-input>
     <div class="w-full  ">
         <x-base-input class="text-base uppercase" inputClass="py-0" disabled wire:model.defer="client.address"

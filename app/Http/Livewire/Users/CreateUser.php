@@ -35,6 +35,7 @@ class CreateUser extends Component
         'form.email' => 'required|string|max:100|unique:moso_master.users,email,NULL,id,deleted_at,NULL',
         'form.username' => 'required|string|max:35|unique:moso_master.users,username,NULL,id,deleted_at,NULL',
         'form.password' => 'required|string|min:8',
+        'form.cedula' => 'required|string|min:8',
         'form.phone' => 'required|string|max:25',
         'form.place_id' => 'required|numeric|exists:places,id',
         'role'=>'required|exists:roles,name'

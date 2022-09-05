@@ -14,7 +14,8 @@ trait ShowResume
     $this->emit('showAlert','Se ha enviado la factura al cliente','success');
    }
    public function printInvoice(){
-    $invoice=$this->invoice->load('seller', 'contable', 'client', 'details.product.units', 'details.taxes', 'details.unit', 'payment', 'store.image', 'payments.pdf', 'comprobante', 'pdf', 'place.preference');
+    $invoice=$this->invoice->load('seller', 'contable', 'client.contact', 'details.product.units', 'details.taxes', 'details.unit', 'payment', 'store.image', 'payments.pdf', 'comprobante', 'pdf', 'place.preference');
+    
     $this->emit('changeInvoice', $invoice, true);
    }
 

@@ -47,7 +47,8 @@
                         <span class="lg:text-lg">Cajero</span>
                     </div>
                 </x-button>
-                <a href="{{route('invoices.show', [$invoice->id, 'includeName' => 'showpayments', 'includeTitle' => 'Pagos'])}}">
+                <a
+                    href="{{ route('invoices.show', [$invoice->id, 'includeName' => 'showpayments', 'includeTitle' => 'Pagos']) }}">
                     <x-button wire:click="setIncludeElement('showpayments','Pagos')"
                         class="w-full text-xl bg-gray-200 bg-opacity-20 rounded-none text-black hover:text-gray-100 hover:bg-gray-900">
                         <div class="flex space-x-2 lg:space-x-6 items-center lg:text-lg">
@@ -74,6 +75,13 @@
                         </x-button>
                     @endif
                 @endcan
+                <x-button wire:click="setIncludeElement('showdocuments','Documentos')"
+                    class="w-full text-xl bg-gray-200 bg-opacity-20 rounded-none text-black hover:text-gray-100 hover:bg-gray-900">
+                    <div class="flex space-x-2 lg:space-x-6 items-center lg:text-lg">
+                        <span class="w-6 text-left far fa-file-pdf"></span>
+                        <span class="lg:text-lg">Documentos</span>
+                    </div>
+                </x-button>
                 <x-button wire:click="setIncludeElement('showhistory','Historial')"
                     class="w-full text-xl bg-gray-100 bg-opacity-20 rounded-none text-black hover:text-gray-100 hover:bg-gray-900">
                     <div class="flex space-x-2 lg:space-x-6 items-center lg:text-lg">
@@ -117,7 +125,12 @@
                 @case('showhistory')
                     @include('livewire.invoices.showincludes.' . $includeName)
                 @break
+
                 @case('showresume')
+                    @include('livewire.invoices.showincludes.' . $includeName)
+                @break
+
+                @case('showdocuments')
                     @include('livewire.invoices.showincludes.' . $includeName)
                 @break
             @endswitch

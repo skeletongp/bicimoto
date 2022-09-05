@@ -135,10 +135,12 @@
                                     @unless($column['hidden'])
                                         <div
                                             class="justify-center table-cell items-center   {{ isset($padding) ? $padding : 'py-4 px-6 ' }}  overflow-hidden text-xs font-medium tracking-wider text-left text-gray-500 uppercase align-middle border-b border-gray-200 bg-gray-50 leading-4 focus:outline-none">
-                                            <div
-                                                class="px-3  py-1 rounded @if (count($selected)) bg-orange-400 @else bg-gray-100 @endif text-gray-100 text-center">
-                                                {{ count($selected) }}
-                                            </div>
+                                            @if ($selected != [0])
+                                                <div
+                                                    class="px-3  py-1 rounded @if (count($selected)) bg-orange-400 @else bg-gray-100 @endif text-gray-100 text-center">
+                                                    {{ count($selected) }}
+                                                </div>
+                                            @endif
                                         </div>
                                     @endunless
                                 @else
@@ -198,17 +200,17 @@
                                         </div>
                                     @endif
                                 @elseif($column['type'] === 'checkbox')
-                                   <div class="table-cell align-middle">
-                                    @include('datatables::checkbox', [
-                                        'value' => $row->checkbox_attribute,
-                                    ])
-                                   </div>
+                                    <div class="table-cell align-middle">
+                                        @include('datatables::checkbox', [
+                                            'value' => $row->checkbox_attribute,
+                                        ])
+                                    </div>
                                 @elseif($column['type'] === 'label')
                                     @include('datatables::label')
                                 @else
                                     <div
                                         class="table-cell {{ isset($padding) ? $padding : 'py-4 px-6 ' }} @unless($column['wrappable']) whitespace-nowrap truncate @endunless @if ($column['contentAlign'] === 'right') text-right @elseif($column['contentAlign'] === 'center') text-center @else text-left @endif {{ $this->cellClasses($row, $column) }} align-middle">
-                                        
+
                                         {!! $row->{$column['name']} !!}
                                     </div>
                                 @endif
@@ -223,7 +225,7 @@
                                     @if ($column['summary'])
                                         <div
                                             class="table-cell {{ isset($padding) ? $padding : 'py-2 px-6 ' }} @unless($column['wrappable']) whitespace-nowrap truncate @endunless @if ($column['contentAlign'] === 'right') text-right @elseif($column['contentAlign'] === 'center') text-center @else text-left @endif {{ $this->cellClasses($row, $column) }}">
-                                            
+
                                             {!! $this->summarize($column['name']) !!}
                                         </div>
                                     @else

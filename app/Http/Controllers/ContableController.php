@@ -58,7 +58,7 @@ class ContableController extends Controller
         $devoluciones = $place->findCount('401-01')->balance;
         $notas_credito = $place->findCount('401-02')->balance;
         $descuentos = $place->findCount('401-03')->balance;
-        $otros_ingresos = $place->findCount('402-01')->balance;
+        $otros_ingresos = $place->counts()->where('code', 'like', '402%')->sum('balance');
         $ingresos = $ventas + $otros_ingresos - $devoluciones - $notas_credito - $descuentos;
 
         $devolucionCompras = $place->findCount('501-01')->balance;
@@ -87,13 +87,29 @@ class ContableController extends Controller
         $pdf = $PDF->loadView('pages.contables.pdf-results', compact('data'));
         file_put_contents('storage/cuadres/' . 'result' . date('Ymd') . $place->id . '.pdf', $pdf->output());
         $path = asset('storage/cuadres/' . 'result' . date('Ymd') . $place->id . '.pdf');
+        $result=$place->results()->whereMonth('created_at', Carbon::now()->month)->first();
         if (date('Ymd') == Carbon::now()->lastOfMonth()->format('Ymd')) {
+            if(!$result){
+                $this->createResult($data, $place, $path);
+            }
             getResults();
             $cap = $place->findCount('300-01');
             $cap->update(['balance' => $capital + ($activo - $pasivo_capital)]);
         }
         return view('pages.contables.view-results', compact('path'));
     }
+    public function createResult($data, $place, $path){
+        $result= $place->results()->create([
+          'ventas' => $data['ingresos'],
+          'costos'=> $data['costos_totales'],
+          'gastos'=> $data['gastos_admin']+$data['gastos_ventas']+$data['gastos_financieros'],
+          'utilidad'=> $data['utilidad_neta'],
+          'isr'=> $data['utilidad_antes_impuestos']-$data['utilidad_neta'],
+         ]);
+         $result->pdf()->create([
+          'pathLetter'=> $path,
+         ]);
+      }
     public function report_607()
     {
         return view('pages.contables.report-607');

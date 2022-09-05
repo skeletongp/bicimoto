@@ -11,19 +11,20 @@ trait Showclient
     public function changeClient()
     {
         $code = $this->client_code;
-        $client = Client::where('code', $code)->first();
+        $client = Client::where('code', $code)->with('contact')->first();
         if ($client) {
+            $contact = $client->contact;
             $this->client = [
-                'name' => $client->name,
-                'address' => $client->address,
-                'phone' => $client->phone,
-                'email' => $client->email,
-                'rnc' => $client->rnc ?: 'N/D',
+                'name' => $contact->fullname,
+                'address' => $contact->address,
+                'phone' => $contact->phone,
+                'email' => $contact->email,
+                'rnc' => $contact->cedula ?: 'N/D',
                 'id' => $client->id,
                 'balance' => '$' . formatNumber($client->limit),
                 'gasto' => '$' . formatNumber($client->payments()->sum('payed')),
                 'limit' => $client->limit,
-                'contact'=>$client->contact,
+                'contact'=>$contact->contact,
             ];
         }
        
@@ -46,16 +47,16 @@ trait Showclient
     public function updateInvoiceClient()
     {
         $invoice = $this->invoice;
-        $client = Client::whereId($this->client['id'])->first();
+        $client = Client::whereId($this->client['id'])->with('contact')->first();
 
         if ($client && $client->id !== $invoice->client_id) {
             $invoice->client->limit = $invoice->client->limit + $this->invoice->rest;
             $invoice->client->save();
             if(!$client->contable){
-                setContable($client,'101','debit',$client->fullname,null, true);
+                setContable($client,'101','debit',$client->contact->fullname,null, true);
             }
             setTransaction('Cambio de cliente Fact. No. ' . $invoice->number, $invoice->payment->ncf ?: $invoice->number, $invoice->rest, $client->contable, $invoice->client->contable);
-            $client->limit = $client->limit - $invoice->payment->rest;
+            $client->limit = $client->limit - $invoice->rest;
             $client->save();
             $invoice->update(['client_id' => $client->id]);
             $invoice->update(['name' => '']);

@@ -24,8 +24,10 @@ return new class extends Migration
             $table->integer('copy_print')->default(1);
             $table->string('printer_nif')->nullable();
             $table->string('printer_ver')->nullable();
+            $table->decimal('mora_rate')->default(3);
+            $table->enum('instant',['yes','no'])->default('no')->comment('Si es yes, se cobra la factura al momento de crearla');
             $table->enum('print_order',['yes','no'])->default('yes')->nullable();
-            $table->string('min_comprobante')->nullable();
+            $table->string('min_comprobante')->default(20);
             $table->string('note')->nullable();
             $table->timestamps();
         });

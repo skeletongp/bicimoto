@@ -3,18 +3,17 @@
 namespace App\Http\Livewire\Clients;
 
 use App\Models\Client;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class EditClient extends Component
 {
-    public  $client;
+    public  $client, $form=[], $client_id;
     public  $avatar, $photo_path;
     use WithFileUploads;
-    public function mount(){
-        $this->client['special']=0;
-    }
+
+    protected $listeners=['modalOpened'];
+
     public function render()
     {
         return view('livewire.clients.edit-client');
@@ -22,14 +21,21 @@ class EditClient extends Component
     function rules()
     {
         return  [
-            'client' => 'required',
-            'client.address' => 'required|string|max:100',
-            'client.email' => 'required|string|max:100|unique:clients,email,' . $this->client['id'],
-            'client.limit' => 'required|numeric',
-            'client.special' => 'required|numeric',
-            'client.phone' => 'required|string|max:25',
-            'client.store_id' => 'required|numeric|exists:moso_master.stores,id',
+        'form.name' => 'required|max:50',
+        'form.lastname' => 'required|max:50',
+        'form.email' => 'required|string|max:100|unique:contacts,email,' . $this->form['id'],
+        'form.address' => 'required|string|max:100',
+        'form.phone' => 'string|max:25',
+        'form.nacionality' => 'required|string|max:50',
+        'form.genre' => 'required|string|max:25',
+        'form.civil_status' => 'required|string|max:25',
+        'form.cedula' => 'required|string|max:25',
+        'form.cellphone' => 'string|max:25',
         ];
+    }
+    public function modalOpened(){
+        $this->client=Client::find($this->client_id);
+        $this->form=$this->client->contact->toArray();
     }
     public function updateClient()
     {
@@ -40,9 +46,8 @@ class EditClient extends Component
                 'path' => $this->photo_path
             ]);
         }
-        $client->update($this->client);
-        Cache::forget('clientCount'.env('STORE_ID'));
-        Cache::forget('clientsWithCode_'.env('STORE_ID'));
+        $contact=$client->contact;
+        $contact->update($this->form);
         $this->emit('refreshLivewireDatatable');
         $this->emit('showAlert', 'Cliente Actualizado Exitosamente', 'success');
     }

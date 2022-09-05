@@ -42,6 +42,7 @@ class CreateProduct extends Component
     public function mount()
     {
         $store=auth()->user()->store;
+        $this->unit_min=1;
         if(!Cache::get('productCount'.env('STORE_ID'))){
             Cache::put('productCount'.env('STORE_ID'),$store->products()->withTrashed()->count());
         }

@@ -20,6 +20,7 @@ class ComprobantesTable extends LivewireDatatable
         $comprobantes = Comprobante::where('comprobantes.store_id', $store->id)
             ->leftjoin('invoices', 'invoices.comprobante_id', '=', 'comprobantes.id')
             ->leftjoin('clients', 'clients.id', '=', 'comprobantes.client_id')
+            ->leftJoin('contacts','clients.contact_id','=','contacts.id')
             ->orderBy('comprobantes.ncf','desc');
             
 
@@ -58,7 +59,7 @@ class ComprobantesTable extends LivewireDatatable
                 };
             })->label('Doc.')->searchable(),
             
-            Column::callback(['invoices.name','clients.name'], function ($name, $client_name) {
+            Column::callback(['invoices.name','contacts.name'], function ($name, $client_name) {
               return ellipsis( $name?:($client_name?:'N/D'), 20);
             })->label('Cliente.')->searchable(),
             

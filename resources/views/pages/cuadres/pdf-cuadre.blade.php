@@ -196,7 +196,7 @@
                         {{ $payment->forma == 'cobro' ? 'Cob.' : 'Fact.' }}
                     </td>
                     <td style="width:25%;  text-align: left">
-                        {{ ucwords(strtolower(ellipsis($payment->payable->name, 15) ?: (ellipsis($payment->payer->name, 15) ?: ellipsis($payment->payer->fullname, 15))), ' ') }}
+                        {{ ucwords(strtolower(ellipsis($payment->payable->name, 15) ?: (ellipsis($payment->payer->contact->fullname, 15) ?: ellipsis($payment->payer->fullname, 15))), ' ') }}
                     </td>
 
                     <td style="width:19.5%; text-align: left">

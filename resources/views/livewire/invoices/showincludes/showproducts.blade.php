@@ -29,7 +29,7 @@
                         Total.
                     </th>
                     @if (\Carbon\Carbon::parse($invoice->created_at)->diffInDays(now()) < 30 &&
-                        auth()->user()->hasPermissionTo('Editar Facturas'))
+                        auth()->user()->hasPermissionTo('Editar Facturas') && !$invoice->cuotas->count())
                         <th scope="col" class="px-4 py-3">
                             <span class="sr-only">Edit</span>
                         </th>

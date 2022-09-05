@@ -22,6 +22,7 @@ class EditUser extends Component
             'user.lastname' => 'required|string|max:75',
             'user.email' => 'required|string|max:100|unique:moso_master.users,email,'.$this->user['id'],
             'user.phone' => 'required|string|max:25',
+            'user.cedula' => 'required|string|max:25',
             'role'=>'required|exists:roles,name',
           
         ];
@@ -57,8 +58,10 @@ class EditUser extends Component
             ]);
         }
         $this->user['loggeable']=$this->loggeable?'yes':'no';
-        $user->update(Arr::except($this->user,['avatar','pivot','roles','image','updated_at']));
+        $userArray=Arr::except($this->user,['avatar','pivot','roles','image','updated_at']);
+        $user->update($userArray);
         $user->syncRoles($this->role);
+        $user->cedula=$userArray['cedula'];
         $user->save();
         Cache::forget(auth()->user()->store->id.'admins');
         $this->emit('refreshLivewireDatatable');

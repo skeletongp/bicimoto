@@ -29,7 +29,8 @@ class InvoiceHistorial extends LivewireDatatable
             ->join('invoices', 'payments.payable_id', '=', 'invoices.id')
             ->where('payments.payable_type', '=', 'App\Models\Invoice')
             ->join('clients', 'clients.id', '=', 'invoices.client_id')
-            ->selectRaw('invoices.*, clients.name as client_name')
+            ->join('contacts', 'contacts.id', '=', 'clients.contact_id')
+            ->selectRaw('invoices.*')
             ->where('status', '=', 'cerrada')
             ->groupBy('invoices.id');
         return $invoices;
@@ -41,7 +42,7 @@ class InvoiceHistorial extends LivewireDatatable
     public function columns()
     {
         return [
-            Column::callback(['invoices.id', 'rest'], function ($id, $rest) {
+            Column::callback(['invoices.id', 'invoices.rest'], function ($id, $rest) {
                 if ($rest > 0) {
                     return "  <a href=" . route('invoices.show', [$id, 'includeName' => 'showpayments', 'includeTitle' => 'Pagos']) .
                         "><span class='fas w-8 text-center fa-hand-holding-usd'></span> </a>";
@@ -54,7 +55,7 @@ class InvoiceHistorial extends LivewireDatatable
                 return $number;
             })->label('Nro.')->searchable(),
             DateColumn::name('invoices.created_at')->label('Fecha')->format('d/m/Y h:i A')->searchable()->filterable(),
-            Column::callback(['clients.name', 'invoices.name'], function ($client, $name) {
+            Column::callback(['contacts.fullname', 'invoices.name'], function ($client, $name) {
                 return ellipsis($name ?: $client, 20);
             })->label('Cliente')->searchable(),
             Column::name('invoices.condition')->label('Condición')->filterable([

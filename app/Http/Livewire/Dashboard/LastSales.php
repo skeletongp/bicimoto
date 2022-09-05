@@ -25,7 +25,8 @@ class LastSales extends LivewireDatatable
             ->leftJoin('payments', 'payments.payable_id', '=', 'invoices.id')
             ->where('payments.payable_type', 'App\Models\Invoice')
             ->leftjoin('clients', 'clients.id', '=', 'invoices.client_id')
-            ->selectRaw('invoices.*, clients.name as client_name')
+            ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
+            ->selectRaw('invoices.*, contacts.name as contact_name')
             ->groupBy('invoices.id');;
         return $invoices;
     }
@@ -45,13 +46,12 @@ class LastSales extends LivewireDatatable
                 return ltrim(substr($number, strpos($number, '-') + 1), '0');
             })->label('Nº.'),
             DateColumn::name('invoices.created_at')->label('Hora')->format('d/m H:i'),
-            Column::callback(['clients.name', 'name'], function ($client, $name)  {
-               
-                $name=ellipsis($name?:$client,20);
+            Column::callback(['contacts.fullname', 'name'], function ($client, $name)  {
+                $name=ellipsis($name?:$client,30);
                 return $name;
             })->label('Cliente')->searchable(),
             NumberColumn::raw('total')->label('Monto')->searchable()->formatear('money'),
-            NumberColumn::raw('SUM(payed-cambio) AS payed')->label('Pagado')->formatear('money'),
+            NumberColumn::raw('SUM(payed) AS payed')->label('Pagado')->formatear('money'),
             NumberColumn::raw('invoices.rest')->label('Resta')->formatear('money'),
            
         ];

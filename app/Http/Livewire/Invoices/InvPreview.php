@@ -14,8 +14,9 @@ class InvPreview extends Component
     }
 
     public function printPreview(){
-        $invoice = Invoice::whereId($this->invoice_id)->with('seller','contable','client','details.product.units','details.taxes','details.unit', 'payment','store.image','payments.pdf', 'comprobante','pdf','place.preference','creditnote')->first();
+        $invoice = Invoice::whereId($this->invoice_id)->with('seller','contable','client.contact','details.product.units','details.taxes','details.unit', 'payment','store.image','payments.pdf', 'comprobante','pdf','place.preference','creditnote')->first();
         $invoice->note="Para vista previa. No cerrada";
+   
         $this->emit('changeInvoice', $invoice, true);
     }
 }

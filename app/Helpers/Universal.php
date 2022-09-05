@@ -92,7 +92,7 @@ function getApi($endPoint)
 function ellipsis($string, $maxLength)
 {
     if (strlen($string) > $maxLength) {
-        return substr($string, 0, $maxLength) . '...';
+        return mb_substr($string, 0, $maxLength) . '...';
     }
     return $string;
 }
@@ -189,4 +189,35 @@ function sendMessage($to, $message){
     ]);
     
     $whatsapp_cloud_api->sendTextMessage($phone, $message);
+}
+
+ function sumarfecha($fecha, $tiempo)
+{
+    $fecha = Carbon::createFromDate($fecha);
+    switch ($tiempo) {
+        case 'diario':
+            $fecha->addDay();
+            $fecha_db = $fecha->toDateString();
+            break;
+        case 'semanal':
+            $fecha->addWeek();
+            $fecha_db = $fecha->toDateString();
+            break;
+        case 'quincenal':
+            $fecha->addDays(5);
+            $day=$fecha->format('d');
+            if ($day<15) {
+              $fecha=$fecha->day(15);
+            } else {
+              $fecha=$fecha->lastOfMonth();
+            }
+            $fecha_db = $fecha->toDateString();
+            break;
+        case 'mensual':
+            $fecha->addMonth();
+            Carbon::parse($fecha)->lastOfMonth();
+            $fecha_db = $fecha->toDateString();
+            break;
+    }
+    return $fecha_db;
 }

@@ -3,21 +3,27 @@
 use App\Models\Client;
 use Illuminate\Support\Facades\Cache;
 
-function clientWithCode($store_id){
-    $clients=Cache::get('clientsWithCode_'.$store_id);
-    if (!$clients) {
-       $clients=Client::where('store_id',$store_id)->get()->pluck('name','code');
-         Cache::put('clientsWithCode_'.$store_id, $clients);
-    }
-    return $clients;
-}
-function clientWithId(){
-  $store_id=env('STORE_ID');
-  $clients=Cache::get('clientsWithId_'.$store_id);
+function clientWithCode($store_id)
+{
+ $store_id=env('STORE_ID');
+  $clients = Cache::get('clientsWithCode_' . $store_id);
   if (!$clients) {
-     $clients=Client::where('store_id',$store_id)->get()->pluck('name','id');
-       Cache::put('clientsWithId_'.$store_id, $clients);
+    $clients = Client::where('clients.store_id', $store_id)
+      ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
+      ->selectRaw('contacts.fullname as name, clients.code as code')
+      ->pluck('name', 'code');
+    Cache::put('clientsWithCode_' . $store_id, $clients);
+    
   }
   return $clients;
-    
+}
+function clientWithId()
+{
+  $store_id = env('STORE_ID');
+  $clients = Cache::get('clientsWithId_' . $store_id);
+  if (!$clients) {
+    $clients = Client::where('store_id', $store_id)->get()->pluck('name', 'id');
+    Cache::put('clientsWithId_' . $store_id, $clients);
+  }
+  return $clients;
 }

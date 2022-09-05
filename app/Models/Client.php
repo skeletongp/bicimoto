@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Nicolaslopezj\Searchable\SearchableTrait;
@@ -33,14 +34,7 @@ class Client extends Model implements Searchable
         'limit',
         'store_id',
     ];
-    protected $searchable = [
-
-        'columns' => [
-            'name' => 10,
-            'lastname' => 5,
-            'email' => 1,
-        ]
-    ];
+    
    
 
     public function getSearchResult(): SearchResult
@@ -48,9 +42,29 @@ class Client extends Model implements Searchable
         $url = route('clients.show', $this->id);
         return new SearchResult(
             $this,
-            $this->name,
+            $this->contact->fullname,
             $url
         );
+    }
+    function getPuntajeAttribute()
+    {
+        $puntaje = 0;
+        $cred=$this->crediticio;
+        if($cred){
+            $state=$cred->state/12;
+            $mueble=$cred->mueble/12;
+            $saldo=$cred->bank_value/12;
+            $salary=$this->laboral->salary;
+            $incomes=$state+$mueble+$saldo+$salary;
+            $outcomes=$cred->rent+$cred->hipoteca+$cred->loans+$cred->others;
+            $outcomes=$outcomes?:0.000000001;
+            $incomes=$incomes?:0.000000001;
+           // dd($incomes,$salary,$puntaje);
+            $puntaje=1-($outcomes/$incomes);
+            $puntaje*=100;
+        }
+        
+        return $puntaje;
     }
 
     public static function boot()
@@ -74,28 +88,8 @@ class Client extends Model implements Searchable
             get: fn () => formatNumber($this->limit)
         );
     }
-    public function getNameAttribute()
-    {
-        return  $this->attributes['name'] ?: ($this->contact->fullname ?? 'Sin nombre');
-    }
-    public function name(): Attribute
-    {
-        return new Attribute(
-            set: fn ($value) => $this->attributes['name'] = ucwords($value, ' '),
-        );
-    }
-    public function address(): Attribute
-    {
-        return new Attribute(
-            set: fn ($value) => $this->attributes['name'] = ucwords($value, ' '),
-        );
-    }
-    public function email(): Attribute
-    {
-        return new Attribute(
-            set: fn ($value) => $this->attributes['name'] = strtolower($value),
-        );
-    }
+
+   
     public function contable()
     {
         $place_id = 1;
@@ -124,13 +118,33 @@ class Client extends Model implements Searchable
     {
         return optional($this->invoices)->sum('rest');
     }
+    public function pdfs()
+    {
+        return $this->morphMany(Filepdf::class, 'fileable');
+    }
+    public function contrato($id)
+    {
+        return $this->morphOne(Filepdf::class, 'fileable')->where('reference_id', $id)->first();
+    }
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
     function contact()
     {
-        return $this->hasOne(Contact::class);
+        return $this->belongsTo(Contact::class);
+    }
+     function conyuge()
+    {
+        return $this->hasOne(Conyuge::class);
+    }
+    function laboral()
+    {
+        return $this->hasOne(Laboral::class);
+    }
+    function crediticio()
+    {
+        return $this->hasOne(Crediticio::class);
     }
     function transactions()
     {
@@ -142,10 +156,13 @@ class Client extends Model implements Searchable
         $place = Place::find($place_id);
         return $place->transactions()->whereIn('creditable_id', $counts)->orWhereIn('debitable_id', $counts)->orderBy('created_at', 'desc');
     }
+    public function cuotas(){
+        return $this->hasMany(Cuota::class);
+    }
     public function sendCatalogue()
     {
         $path=Cache::get('productCatalogue_'.env('STORE_ID'));
-        
+        Log::info($path);
         if(!$path){
             $path="https://atriontechsd.nyc3.digitaloceanspaces.com/files2/cat%C3%A1logo/catalogo%20de%20productos.pdf";
         }

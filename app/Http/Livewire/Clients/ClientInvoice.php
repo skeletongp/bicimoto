@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Clients;
 
+use App\Http\Classes\NumberColumn;
 use App\Models\Client;
 use App\Models\Invoice;
 use Mediconesystems\LivewireDatatables\Action;
@@ -21,40 +22,34 @@ class ClientInvoice extends LivewireDatatable
         $this->headTitle = "Pendiente de pago $".formatNumber($this->total);
        }
         $client=$this->client;
-        $invoices = $client->invoices()->where('status','!=','waiting')->orderBy('created_at', 'desc')->with('payment', 'client', 'seller', 'contable', 'payments');
+        $invoices =
+        Invoice::where('invoices.client_id', $client->id)
+        ->leftJoin('payments','payments.payable_id', '=', 'invoices.id' )
+        ->where('payments.payable_type', 'App\Models\Invoice')
+        ->leftJoin('clients', 'invoices.client_id', '=', 'clients.id')
+        ->leftjoin('contacts', 'clients.contact_id', '=', 'contacts.id')
+        ->leftjoin('cuotas', 'invoices.id', '=', 'cuotas.invoice_id')
+        ->groupby('invoices.id')
+        ;
         return $invoices;
     }
    
     public function columns()
     {
-        $invoices = $this->builder()->get()->toArray();
         return [
-            Column::checkbox(),
-            Column::callback('number', function($number) use ($invoices){
-                return ltrim(substr($number,strpos($number,'-')+1),'0');
+            Column::callback('invoices.id', function($id) {
+                return view('components.view', ['url' => route('invoices.show', $id)]);
+            })->label('Ver'),
+            Column::callback('invoices.number', function($number) {
+                return substr($number,strpos($number,'-')+1);
             })->label('Nro.'),
-            Column::name('id')->callback(['id'], function ($id) use ($invoices) {
-                $result = arrayFind($invoices, 'id', $id);
-                if ($result['rest'] > 0) {
-                    return "  <a href=" . route('invoices.show', [$id, 'includeName' => 'showpayments', 'includeTitle' => 'Pagos']) .
-                        "><span class='fas w-8 text-center fa-dollar-sign'></span> </a>";
-                } else {
-                    return "  <a href=" . route('invoices.show', $id) . "><span class='fas w-8 text-center fa-eye'></span> </a>";
-                }
-            })->label(''),
-            DateColumn::name('created_at')->label('Hora')->format('h:i A'),
+            
+            DateColumn::name('invoices.created_at')->label('Hora')->format('d/m/Y h:i A'),
             Column::name('condition')->label('Condición')->filterable(['De Contado','1 A 15 Días', '16 A 30 Días']),
-            Column::callback(['uid', 'id'], function ($total, $id) use ($invoices) {
-                $result = arrayFind($invoices, 'id', $id);
-                return '$' . formatNumber($result['payment']['total']);
-            })->label("Monto"),
-            Column::name('client.id')->callback(['id', 'client_id'], function ($id, $client_id) use ($invoices) {
-                $result = arrayFind($invoices, 'id', $id);
-                return '$' . formatNumber(array_sum(array_column($result['payments'], 'payed')));
-            })->label('Pagado'),
-            Column::name('rest')->callback(['rest'], function ($rest) {
-                return '$' . formatNumber($rest);
-            })->label('Resta'),
+            NumberColumn::raw('payments.total AS monto')->label('Monto')->formatear('money', 'font-bold'),
+            NumberColumn::raw('payments.total-invoices.rest AS Pagado')->label('Pagado')->formatear('money'),
+            NumberColumn::raw('invoices.rest AS resta')->label('Resta')->formatear('money'),
+         
         ];
     }
 

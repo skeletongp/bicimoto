@@ -16,22 +16,11 @@ class Contact extends Model
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->fullname = $model->name . ' ' . $model->lastname;
-        });
-        self::updating(function ($model) {
-            $model->fullname = $model->name . ' ' . $model->lastname;
+            $model->fullname = strtok($model->name, ' ') . ' ' . $model->lastname;
         });
     }
-    public function name(): Attribute
+    public function getFullNameAttribute()
     {
-        return new Attribute(
-            set: fn ($value) => $this->attributes['name'] = ucwords($value, ' '),
-        );
-    }
-    public function lastname(): Attribute
-    {
-        return new Attribute(
-            set: fn ($value) => $this->attributes['name'] = ucwords($value, ' '),
-        );
+        return $this->name.' '.$this->lastname;
     }
 }

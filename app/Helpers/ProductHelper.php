@@ -18,4 +18,5 @@ function sendWSCatalogue($phone, $path){
     $link_id = new LinkID($document_link);
     $whatsapp_cloud_api->sendDocument('1'.$phone, $link_id, $document_name, $document_caption);
     $whatsapp_cloud_api->sendTextMessage('1'.$phone, 'Verifica nuestro '.$document_caption);
+    dd('De momento, esta función está deshabilitada. Haz click justo encima de este cuadro');
 }

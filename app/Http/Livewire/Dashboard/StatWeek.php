@@ -25,14 +25,14 @@ class StatWeek extends Component
             ->orderBy('day', 'DESC')
             ->get(array(
                 DB::raw('Date(day) as date'),
-                DB::raw('sum(payed-cambio) as "amount"')
+                DB::raw('sum(payed) as "amount"')
             ))->pluck('amount', 'date')->toArray();
         $outcomes =  $place->payments()->where('payable_type',Outcome::class)->whereDate('created_at', '>=', Carbon::now()->subWeek())
         ->groupBy('day')
         ->orderBy('day', 'DESC')
         ->get(array(
             DB::raw('Date(day) as date'),
-            DB::raw('sum(payed-cambio) as "amount"')
+            DB::raw('sum(payed) as "amount"')
         ))->pluck('amount', 'date')->toArray();
         $this->setData($incomes, $outcomes);
        

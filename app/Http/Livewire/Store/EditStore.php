@@ -21,6 +21,7 @@ class EditStore extends Component
             'store.lema' => 'string|max:75',
             'store.email' => "required|string|max:100|unique:moso_master.stores,email," . $this->store->id,
             'store.phone' => 'required|string|max:15',
+            'store.phone2' => 'required|string|max:15',
             'store.rnc' => 'max:15',
             'logo' => 'max:2048'
         ];

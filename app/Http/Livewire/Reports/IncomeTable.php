@@ -25,10 +25,10 @@ class IncomeTable extends LivewireDatatable
         $payments = Payment::where('payments.place_id',$place->id)->where('payable_type', Invoice::class)
             ->join('invoices', 'invoices.id', '=', 'payments.payable_id')
             ->join('clients', 'clients.id', '=', 'payments.payer_id')
+            ->join('contacts', 'contacts.id', '=', 'clients.contact_id')
             ->join('moso_master.users', 'users.id', '=', 'payments.contable_id')
             ->where('payer_type', 'App\Models\Client')
             ->orderBy('payments.created_at', 'desc')
-            ->select('payments.*', 'invoices.name as name', 'invoices.number', 'clients.name as client_name')
             ->orderBy('payments.updated_at', 'desc');
         return $payments;
     }
@@ -37,7 +37,7 @@ class IncomeTable extends LivewireDatatable
     {
         return [
             DateColumn::name('created_at')->label('Fecha')->format('d/m/Y h:i A')->searchable()->filterable(),
-            Column::callback(['clients.name', 'invoices.name'], function ($client, $name)  {
+            Column::callback(['contacts.fullname', 'invoices.name'], function ($client, $name)  {
                 return ellipsis($name?: $client, 20);
             })->label('Cliente')->searchable(),
             Column::callback('users.fullname', function ($cajero) {
@@ -47,7 +47,7 @@ class IncomeTable extends LivewireDatatable
                 return ltrim(substr($number, strpos($number, '-')+1), '0');
             })->label('Fact.')->searchable(),
             Column::callback(['efectivo', 'cambio'], function ($efectivo, $cambio) {
-                $efectivo=$efectivo - $cambio;
+                $efectivo=$efectivo ;
                 return '$' . formatNumber($efectivo>0?$efectivo:0);
             })->label('Efectivo')->searchable()->enableSummary(),
             Column::callback(['transferencia'], function ($transferencia) {
@@ -57,7 +57,7 @@ class IncomeTable extends LivewireDatatable
                 return '$' . formatNumber($cambio);
             })->label('Cambio')->searchable()->enableSummary(),
             Column::callback(['payed', 'cambio'], function ($payed, $cambio) {
-                return '$ <b>' . formatNumber($payed - $cambio) . '</b>';
+                return '$ <b>' . formatNumber($payed ) . '</b>';
             })->label('Pagado')->searchable()->enableSummary(),
             Column::callback(['rest'], function ($rest) {
                 if ($rest > 0) {

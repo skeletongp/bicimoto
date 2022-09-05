@@ -22,7 +22,7 @@
     @endphp
     <style>
         @page {
-            size: 215.4mm 255mm;
+            size: 215.9mm 279.4mm;
         }
 
         * {
@@ -169,7 +169,7 @@
 
 <body>
     <div style="position: absolute; right:4; top: 0; color:white; z-index:50; ">
-        {{ date_format($invoice->updated_at, 'H:i A') }}
+        {{ date_format($invoice->updated_at, ' d/m/Y H:i A') }}
     </div>
     <div class="sello"></div>
     <div class="invoice-box" id="box" style="position: relative;">
@@ -184,7 +184,7 @@
             {!! $invoice->store->rnc ? '<b>RNC  :</b> ' . $invoice->store->rnc . '<br />' : '' !!}
             <b>TEL:</b> {{ $invoice->store->phone }} <br>
             <b>EMAIL: </b>{{ $invoice->store->email }}<br />
-            {{ $invoice->store->address }}
+            <div style="max-width: 40%; margin:auto">{{ ellipsis($invoice->store->address, 80) }}</div>
         </div>
         <br>
         <table>
@@ -194,7 +194,7 @@
                         <tr>
                             <td class="title" style="padding-top:10px">
                                 <img src="{{ $invoice->store->logo }}" alt=" "
-                                    style=" max-width: 300px; max-height: 100px" />
+                                    style=" max-width: 200px; max-height: 100px" />
                             </td>
 
                         </tr>
@@ -214,17 +214,19 @@
                                     <b>Vence:</b>
                                     {{ date_format(\Carbon\Carbon::create($invoice->expires_at), 'd/m/Y') }}
                                     <br />
-                                    <b>Forma de pago:</b>
-                                    {{ $invoice->payway }}
+                                    <b>Condición:</b>
+                                    {{ $invoice->condition }}
                                 </div>
                             </td>
                             <td colspan="2" style="border-bottom: .3px solid #ccc; ">
                                 <div style="text-align:right; ">
-                                    <b>{{ 'DIRIGIDA A:' }}</b> <br>
                                     {{ $invoice->name ?: ($invoice->client->name ?: $invoice->client->contact->fullname) }}<br />
-                                    {!! $invoice->rnc ?: ($invoice->client->rnc ? '<b>RNC /CED:</b> ' . $invoice->client->rnc . '<br />' : '') !!}
-                                    <b>TEL:</b> {{ $invoice->client->phone }} <br>
-                                    {{ $invoice->client->address ?: 'Dirección N/D' }}
+                                    {!! $invoice->rnc ?:
+                                        ($invoice->client->rnc
+                                            ? '<b>RNC /CED:</b> ' . $invoice->client->contact->cedula . '<br />'
+                                            : '') !!}
+                                    <b>TEL:</b> {{ $invoice->client->contact->phone }} <br>
+                                    {{ $invoice->client->contact->address ?: 'Dirección N/D' }}
                                 </div>
                             </td>
                         </tr>
@@ -266,7 +268,7 @@
                         <span>{{ formatNumber($detail->cant) }} <span
                                 style="font-size: xx-small">{{ $detail->unit->symbol }}</span></span>
                     </td>
-                    <td style=" width:45%;">{{ellipsis( $detail->product->name,25) }}</td>
+                    <td style=" width:45%;">{{ ellipsis($detail->product->name, 25) }}</td>
                     <td style=" width: 20%; text-align:right;">${{ \formatNumber($detail->price) }}</td>
                     <td style="width: 20%; text-align:right">${{ formatNumber($detail->discount) }}</td>
                     <td style=" width: 25%; text-align:right;">
@@ -391,37 +393,100 @@
                     </td>
                 </tr>
             @endif
-            @if ($invoice->rest > 0)
-                <tr class="total" style="font-weight: bold; color:red ">
-                    <td colspan="2"></td>
-                    <td class="td-total text-right" style="text-align: right; padding-top:10px">
-                        <b>PENDIENTE</b>
-                    </td>
-                    <td class="td-total text-right" style="text-align: right; padding-top:10px">
-                        <b> ${{ formatNumber($invoice->rest) }}</b>
-                    </td>
-                </tr>
-            @else
-                <tr class="" style="font-weight: bold; font-size:small">
-                    <td colspan="2"></td>
-                    <td class="td-total text-right" style="text-align: right; padding-top:2px">
-                        <b>CAMBIO</b>
-                    </td>
-                    <td class="td-total text-right" style="text-align: right; padding-top:2px">
-                        <b> ${{ \formatNumber($invoice->payments->sum('cambio')) }}</b>
-                    </td>
-                </tr>
-            @endif
+            <tr class="total" style="font-weight: bold; ">
+                <td colspan="2"></td>
+                <td class="td-total text-right" style="text-align: right; padding-top:2px">
+                    <b>CAMBIO</b>
+                </td>
+                <td class="td-total text-right" style="text-align: right; padding-top:2px">
+                    <b> ${{ \formatNumber($invoice->payments->sum('cambio')) }}</b>
+                </td>
+            </tr>
+            <tr class="total" style="font-weight: bold; color:red ">
+                <td colspan="2"></td>
+                <td class="td-total text-right" style="text-align: right; padding-top:2px">
+                    <b>PENDIENTE</b>
+                </td>
+                <td class="td-total text-right" style="text-align: right; padding-top:2px">
+                    <b> ${{ formatNumber($invoice->rest) }}</b>
+                </td>
+            </tr>
+
+            <tr class="total" style="font-weight: bold; ">
+                <td colspan="2"></td>
+                <td class="td-total text-right" style="text-align: right; padding-top:10px">
+
+                </td>
+                <td class="td-total text-right" style="text-align: right; padding-top:10px">
+                    <b>CUOTAS PAGADAS</b>: <b> {{ $invoice->payments->count() - 1 }}</b>
+                </td>
+            </tr>
         </table>
 
         <table>
+            @if ($invoice->contrato)
+                <br>
+                <tr class="">
+                    <td colspan="6" style="text-transform: uppercase">
+                        <table>
+                            <tr>
+                                <td style="border-top: .3px solid #ccc;  border-left: .3px solid #ccc;  ">
+                                    <b>TIPO:</b>
+                                </td>
+                                <td style="border-top: .3px solid #ccc;">
+                                    {{ $invoice->contrato->tipo }}
+                                </td>
+
+                                <td style="border-top: .3px solid #ccc;">
+                                    <b>MARCA:</b>
+                                </td>
+                                <td style="  border-right: .3px solid #ccc; border-top: .3px solid #ccc; ">
+                                    {{ $invoice->contrato->marca }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="  border-left: .3px solid #ccc;  ">
+                                    <b>MODELO:</b>
+                                </td>
+                                <td>
+                                    {{ $invoice->contrato->modelo }}
+                                </td>
+
+                                <td style=" ">
+                                    <b>CHASIS:</b>
+                                </td>
+                                <td style="  border-right: .3px solid #ccc;  ">
+                                    {{ $invoice->contrato->chasis }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-bottom: .3px solid #ccc;  border-left: .3px solid #ccc; ">
+                                    <b>AÑO:</b>
+                                </td>
+                                <td style="border-bottom: .3px solid #ccc;   ">
+                                    {{ $invoice->contrato->year }}
+                                </td>
+
+                                <td style="border-bottom: .3px solid #ccc; ">
+                                    <b>PLACA:</b>
+                                </td>
+                                <td style="border-bottom: .3px solid #ccc;  border-right: .3px solid #ccc;  ">
+                                    {{ $invoice->contrato->placa }}
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+            @endif
+            <br>
             <tr>
-                <td style="padding-top: 30px; ">
+                <td style="padding-top: 30px;" colspan="3">
                     <div
                         style="border-top: solid 1px #222; padding-top: 4px; width:100%; text-align:center; margin-right: 20px">
                         ENTREGADO POR</div>
                 </td>
-                <td style="padding-top: 30px;">
+                <td style="padding-top: 30px;" colspan="3">
                     <div
                         style="border-top: solid 1px #222; padding-top: 4px; width:100%; text-align:center; margin-left: 10px">
                         RECIBIDO POR</div>

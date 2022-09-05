@@ -53,6 +53,7 @@ class TableUser extends LivewireDatatable
             Column::name('name')->label('Nombre')->searchable()->hide(),
             Column::name('lastname')->label('Apellido')->searchable()->hide(),
             Column::name('email')->label('Correo Electrónico')->searchable(),
+            Column::name('cedula')->label('Cédula')->hide(),
             Column::name('phone')->label('Teléfono')->searchable(),
             Column::callback(['created_at', 'id'], function ($role, $id) use ($users) {
                 $result = arrayFind($users, 'id', $id);

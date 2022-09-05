@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use App\Models\Invoice;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -20,7 +19,11 @@ class ClientController extends Controller
     public function show($client_id)
     {
         $client=Client::find($client_id);
-        return view('pages.clients.show', compact('client'));
+        $conyuge=$client->conyuge;
+        $laboral=$client->laboral;
+        $crediticio=$client->crediticio;
+        
+        return view('pages.clients.show',get_defined_vars());
     }
 
     public function invoices($client_id)
@@ -28,8 +31,8 @@ class ClientController extends Controller
         return view('pages.clients.client-invoice', ['client_id'=>$client_id]);
     }
 
-    public function paymany(Request $request, $invoices){
-        $invoices=$invoices;
-        return view('pages.clients.paymany', compact('invoices'));
+    public function paymany(Request $request, $cuotas){
+        $cuotas=$cuotas;
+        return view('pages.clients.paymany', compact('cuotas'));
     }
 }
