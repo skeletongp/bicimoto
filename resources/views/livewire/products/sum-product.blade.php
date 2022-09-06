@@ -98,11 +98,11 @@
                         </div>
                         <div class="flex items-center justify-between mt-4">
                             <b>Total:</b> {{ formatNumber($total) }}
-                            @can('Registrar Asientos')
+                           {{--  @can('Registrar Asientos')
                                 <div class="mr-6">
                                     <x-toggle label="Registrar gasto" id="setCost" wire:model="setCost"></x-toggle>
                                 </div>
-                            @endcan
+                            @endcan --}}
 
                         </div>
 

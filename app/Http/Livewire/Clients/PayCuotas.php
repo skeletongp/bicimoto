@@ -130,6 +130,10 @@ class PayCuotas extends Component
         $invoice->update([
             'rest' => $data['rest']
         ]);
+        $invoice->client->update([
+            'debt'=>$invoice->client->invoices->sum('rest'),
+            'limit'=>$invoice->client->limit+$payment->payed
+        ]);
         $this->emit('refreshLivewireDatatable');
         dispatch(new CreatePDFJob($invoice))->onConnection('sync');
         $this->emit('showAlert', 'Pago registrado exitosamente', 'success');

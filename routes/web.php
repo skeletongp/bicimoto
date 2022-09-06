@@ -20,6 +20,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
 use App\Http\Livewire\Clients\CreateClient;
+use App\Models\Client;
 use App\Models\Contact;
 use App\Models\Contrato;
 use App\Models\Invoice;
@@ -161,8 +162,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('prueba', function (Request $request) {
-   
-    
+    dd(amortizar(200000,1,29));
+
     return view('prueba');
 })->name('prueba');
 

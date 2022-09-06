@@ -21,18 +21,8 @@ class Client extends Model implements Searchable
 
     protected $with = ['contact', 'store'];
 
-    protected $fillable = [
-        'name',
-        'code',
-        'lastname',
-        'email',
-        'fullname',
-        'special',
-        'address',
-        'rnc',
-        'phone',
-        'limit',
-        'store_id',
+    protected $guarded = [
+        
     ];
     
    

@@ -3,7 +3,6 @@
 /public/storage
 /storage/*.key
 /vendor
-/database/seeders/*.php
 *.env
 *.env.testing
 .env.backup

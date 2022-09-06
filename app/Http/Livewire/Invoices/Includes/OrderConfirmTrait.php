@@ -131,6 +131,9 @@ trait OrderConfirmTrait
             ])->loadView('pages.clients.contrato-pdf', $data);
         //delete file if exists
         $name='files'.env('STORE_ID').'/contratos/contrato'.$contrato->id.'.pdf';
+        if (Storage::disk('digitalocean')->exists($name)) {
+            Storage::disk('digitalocean')->delete($name);
+        }
         Storage::disk('digitalocean')->put($name, $pdf->output(), 'public');
             $url= Storage::url($name);
             $contrato->client->pdfs()->create([
