@@ -106,8 +106,18 @@ function setPaymentTransaction($invoice, $payment, $client, $bank, $reference)
 }
 function amortizar($deuda, $interes, $cuotas)
     {
+        if($deuda==0){
+            $interes=0;
+            $cuotas=0;
+        }
         $interes=$interes>0?$interes/100:0.000000001;
-        $m = ($deuda * $interes * (pow((1 + $interes), ($cuotas)))) / ((pow((1 + $interes), ($cuotas))) - 1);
+        $deuda=$deuda>0?$deuda:0.000000001;
+        $cuotas=$cuotas>0?$cuotas:0.000000001;
+        $numerador=($deuda * $interes * (pow((1 + $interes), ($cuotas))));
+        $denominador=(pow((1 + $interes), ($cuotas)) - 1);
+        $numerador=$numerador>0?$numerador:0.000000001;
+        $denominador=$denominador>0?$denominador:0.000000001;
+        $m = $numerador/$denominador;
         $m = round($m, 2);
         $pagos = [];
         $saldo_inicial = $deuda;

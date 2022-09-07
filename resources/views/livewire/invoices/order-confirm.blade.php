@@ -142,7 +142,7 @@
             </div>
 
             {{-- Crear Cuotas --}}
-            @if ($createCuota && $form['rest'] > 0)
+            @if ($createCuota)
                 <div>
                     <x-base-input class="text-xl font-bold" type="number" wire:model="form.rest" readonly
                         label="Monto" id="form{{ $form['id'] }}.rest">

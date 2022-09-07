@@ -170,18 +170,18 @@ class PayCuotas extends Component
         setTransaction('Pago de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $transferencia > 0 ? $transferencia - $interes : 0, optional($bank)->contable,  $creditable, 'Cobrar Facturas');
         setTransaction('Vuelto de Cambio ', $ref, $cambio, $creditable,  $place->cash(), 'Cobrar Facturas');
 
-
+        $clientAnticipo=optional($client->anticipo);
         /* Registrar el pago del interés */
         setTransaction('Interés de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $efectivo > 0 ? $efectivo - $capital : 0, $place->cash(),  $creditable, 'Cobrar Facturas');
         setTransaction('Interés de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $tarjeta > 0 ? $tarjeta - $capital : 0, $place->check(),  $creditable, 'Cobrar Facturas');
         setTransaction('Interés de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $transferencia > 0 ? $transferencia - $capital : 0, optional($bank)->contable,  $creditable, 'Cobrar Facturas');
         $anticipo=$place->findCount('206-01');
         if ($efectivo>0) {
-            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $place->cash(), 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $place->cash(), 'Cobrar Facturas');
         } else if($tarjeta>0) {
-            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
         } else if($transferencia>0) {
-            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $this->bank, 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $this->bank, 'Cobrar Facturas');
         } 
         if($client->anticipo){
             $client->anticipo->update([

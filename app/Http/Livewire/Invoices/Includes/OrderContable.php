@@ -31,6 +31,7 @@ trait OrderContable
         $max = array_search(max($moneys), $moneys);
         $toTax = null;
         $anticipo = $place->findCount('206-01');
+        $clientAnticipo=optional($client->anticipo);
         switch ($max) {
             case 0:
                 setTransaction('Reg. venta de productos Ref. Nº. ' . $ref, $ref, ($moneys[$max] - $payment->tax), $place->cash(), $creditable, 'Cobrar Facturas');
@@ -58,11 +59,11 @@ trait OrderContable
         ]);
         setTransaction('Reg. venta de productos en Efectivo', $ref,  $moneys[0], $place->cash(), $creditable, 'Cobrar Facturas');
         if ($payment->efectivo > 0) {
-            setTransaction('Tomado de anticipo', $ref, $client->anticipo->saldo, $anticipo, $place->cash(), 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo', $ref, $clientAnticipo->saldo, $anticipo, $place->cash(), 'Cobrar Facturas');
         } else if ($payment->tarjeta > 0) {
-            setTransaction('Tomado de anticipo', $ref, $client->anticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo', $ref, $clientAnticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
         } else if ($payment->transferencia > 0) {
-            setTransaction('Tomado de anticipo', $ref, $client->anticipo->saldo, $anticipo, $this->bank, 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo', $ref, $clientAnticipo->saldo, $anticipo, $this->bank, 'Cobrar Facturas');
         }
         if ($client->anticipo) {
             $client->anticipo->update([

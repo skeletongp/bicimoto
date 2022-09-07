@@ -34,13 +34,15 @@ trait OrderConfirmTrait
     {
         $user=optional(auth())->user()?:User::find(1);
         $invoice = Invoice::find($this->form['id'])->load('seller',  'client', 'details.product.units', 'details.taxes', 'details.unit', 'payment.pdf', 'store.image', 'comprobante', 'pdf', 'place.preference');
-       
+        if($this->chasis && $this->chasis!='ND'){
+            $this->form['rest']=$this->form['rest']+4000;
+        }
         $this->validateData($invoice);
         if ($invoice->status !== 'waiting') {
             $this->emit('showAlert', 'Esta factura ya fue cobrada. Recargue la vista', 'warning');
             return;
         }
-        if ($this->form['rest'] <= 0 && $this->form['status'] != 'entregado') {
+        if ($this->form['rest'] <= 0) {
            
             $this->form['condition'] = 'De Contado';
         } else {

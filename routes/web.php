@@ -162,14 +162,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('prueba', function (Request $request) {
-  /* $clients=Client::get();
-    foreach ($clients as $client) {
-        $client->update(
-            [
-                'debt'=>$client->invoices->sum('rest')
-            ]
-        );
-    } */
+  dd(amortizar(0,0,0));
     return view('prueba');
 })->name('prueba');
 
