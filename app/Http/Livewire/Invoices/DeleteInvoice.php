@@ -25,7 +25,12 @@ class DeleteInvoice extends Component
         $this->deleteDetails($invoice);
         $this->deleteTaxes($invoice);
         $this->deletePayments($invoice);
+        $invoice->client->update([
+            'debt'=>$invoice->client->invoices->sum('rest'),
+            'limit'=>$invoice->client->limit+$invoice->rest
+        ]);
         $invoice->delete();
+        
         $this->emit('showAlert', 'Factura anulada existosamente', 'success');
         $this->emitUp('refreshLivewireDatatable');
     }

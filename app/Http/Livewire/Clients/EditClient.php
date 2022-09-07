@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Clients;
 
 use App\Models\Client;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -48,6 +49,8 @@ class EditClient extends Component
         }
         $contact=$client->contact;
         $contact->update($this->form);
+        Cache::forget('clientsWithCode_' . env('STORE_ID'));
+        Cache::forget('clientsWithId_' . env('STORE_ID'));
         $this->emit('refreshLivewireDatatable');
         $this->emit('showAlert', 'Cliente Actualizado Exitosamente', 'success');
     }

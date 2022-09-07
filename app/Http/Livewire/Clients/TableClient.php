@@ -24,6 +24,7 @@ class TableClient extends LivewireDatatable
         $clients=Client::where('clients.store_id',$store->id)
         ->leftJoin('contacts','contacts.id','=','clients.contact_id')
         ->leftJoin('invoices','invoices.client_id','=','clients.id')
+        ->leftJoin('anticipos','anticipos.client_id','=','clients.id')
         ->groupBy('clients.id');
         $this->perPage=10;
         return $clients;
@@ -43,6 +44,7 @@ class TableClient extends LivewireDatatable
             Column::name('contacts.email')->label('Correo Electrónico')->searchable(),
             ClassesNumberColumn::name('limit')->label('Crédito')->searchable()->formatear('money'),
             ClassesNumberColumn::name('clients.debt')->label('Deuda')->searchable()->formatear('money'),
+            ClassesNumberColumn::name('anticipos.saldo')->label('Anticipos')->searchable()->formatear('money'),
             Column::name('contacts.phone')->label('Teléfono')->searchable()->headerAlignCenter(),
             Column::name('contacts.cedula')->label('Cédula')->searchable()->headerAlignCenter(),
             Column::callback(['created_at', 'id'], function ($created, $id)  {

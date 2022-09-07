@@ -48,6 +48,10 @@
                 <div class="px-4 py-2 font-bold uppercase">Deuda:</div>
                 <div class="px-4 py-2 col-span-2">${{formatNumber($client->debt)}}</div>
             </div>
+            <div class="grid grid-cols-3 border-b-2 border-gray-100">
+                <div class="px-4 py-2 font-bold uppercase">Anticipos:</div>
+                <div class="px-4 py-2 col-span-2">${{formatNumber(optional($client->anticipo)->saldo)}}</div>
+            </div>
         </div>
     </div>
   

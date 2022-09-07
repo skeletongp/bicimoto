@@ -183,8 +183,10 @@ class PayCuotas extends Component
         } else if($transferencia>0) {
             setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $this->bank, 'Cobrar Facturas');
         } 
-        $client->anticipo->update([
-            'saldo'=>0,
-        ]);
+        if($client->anticipo){
+            $client->anticipo->update([
+                'saldo'=>0,
+            ]);
+        }
     }
 }

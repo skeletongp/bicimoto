@@ -3,7 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
-
+bicitest/*
 *.env
 *.env.testing
 .env.backup

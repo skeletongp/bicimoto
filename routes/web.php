@@ -19,9 +19,17 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\Clients\CreateClient;
+use App\Models\Client;
+use App\Models\Contact;
+use App\Models\Contrato;
+use App\Models\Invoice;
+use App\Models\Store;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,8 +162,14 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('prueba', function (Request $request) {
-    dd(amortizar(200000,1,29));
-
+  /* $clients=Client::get();
+    foreach ($clients as $client) {
+        $client->update(
+            [
+                'debt'=>$client->invoices->sum('rest')
+            ]
+        );
+    } */
     return view('prueba');
 })->name('prueba');
 

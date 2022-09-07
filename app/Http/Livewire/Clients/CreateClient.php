@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Clients;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Models\CountMain;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -50,7 +51,8 @@ class CreateClient extends Component
         }
         setContable($client, '101', 'debit', $contact->name.' '.$contact->lastname, null, true);
         $this->emit('realoadClients');
-
+        Cache::forget('clientsWithCode_' . $store->id);
+        Cache::forget('clientsWithId_' . $store->id);
         $this->reset();
         $this->render();
         $this->emit('showAlert', 'Cliente registrado exitosamente', 'success');
