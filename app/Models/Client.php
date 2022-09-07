@@ -21,18 +21,8 @@ class Client extends Model implements Searchable
 
     protected $with = ['contact', 'store'];
 
-    protected $fillable = [
-        'name',
-        'code',
-        'lastname',
-        'email',
-        'fullname',
-        'special',
-        'address',
-        'rnc',
-        'phone',
-        'limit',
-        'store_id',
+    protected $guarded = [
+        
     ];
     
    
@@ -167,5 +157,8 @@ class Client extends Model implements Searchable
             $path="https://atriontechsd.nyc3.digitaloceanspaces.com/files2/cat%C3%A1logo/catalogo%20de%20productos.pdf";
         }
         sendWSCatalogue($this->contact->cellphone, $path);
+    }
+    public function anticipo(){
+        return $this->hasOne(Anticipo::class);
     }
 }

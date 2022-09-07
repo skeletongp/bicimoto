@@ -130,6 +130,10 @@ class PayCuotas extends Component
         $invoice->update([
             'rest' => $data['rest']
         ]);
+        $invoice->client->update([
+            'debt'=>$invoice->client->invoices->sum('rest'),
+            'limit'=>$invoice->client->limit+$payment->payed
+        ]);
         $this->emit('refreshLivewireDatatable');
         dispatch(new CreatePDFJob($invoice))->onConnection('sync');
         $this->emit('showAlert', 'Pago registrado exitosamente', 'success');
@@ -171,5 +175,16 @@ class PayCuotas extends Component
         setTransaction('Interés de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $efectivo > 0 ? $efectivo - $capital : 0, $place->cash(),  $creditable, 'Cobrar Facturas');
         setTransaction('Interés de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $tarjeta > 0 ? $tarjeta - $capital : 0, $place->check(),  $creditable, 'Cobrar Facturas');
         setTransaction('Interés de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $transferencia > 0 ? $transferencia - $capital : 0, optional($bank)->contable,  $creditable, 'Cobrar Facturas');
+        $anticipo=$place->findCount('206-01');
+        if ($efectivo>0) {
+            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $place->cash(), 'Cobrar Facturas');
+        } else if($tarjeta>0) {
+            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
+        } else if($transferencia>0) {
+            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $this->bank, 'Cobrar Facturas');
+        } 
+        $client->anticipo->update([
+            'saldo'=>0,
+        ]);
     }
 }

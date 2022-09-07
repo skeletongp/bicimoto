@@ -102,6 +102,12 @@
         "updated_at": "2022-21-04 17:18:16"
     },
     {
+        "code": "206",
+        "name": "ANTICIPOS POR PAGAR",
+        "created_at": "2022-21-04 17:18:16",
+        "updated_at": "2022-21-04 17:18:16"
+    },
+    {
         "code": "210",
         "name": "DOCUMENTOS POR PAGAR",
         "created_at": "2022-21-04 17:18:16",

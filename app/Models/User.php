@@ -131,7 +131,7 @@ class User extends Authenticatable implements Searchable
 
     public function getStoreAttribute()
     {
-        $store = Cache::get('store_' . $this->id);
+        $store = Cache::get('store_' . env('STORE_ID'));
         if (!is_null($store)) {
             return $store;
         }

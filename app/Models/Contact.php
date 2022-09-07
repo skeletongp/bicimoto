@@ -16,7 +16,10 @@ class Contact extends Model
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->fullname = strtok($model->name, ' ') . ' ' . $model->lastname;
+            $model->fullname = $model->name . ' ' . $model->lastname;
+        });
+        self::updating(function ($model) {
+            $model->fullname = $model->name . ' ' . $model->lastname;
         });
     }
     public function getFullNameAttribute()

@@ -2,6 +2,7 @@
     @slot('bread')
         {{ Breadcrumbs::render('home') }}
     @endslot
+    
     <div class="px-4 my-4 ">
         <livewire:general.toggle-place />
     </div>

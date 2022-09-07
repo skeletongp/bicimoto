@@ -42,7 +42,7 @@ class TableClient extends LivewireDatatable
             })->label('Nombre')->searchable(),
             Column::name('contacts.email')->label('Correo Electrónico')->searchable(),
             ClassesNumberColumn::name('limit')->label('Crédito')->searchable()->formatear('money'),
-            ClassesNumberColumn::name('invoices.rest:sum')->label('Deuda')->searchable()->formatear('money'),
+            ClassesNumberColumn::name('clients.debt')->label('Deuda')->searchable()->formatear('money'),
             Column::name('contacts.phone')->label('Teléfono')->searchable()->headerAlignCenter(),
             Column::name('contacts.cedula')->label('Cédula')->searchable()->headerAlignCenter(),
             Column::callback(['created_at', 'id'], function ($created, $id)  {

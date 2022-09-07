@@ -29,11 +29,12 @@ trait OrderContable
         $moneys = array($payment->efectivo, $payment->tarjeta, $payment->transferencia, $payment->rest);
         $max = array_search(max($moneys), $moneys);
         $toTax = null;
-        
+        $anticipo=$place->findCount('206-01');
         switch ($max) {
             case 0:
                 setTransaction('Reg. venta de productos Ref. Nº. ' . $ref, $ref, ($moneys[$max] - $payment->tax), $place->cash(), $creditable, 'Cobrar Facturas');
                 $toTax = $place->cash();
+                
                 break;
             case 1:
                 setTransaction('Reg. venta de productos Ref. Nº. ' . $ref, $ref, ($moneys[$max] - $payment->tax), $place->check(), $creditable, 'Cobrar Facturas');
@@ -55,10 +56,24 @@ trait OrderContable
             'tax'=>$invoice->payment->tax*(1-$invoice->details->avg('discount_rate')),
         ]);
         setTransaction('Reg. venta de productos en Efectivo', $ref,  $moneys[0], $place->cash(), $creditable, 'Cobrar Facturas');
+        if ($payment->efectivo>0) {
+            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $place->cash(), 'Cobrar Facturas');
+        } else if($payment->tarjeta>0) {
+            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
+        } else if($payment->transferencia>0) {
+            setTransaction('Tomado de anticipo',$ref, $client->anticipo->saldo, $anticipo, $this->bank, 'Cobrar Facturas');
+        } 
+        $client->anticipo->update([
+            'saldo'=>0,
+        ]);
+        
         setTransaction('Reg. vuelto de cambio', $ref,  $payment->cambio, $creditable, $place->cash(), 'Cobrar Facturas');
         setTransaction('Reg. venta de productos por Cheque', $ref,  $moneys[1], $place->check(), $creditable, 'Cobrar Facturas');
+       
+       
         setTransaction('Reg. venta de productos por Transferencia', $ref . ' | ' . $this->reference,  $moneys[2], optional($this->bank)->contable, $creditable, 'Cobrar Facturas');
-
+        
+        
 
         setTransaction('Reg. venta de productos a Crédito', $ref, ($moneys[3]),  $client->contable()->first(), $creditable, 'Cobrar Facturas');
         setTransaction('Descuento en productos a Fct. ' . $invoice->number, $ref, $payment->discount,  $discount, $creditable, 'Cobrar Facturas');
@@ -69,7 +84,8 @@ trait OrderContable
         setTransaction('Reg. Costo Producto Terminado Vendido', $ref, $this->gastoTerminado, $place->ventas(), $place->producto_terminado(), 'Cobrar Facturas');
        
         $client->update([
-            'limit' => $client->limit - $invoice->payment->rest
+            'limit' => $client->limit - $invoice->payment->rest,
+            'debt' => $client->invoices->sum('rest'),
         ]);
     }
     public function setTaxes($invoice)
