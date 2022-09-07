@@ -88,6 +88,6 @@ class CreateAnticipo extends Component
         $anticipo=$place->findCount('206-01');
         setTransaction('Abono de '.$this->client->contact->fullname, $this->client->code, $this->anticipo['efectivo'], $place->cash(), $anticipo, 'Cobrar Facturas');
         setTransaction('Abono de '.$this->client->contact->fullname, $this->client->code, $this->anticipo['tarjeta'], $place->other(), $anticipo, 'Cobrar Facturas');
-        setTransaction('Abono de '.$this->client->contact->fullname, $this->client->code.' | '.$this->reference, $this->anticipo['transferencia'], $this->bank, $anticipo, 'Cobrar Facturas');
+        setTransaction('Abono de '.$this->client->contact->fullname, $this->client->code.' | '.$this->reference, $this->anticipo['transferencia'], $this->bank->contable, $anticipo, 'Cobrar Facturas');
     }
 }

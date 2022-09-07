@@ -139,6 +139,7 @@ class DatabaseSeeder extends Seeder
         setContable($place, '100', 'debit', 'Efectivo en Caja Chica', $place->id);
         setContable($place, '100', 'debit', 'Efectivo en Cheques', $place->id);
         setContable($place, '100', 'debit', 'Otros Efectivos', $place->id);
+        setContable($place, '206', 'credit', 'Anticipos cobrados', $place->id);
         setContable($place, '104', 'debit', 'Inventario general',  $place->id,);
         setContable($place, '400', 'credit', 'Ingresos por Ventas de Productos', $place->id);
         setContable($place, '400', 'credit', 'Ingresos por Ventas de Servicios', $place->id);

@@ -63,7 +63,7 @@ trait OrderContable
         } else if ($payment->tarjeta > 0) {
             setTransaction('Tomado de anticipo', $ref, $clientAnticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
         } else if ($payment->transferencia > 0) {
-            setTransaction('Tomado de anticipo', $ref, $clientAnticipo->saldo, $anticipo, $this->bank, 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo', $ref, $clientAnticipo->saldo, $anticipo, $this->bank->contable, 'Cobrar Facturas');
         }
         if ($client->anticipo) {
             $client->anticipo->update([
