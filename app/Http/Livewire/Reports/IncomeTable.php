@@ -43,11 +43,11 @@ class IncomeTable extends LivewireDatatable
             Column::callback('users.fullname', function ($cajero) {
                 return ellipsis($cajero, 20);
             })->label('Cajero')->searchable(),
-            Column::callback('invoices.number', function($number){
-                return ltrim(substr($number, strpos($number, '-')+1), '0');
+            Column::callback(['invoices.number','invoices.id'], function($number, $id){
+                return "<a href=".route('invoices.show', $id)." class='hover:underline hover:text-blue-500'>".ltrim(substr($number, strpos($number, '-') + 1), '0')."</a>";
             })->label('Fact.')->searchable(),
             Column::callback(['efectivo', 'cambio'], function ($efectivo, $cambio) {
-                $efectivo=$efectivo ;
+                $efectivo=$efectivo-$cambio ;
                 return '$' . formatNumber($efectivo>0?$efectivo:0);
             })->label('Efectivo')->searchable()->enableSummary(),
             Column::callback(['transferencia'], function ($transferencia) {

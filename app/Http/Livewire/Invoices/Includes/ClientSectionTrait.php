@@ -32,7 +32,7 @@ trait ClientSectionTrait
             ];
             $this->emit('focusCode');
             if($client->id!==1){
-                $this->name=$client->name;
+                $this->name=$client->contact->fullname;
             }
             $this->client_code = $code;
             $this->clientNameCode = $code.' - '.$contact->fullname;

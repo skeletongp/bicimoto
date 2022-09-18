@@ -24,7 +24,6 @@ class CreateOutcome extends Component
         $this->providers = $store->providers()->pluck('fullname', 'id');
         $this->efectivos=$place->counts()->where('code','like','100%')->pluck('name','id');
         $this->counts = $place->counts()
-
             ->select(DB::raw(' name, code'))
             ->orderBy('code')
             ->pluck('name', 'code');
@@ -33,6 +32,9 @@ class CreateOutcome extends Component
     public function render()
     {
         return view('livewire.reports.create-outcome');
+    }
+    public function updated(){
+        $this->amount=floatVal($this->efectivo)+floatVal($this->tarjeta)+floatVal($this->transferencia);
     }
 
     protected $rules = [

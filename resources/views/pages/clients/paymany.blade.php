@@ -10,7 +10,6 @@
     </div>
     @push('js')
         <script>
-           
             Livewire.on('printPayment', function(payment) {
                 console.log(payment);
                 printP(payment);
@@ -41,7 +40,7 @@
                 .map(items => items[field])
                 .reduce((prev, curr) => parseFloat(prev) + parseFloat(curr), 0);
 
-                
+            retry=0;
             function printP(payment) {
                 obj = payment;
                 if (!obj.place.preference.printer) {
@@ -95,7 +94,7 @@
                 conector.establecerEnfatizado(1);
                 conector.texto('FECHA: ')
                 conector.establecerEnfatizado(0);
-                conector.texto(obj.day+" | ");
+                conector.texto(obj.day + " | ");
 
                 conector.texto('FACT. NO.: ')
                 conector.establecerEnfatizado(0);
@@ -209,7 +208,7 @@
                 conector.establecerEnfatizado(0);
                 conector.texto(formatter.format(obj.rest));
                 conector.feed(1);
-                
+
                 conector.establecerEnfatizado(1);
                 conector.texto('PRÓXIMO PAGO: ');
                 conector.establecerEnfatizado(0);
@@ -241,6 +240,10 @@
                         if (respuestaAlImprimir === true) {
                             console.log("Impreso correctamente");
                         } else {
+                            Livewire.emit('printPayment', obj);
+                            if(retry<3){
+                            retry++;
+                           }
                             console.log("Error. La respuesta es: " + respuestaAlImprimir);
                         }
                     });

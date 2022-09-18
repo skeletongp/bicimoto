@@ -37,8 +37,8 @@ class TableClient extends LivewireDatatable
                 return view('components.view',['url'=>route('clients.show',$id),'id'=>$id]);
               
             }),
-            Column::callback(['contacts.fullname'], function ( $name)  {
-                $name=ellipsis($name,20);
+            Column::callback(['contacts.fullname','clients.code'], function ( $name, $code)  {
+                $name=$code.'-'.ellipsis($name,20);
                 return $name;
             })->label('Nombre')->searchable(),
             Column::name('contacts.email')->label('Correo Electrónico')->searchable(),

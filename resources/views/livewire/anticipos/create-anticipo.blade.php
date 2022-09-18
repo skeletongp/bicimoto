@@ -75,7 +75,7 @@
                         </div>
                     </div>
                     <div class="py-4 flex justify-end">
-                        <x-button>
+                        <x-button wire:loading.disabled>
                             Guardar
                         </x-button>
                     </div>

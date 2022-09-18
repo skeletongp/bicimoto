@@ -3,7 +3,10 @@
         {{ Breadcrumbs::render('home') }}
     @endslot
     @slot('rightButton')
-        <livewire:anticipos.create-anticipo />
+        <div class="flex items-center space-x-4">
+            <livewire:anticipos.create-anticipo />
+            <livewire:general.amortizar />
+        </div>
     @endslot
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 px-4 ">
         <livewire:dashboard.stat-card />

@@ -54,6 +54,7 @@ class SearchField extends Component
           $products=$store->products()->pluck('products.id')->toArray();
           $modelSearchAspect
           ->addSearchableAttribute('name')
+          ->addSearchableAttribute('code')
           ->whereIn('id', $products);
         })
         ->registerModel(Client::class, function(ModelSearchAspect $modelSearchAspect) use ($store){
@@ -80,6 +81,7 @@ class SearchField extends Component
           $invoices=$place->invoices()->pluck('invoices.id')->toArray();
           $modelSearchAspect
           ->addSearchableAttribute('number')
+          ->addSearchableAttribute('name')
           ->whereIn('id', $invoices);
         })
         ->search($this->search);

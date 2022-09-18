@@ -81,7 +81,7 @@
                 <b>{{ $contact->cedula }}</b> ha adquirido de <b
                     style="text-transform: uppercase">{{ $store->name }}</b> el vehículo que se describe a
                 continuación bajo financiamiento de una duración de <b>{{ $contrato->cuotas }} cuotas</b>, por tal
-                razón, los documentos originales <b>(Placa y Matrícula)</b> se encentran en nuestro poder, hasta dar
+                razón, los documentos originales <b>(Placa y Matrícula)</b> se encuentran en nuestro poder, hasta dar
                 concluido dicho contrato. <br>
 
             <table style="width: 100%">
@@ -103,7 +103,7 @@
             </table>
             </p>
             <p>
-                <b>NOTA:</b> El uso indebido es plena responsabilidad del adquiriente, así como los daños a terceros que se produzcan, ya sea por accidente o por cualquier otro motivo. Esta comunicación es válida sólo a fines de circulación del vehículo descrito; cualquier otro uso dado al mismo requiere al debida autorización por parte de la empresa. 
+                <b>NOTA:</b> El uso indebido es plena responsabilidad del adquiriente, así como los daños a terceros que se produzcan, ya sea por accidente o por cualquier otro motivo. Esta comunicación es válida sólo a fines de circulación del vehículo descrito; cualquier otro uso dado al mismo requiere la debida autorización por parte de la empresa. 
             </p>
             <p>
                 Válido por <b>TREINTA (30) días</b> a partir de la fecha de emisión.

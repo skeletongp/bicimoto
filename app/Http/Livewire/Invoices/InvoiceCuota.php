@@ -50,6 +50,7 @@ class InvoiceCuota extends LivewireDatatable
                 'pendiente' => 'Pendiente',
                 'pagado' => 'Pagada',
             ]),
+            DateColumn::name('payed_at')->label('F. Pago')->format('d-m-Y'),
         ];
     }
     public function buildActions()

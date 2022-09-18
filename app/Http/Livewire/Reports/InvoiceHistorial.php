@@ -30,7 +30,6 @@ class InvoiceHistorial extends LivewireDatatable
             ->where('payments.payable_type', '=', 'App\Models\Invoice')
             ->join('clients', 'clients.id', '=', 'invoices.client_id')
             ->join('contacts', 'contacts.id', '=', 'clients.contact_id')
-            ->selectRaw('invoices.*')
             ->where('status', '=', 'cerrada')
             ->groupBy('invoices.id');
         return $invoices;

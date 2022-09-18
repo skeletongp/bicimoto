@@ -126,7 +126,7 @@ class PayCuotas extends Component
         $invoice->payments()->save($payment);
         $bank = Bank::find($this->bank_id);
         $invoice->client->payments()->save($payment);
-        $this->setTransactions($efectivo, $tarjeta, $transferencia, $cambio, $capital+$cambio, $interes, $bank, $invoice->number, $invoice->client, $cuota);
+        $this->setTransactions($efectivo, $tarjeta, $transferencia, $cambio, $capital+$cambio, $interes+$cuota->mora, $bank, $invoice->number, $invoice->client, $cuota);
         $invoice->update([
             'rest' => $data['rest']
         ]);
@@ -181,7 +181,7 @@ class PayCuotas extends Component
         } else if($tarjeta>0) {
             setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
         } else if($transferencia>0) {
-            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $this->bank->contable, 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $bank->contable, 'Cobrar Facturas');
         } 
         if($client->anticipo){
             $client->anticipo->update([

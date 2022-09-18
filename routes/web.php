@@ -24,7 +24,9 @@ use App\Models\Client;
 use App\Models\Contact;
 use App\Models\Contrato;
 use App\Models\Invoice;
+use App\Models\Place;
 use App\Models\Store;
+use Database\Seeders\ClientSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
@@ -162,8 +164,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('prueba', function (Request $request) {
-  dd(amortizar(0,0,0));
-    return view('prueba');
+    $seeder = new ClientSeeder();
+
+    $seeder->run();
+    $invoices = Invoice::whereHas('payment')->get();
+    foreach($invoices as $invoice){
+        $invoice->update(['name'=>$invoice->client->contact->fullname]);
+    }
+    return redirect()->route('clients.index');
 })->name('prueba');
-
-

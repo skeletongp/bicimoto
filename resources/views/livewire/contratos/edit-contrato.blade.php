@@ -36,7 +36,7 @@
                 </div>
                 <div class="grid grid-cols-3 gap-6">
                     <div class="w-full overflow-hidden">
-                        <x-base-input type="text" label="Placa" id="contrato.year"
+                        <x-base-input type="text" label="Año" id="contrato.year"
                             wire:model.defer="contrato.year" />
                         <x-input-error for="contrato.year" />
                     </div>

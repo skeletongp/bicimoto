@@ -104,8 +104,9 @@ function setPaymentTransaction($invoice, $payment, $client, $bank, $reference)
         'limit' => $client->limit + $payment->payed
     ]);
 }
-function amortizar($deuda, $interes, $cuotas)
+function amortizar($deuda, $interes, $cuotas, $periodo='mensual')
     {
+        $fecha=date('Y-m-d');
         if($deuda==0){
             $interes=0;
             $cuotas=0;
@@ -128,6 +129,7 @@ function amortizar($deuda, $interes, $cuotas)
             $cuota = $m;
             $saldo_final = round($saldo_inicial - $capital, 2);
             $suma += $m;
+            $fecha=sumarfecha($fecha, $periodo);
             array_push(
                 $pagos,
                 [
@@ -136,9 +138,16 @@ function amortizar($deuda, $interes, $cuotas)
                     'capital' => round($capital),
                     'debe' => round($cuota),
                     'restante' => round($saldo_final),
+                    'fecha'=>$fecha,
                 ]
             );
             $saldo_inicial = $saldo_final;
+        }
+        $debido=$suma;
+        foreach ($pagos as $key => $pago) {
+            $restatotal=$debido-$pago['debe'];
+            $pagos[$key]['restatotal'] = $restatotal;
+            $debido=$restatotal;
         }
         $pagos = json_decode(json_encode($pagos));
         $suma = json_decode(json_encode($suma));

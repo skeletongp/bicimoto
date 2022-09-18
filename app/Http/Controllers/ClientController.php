@@ -18,7 +18,7 @@ class ClientController extends Controller
     }
     public function show($client_id)
     {
-        $client=Client::find($client_id);
+        $client=Client::whereContactId($client_id)->first();
         $conyuge=$client->conyuge;
         $laboral=$client->laboral;
         $crediticio=$client->crediticio;

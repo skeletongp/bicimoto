@@ -36,7 +36,8 @@ class CancelInvoice extends Component
         $this->deleteDetails($details);
         $this->deleteTaxes($invoice);
         $this->deletePayments($invoice);
-        $this->emit('showAlert', 'Factura ajustada correctamente', 'success');
+        $invoice->delete();
+        $this->emit('showAlert', 'Factura borrada correctamente', 'success');
         $this->emit('refreshLivewireDatatable');
         /* 
         $invoice->update(['status' => 'anulada']);*/
@@ -97,7 +98,7 @@ class CancelInvoice extends Component
         foreach ($payments as $pay) {
             $pay->delete();
         }
-        $price = 50 / (1 + $rTax);
+       /*  $price = 50 / (1 + $rTax);
         $itbisCount = $place->findCount('203-01');
         $newPay = setPayment(
             [
@@ -116,10 +117,10 @@ class CancelInvoice extends Component
             ]
         );
         $invoice->payment()->save($newPay);
-        $invoice->client->payments()->save($newPay);
-        setTransaction('Reg.$42.37 base ajuste Fct.', $ref, $price, $place->cash(), $devVentas, 'Cobrar Facturas');
+        $invoice->client->payments()->save($newPay); */
+        /* setTransaction('Reg.$42.37 base ajuste Fct.', $ref, $price, $place->cash(), $devVentas, 'Cobrar Facturas');
         setTransaction('Reg. $7.63 base ajuste Fct.', $ref, $price * $rTax, $itbisCount, $devVentas, 'Cobrar Facturas');
-        $this->setNewDet($invoice->details->first(), $rTax);
+        $this->setNewDet($invoice->details->first(), $rTax) */;
     }
     function setNewDet($det, $rTax)
     {

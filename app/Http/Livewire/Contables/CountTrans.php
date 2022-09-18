@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Contables;
 
 use App\Http\Classes\NumberColumn;
+use App\Http\Livewire\UniqueDateTrait;
 use App\Models\Count;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Date;
@@ -15,7 +16,6 @@ class CountTrans extends LivewireDatatable
     public $count_id;
     public $padding="px-2";
     public $hideable='select';
-
     public function builder()
     {
         $count=Count::whereId($this->count_id)->first();
@@ -33,17 +33,17 @@ class CountTrans extends LivewireDatatable
     public function columns()
     {
         return [
-            DateColumn::name('created_at')->label('Fecha')->format('d/m/Y H:i')->searchable(),
+            DateColumn::name('transactions.created_at')->label('Fecha')->format('d/m/Y H:i'),
             Column::callback('concepto', function($concepto){
                 return ellipsis($concepto,30);
             })->label('Concepto'),
             Column::name('ref')->label('Referencia')->hide(),
             Column::callback(['debits.code','debits.name'], function($code, $name){
                 return $code.' - '.ellipsis($name,25);
-            })->label('Debe'),
+            })->label('Debe')->filterable(),
             Column::callback(['credits.code','credits.name'], function($code, $name){
                 return $code.' - '.ellipsis($name,25);
-            })->label('Haber')->searchable(),
+            })->label('Haber')->filterable(),
             Column::callback(['income','debitable_id'], function($income, $id){
                 if($this->count_id!=$id){
                     $income=0;
@@ -60,9 +60,7 @@ class CountTrans extends LivewireDatatable
     }
     public function summarize($column)
     {
-        if ($this->perPage < 500) {
-            return '';
-        }
+      
         $results = json_decode(json_encode($this->results->items()), true)?:[];
         foreach ($results as $key => $value) {
             $val = json_decode(json_encode($value), true);
