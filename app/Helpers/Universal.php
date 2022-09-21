@@ -1,5 +1,12 @@
 <?php
 
+use App\Models\Bank;
+use App\Models\Invoice;
+use App\Models\Place;
+use App\Models\Preference;
+use App\Models\Store;
+use App\Models\Tax;
+use App\Models\Unit;
 use Carbon\Carbon;
 use Cloudinary\Cloudinary;
 use Illuminate\Support\Facades\Cache;
@@ -229,4 +236,95 @@ function paginate($items, $perPage = 5, $page = null, $options = [])
     $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
     $items = $items instanceof Collection ? $items : Collection::make($items);
     return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+}
+function getBanks(){
+    $banks=Cache::get('banks'.env('STORE_ID'));
+    if (!$banks) {
+        $banks=Bank::where('store_id', env('STORE_ID'))->pluck('bank_name', 'id');
+        Cache::put('banks'.env('STORE_ID'), $banks);
+    }
+    return $banks;
+}
+function getPreference($place_id){
+    $preference=Cache::get('preference'.$place_id);
+    if (!$preference) {
+        $preference=Preference::where('place_id', $place_id)->first();
+        Cache::put('preference'.$place_id, $preference);
+    }
+    return $preference;
+}
+function getStoreLogo(){
+    $logo=Cache::get('store_logo'.env('STORE_ID'));
+    if (!$logo) {
+        $logo=Store::find(env('STORE_ID'))->logo;
+        Cache::put('store_logo'.env('STORE_ID'), $logo);
+    }
+    return $logo;
+}
+function getPlaceInvoices($place_id){
+    $invoices=Cache::get('place_invoices'.$place_id);
+    if (!$invoices) {
+        $invoices=Invoice::where('place_id', $place_id)->get();
+        Cache::put('place_invoices'.$place_id, $invoices);
+    }
+    return $invoices;
+}
+function getPlaceInvoicesWithTrashed($place_id){
+    $invoices=Cache::get('place_invoices_with_trashed'.$place_id);
+    if (!$invoices) {
+        $invoices=Invoice::where('place_id', $place_id)->withTrashed()->get();
+        Cache::put('place_invoices_with_trashed'.$place_id, $invoices);
+    }
+    return $invoices;
+}
+function getTaxes(){
+    $taxes=Cache::get('taxes'.env('STORE_ID'));
+    if (!$taxes) {
+        $taxes=Tax::where('store_id', env('STORE_ID'))->pluck('name', 'id');
+        Cache::put('taxes'.env('STORE_ID'), $taxes);
+    }
+    return $taxes;
+}
+function getUnits(){
+    $units=Cache::get('units'.env('STORE_ID'));
+    if (!$units) {
+        $units=Unit::where('store_id', env('STORE_ID'))->pluck('name', 'id');
+        Cache::put('units'.env('STORE_ID'), $units);
+    }
+    return $units;
+}
+
+function getPlaces(){
+    $places=Cache::get('places'.env('STORE_ID'));
+    if (!$places) {
+        $places=Place::where('store_id', env('STORE_ID'))->pluck('name', 'id');
+        Cache::put('places'.env('STORE_ID'), $places);
+    }
+    return $places;
+}
+function getStore(){
+    $store=Cache::get('store'.env('STORE_ID'));
+    if (!$store) { 
+        $store=Store::find(env('STORE_ID'));
+        Cache::put('store'.env('STORE_ID'), $store);
+    }
+    return $store;
+}
+function getPlace(){
+    $place_id=optional(auth()->user())->place_id?:1;
+    $place=Cache::get('place'.$place_id);
+    if (!$place) { 
+        $place=Place::find($place_id);
+        Cache::put('place'.$place_id, $place);
+    }
+    return $place;
+}
+function getProductsWithCode(){
+    $place=getPlace();
+    $products=Cache::get('products'.$place->id);
+    if (!$products) {
+        $products=$place->products->pluck('name','code');
+        Cache::put('products'.$place->id, $products);
+    }
+    return $products;
 }

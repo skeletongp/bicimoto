@@ -27,6 +27,10 @@
                 Compras
             </div>
         @endcan
+            <div wire:click="setComponent('products.product-chasis')"
+                class="cursor-pointer flex-grow border-b-2 {{ $componentName == 'products.product-chasis' ? 'text-indigo-500 border-indigo-500' : 'border-gray-300' }} py-2 text-lg px-1">
+                Chasis
+            </div>
     </div>
 
     @switch($componentName)
@@ -44,6 +48,10 @@
 
         @case('products.product-provisions')
             <livewire:products.product-provisions :product="$product" :wire:key="uniqid().'det'" />
+        @break
+
+        @case('products.product-chasis')
+            <livewire:products.product-chasis :product_id="$product->id" :wire:key="uniqid().'det'" />
         @break
     @endswitch
 

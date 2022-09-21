@@ -1,10 +1,16 @@
 <div class="max-w-7xl shadow-xl p-4">
+    @if ($open)
+        <livewire:reports.create-outcome :open="true" :efectivo="$efectivo" :tarjeta="$tarjeta"
+            :transferencia="$transferencia" :amount="$total" :payAll="true" :count_code="$count_code" :code_name="$code_name" :concept="'Compra de mercancía ' . date('d/m/y')"
+            :provider_id="$provider_id" />
+    @endif
     <div class="flex flex-row space-x-4  items-start relative">
         <div class="w-full min-w-[40rem]">
             <form action="" wire:submit.prevent="addProduct">
                 <div class="flex space-x-2 items-start pt-12 relative">
                     <div class="w-full max-w-[12rem] ">
-                        <x-datalist label="Nombre de producto" model="form.product_id" inputId="producto_id" listName="productIdList">
+                        <x-datalist label="Nombre de producto" model="form.product_id" inputId="producto_id"
+                            listName="productIdList">
                             <option value=""></option>
                             @foreach ($products as $id => $product)
                                 <option data-value="{{ $id }}" value="{{ $product }}"></option>
@@ -76,7 +82,7 @@
                                                 {{ $added['product_name'] }}
                                             </th>
                                             <td class="px-4 py-2  cursor-pointer">
-                                                {{ $added['unit_name']}}
+                                                {{ $added['unit_name'] }}
                                             </td>
                                             <td class="px-4 py-2  cursor-pointer">
                                                 {{ formatNumber($added['cost']) }}
@@ -98,11 +104,11 @@
                         </div>
                         <div class="flex items-center justify-between mt-4">
                             <b>Total:</b> {{ formatNumber($total) }}
-                           {{--  @can('Registrar Asientos')
+                            @can('Registrar Asientos')
                                 <div class="mr-6">
                                     <x-toggle label="Registrar gasto" id="setCost" wire:model="setCost"></x-toggle>
                                 </div>
-                            @endcan --}}
+                            @endcan
 
                         </div>
 
@@ -113,16 +119,35 @@
                         wire:loading.attr='disabled' wire:click.prevent="sumCant">Guardar</x-button>
                 </div>
             </div>
-            
+
         </div>
         @if (count($productAdded))
             <div class="w-full">
-                @include('livewire.products.includes.sumproductmoney')
+                <div class="flex space-x-4 items-start pt-12">
+                    <div class="w-full">
+                        <x-base-select id="outProvider" label="Proveedor" wire:model="provider_id">
+                            <option class="text-gray-300"> Elija un proveedor</option>
+                            @foreach ($providers as $idProv => $prov)
+                                <option value="{{ $idProv }}">{{ $prov }}</option>
+                            @endforeach
+                        </x-base-select>
+                        <x-input-error for="provider_id">Campo requerido</x-input-error>
+                    </div>
+                    <div class="w-full">
+                        <x-datalist disabled type="search" inputId="outCountCode" label="Cuenta afectada"
+                            listName="countList" wire:model.lazy="code_name">
+                            @foreach ($counts as $code => $count)
+                                <option value="{{ $code . ' - ' . ellipsis($count, 27) }}"></option>
+                            @endforeach
+                        </x-datalist>
+                        <x-input-error for="count_code">Campo requerido</x-input-error>
+                    </div>
+
+                </div>
             </div>
-          
         @endif
     </div>
     <div class="opacity-0">
         @livewire('provisions.print-provision', ['provision_code' => 0], key(uniqid()))
-       </div>
+    </div>
 </div>

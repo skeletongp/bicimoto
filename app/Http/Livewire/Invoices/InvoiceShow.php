@@ -12,9 +12,12 @@ use App\Http\Livewire\Invoices\ShowIncludes\ShowResume;
 use App\Http\Livewire\Invoices\ShowIncludes\ShowUsers;
 use App\Models\Image;
 use App\Models\Invoice;
+use App\Models\Store;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use NumberFormatter;
 
 class InvoiceShow extends Component
 {
@@ -91,7 +94,7 @@ class InvoiceShow extends Component
     }
     public function loadAttach()
     {
-        $images=Image::get();
+        $images = Image::get();
         //$this->attachs = $this->invoice->images;
         $this->attachs = $images;
     }
@@ -112,10 +115,7 @@ class InvoiceShow extends Component
     public function loadResume()
     {
     }
-    public function loadDocuments()
-    {
-        $this->document = $this->invoice->client->pdfs()->first();
-    }
+ 
     public function loadData($includeName)
     {
         switch ($includeName) {
@@ -145,5 +145,6 @@ class InvoiceShow extends Component
                 $this->loadResume();
                 break;
         }
+        $this->render();
     }
 }

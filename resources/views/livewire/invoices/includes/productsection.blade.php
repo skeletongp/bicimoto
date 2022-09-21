@@ -2,7 +2,7 @@
     <table class="w-max border-collapse border-2 text-sm text-left text-gray-900 dark:text-gray-400 table-auto">
         <thead class="text-sm text-gray-800 uppercase  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-               
+
                 <th scope="col" class="px-2 py-3 border border-gray-200 text-center block">
                     Cód.
                 </th>
@@ -36,8 +36,8 @@
             <tr class=" border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
                 <td class=" pt-0 border-gray-200 border">
-                    <div class="w-[3.5rem]">
-                        <x-base-input placeholder="Cód." class=" border-none" type="number"
+                    <div class="w-[4.5rem]">
+                        <x-base-input placeholder="Cód." class=" border-none" type="text"
                             wire:model.lazy="product_code" id="codeInput" label=""
                             wire:keydown.enter="$emit('focusCant')">
                         </x-base-input>
@@ -59,8 +59,10 @@
                 <td class=" pt-0 border-gray-200 border">
                     <div class="w-16">
 
-                        <x-base-input id="cant" class="uppercase border-none text-center bg-transparent " type="number"
-                            placeholder="Cant." wire:keydown.enter="tryAddItems" wire:model.lazy="cant" label=""></x-base-input>
+                        <x-base-input id="cant" class="uppercase border-none text-center bg-transparent "
+                            type="number" placeholder="Cant." wire:keydown.enter="tryAddItems"
+                            wire:model.lazy="cant" status="{{ $facturable ?'': 'disabled' }}" label="">
+                        </x-base-input>
                     </div>
                 </td>
                 <td class=" pt-0 border-gray-200 border">
@@ -83,7 +85,8 @@
                     <div class="w-24">
                         <x-base-input class="uppercase border-none text-center bg-transparent" type="number"
                             status="{{ auth()->user()->hasPermissionTo('Asignar Precios')? '': 'disabled' }}"
-                            placeholder="Precio" wire:model.lazy="price" id="pr_price" wire:keydown.enter="tryAddItems"  label="">
+                            placeholder="Precio" wire:model.lazy="price" id="pr_price"
+                            wire:keydown.enter="tryAddItems" label="">
                         </x-base-input>
                     </div>
                 </td>
@@ -152,30 +155,21 @@
                             {{ '$' . formatNumber($det['total']) }}
                         </td>
                         <td class="px-2   border border-gray-200  ">
-                            <div class=" flex items-center space-x-4  p-2 bg-gray-200" >
-                               {{--  <span wire:click="removeItem({{ $det['id'] }})"
+                            <div class=" flex items-center space-x-4  p-2 bg-gray-200">
+                                {{-- <span wire:click="removeItem({{ $det['id'] }})"
                                     class="  fas fa-trash cursor-pointer text-red-600"></span> --}}
-                                <span wire:click="editItem({{ $det['id'] }})"
-                                    class="  fas fa-pen cursor-pointer text-green-600"></span>
+                                @if ($facturable)
+                                    <span wire:click="editItem({{ $det['id'] }})"
+                                        class="  fas fa-pen cursor-pointer text-green-600"></span>
+                                @endif
                             </div>
                         </td>
                     </tr>
                 @endforeach
                 <tr
                     class="bg-slate-100 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 uppercase  text-sm">
-                    <td class="px-2 py-4   border-gray-200 text-right ">
-                    </td>
-                    <td class="px-2 py-4   border-gray-200 text-right ">
-                    </td>
-                    <td class="px-2 py-4   border-gray-200 text-right ">
-                    </td>
-                    <td class="px-2 py-4   border-gray-200 text-right ">
-                    </td>
-
-                    <td class="px-2 py-4   border-gray-200  text-right">
-
-                    </td>
-                    <td class="px-2 py-4   border-gray-200  text-right">
+                    
+                    <td colspan="6" class="px-2 py-4   border-gray-200  text-right">
 
                     </td>
                     <td class="px-2 py-4   border-gray-200 font-bold text-right">

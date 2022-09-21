@@ -89,6 +89,13 @@
                         <span class="lg:text-lg">Historial</span>
                     </div>
                 </x-button>
+                <x-button wire:click="setIncludeElement('showAbono','Abonos')"
+                    class="w-full text-xl bg-gray-200 bg-opacity-20 rounded-none text-black hover:text-gray-100 hover:bg-gray-900">
+                    <div class="flex space-x-2 lg:space-x-6 items-center lg:text-lg">
+                        <span class="w-6 text-left far fa-hand-holding-usd"></span>
+                        <span class="lg:text-lg">Abonos</span>
+                    </div>
+                </x-button>
             </div>
         </div>
         @include('livewire.invoices.includes.invoice-js')
@@ -131,6 +138,10 @@
                 @break
 
                 @case('showdocuments')
+                    @include('livewire.invoices.showincludes.' . $includeName)
+                @break
+
+                @case('showAbono')
                     @include('livewire.invoices.showincludes.' . $includeName)
                 @break
             @endswitch

@@ -67,6 +67,8 @@ class EditProduct extends Component
            
         }
         $this->product->save();
+        $place=auth()->user()->place;
+        Cache::forget('products'.$place->id);
         $this->emit('showAlert', 'Producto actualizado correctamente', 'success');
     }
    

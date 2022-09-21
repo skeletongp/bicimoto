@@ -42,7 +42,7 @@ class ClientSeeder extends Seeder
             'limit' => $data['deuda'],
             'code' => str_pad($data['id'],4,'0', STR_PAD_LEFT),
         ]);
-        $contact = Contact::create(Arr::except($data, ['deuda','cuotas', 'interes', 'day','periodo']));
+        $contact = Contact::create(Arr::except($data, ['deuda','cuotas', 'interes', 'day','periodo','id']));
         $client->contact()->associate($contact);
         $client->save();
         setContable($client, '101', 'debit', $contact->name . ' ' . $contact->lastname, null, true);

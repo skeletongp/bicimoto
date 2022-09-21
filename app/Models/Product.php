@@ -134,5 +134,8 @@ class Product extends Model implements Searchable
     {
         return $this->hasMany(Detail::class);
     }
-    
+    public function chasis()
+    {
+        return $this->hasOne(Chasis::class);
+    }
 }

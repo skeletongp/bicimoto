@@ -24,6 +24,16 @@ class DeleteModel extends Component
     {
         
         $model=$this->class::find($this->model_id);
+        if ($model->email) {
+            $model->update([
+                'email' => $model->email . '_deleted_' . $model->id,
+            ]);
+        }
+        if ($model->contact) {
+            $model->contact->update([
+                'email' => $model->contact->email . '_deleted_' . $model->id,
+            ]);
+        }
         $model->delete();
         $this->emit('showAlert', "Registro ha sido eliminado", 'success');
         $this->emit($this->event);

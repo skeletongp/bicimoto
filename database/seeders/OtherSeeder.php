@@ -41,7 +41,13 @@ class OtherSeeder extends Seeder
             'code'=>'001',
             'type'=>'Servicio'
         ]);
+        $pasola=$store->products()->create([
+            'name'=>'Pasola',
+            'code'=>'002',
+            'type'=>'Producto'
+        ]);
         $this->assignUnit(1,$place, $prestamo, 50000,50000,50000,1,0);
+        $this->assignUnit(1,$place, $pasola, 80000,85000,75000,1,40000);
 
     }
     public function assignUnit($unit_id,$place,$product, $price_mayor, $price_menor, $special, $min, $cost){

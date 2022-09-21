@@ -48,6 +48,7 @@ class SearchField extends Component
           $users=$store->users()->pluck('users.id')->toArray();
           $modelSearchAspect
           ->addSearchableAttribute('fullname')
+          
           ->whereIn('id', $users);
         })
         ->registerModel(Product::class, function(ModelSearchAspect $modelSearchAspect) use ($store){
@@ -62,7 +63,8 @@ class SearchField extends Component
           $modelSearchAspect
           ->leftJoin('contacts', 'clients.contact_id', '=', 'contacts.id')
           ->addSearchableAttribute('contacts.fullname')
-          
+          ->addSearchableAttribute('clients.code')
+          ->addSearchableAttribute('contacts.address')
           ->whereIn('clients.id', $clients);
         })
         ->registerModel(Proceso::class, function(ModelSearchAspect $modelSearchAspect) use ($place){

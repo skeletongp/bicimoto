@@ -57,6 +57,9 @@ trait OrderConfirmTrait
                 'path' => $invoice->image->path
             ]);
         }
+        if(!$invoice->chasis && $this->chasis && $this->chasis!='ND'){
+           $this->createChasisIfNotExists($invoice->details,$invoice);
+        }
         $invoice->update(Arr::only($this->form, ['note', 'status', 'payway', 'contable_id']));
         $payment->update(Arr::only($this->form, ['efectivo', 'tarjeta', 'transferencia', 'payed', 'rest', 'cambio']));
         $invoice->update(['rest' => $payment->rest]);
@@ -100,50 +103,23 @@ trait OrderConfirmTrait
         $this->saveContratoPDF($contrato);
     }
     public function saveContratoPDF($contrato){
-        $date = date_create($contrato->invoice->day);
-            $meses = ['January' => 'ENERO', 'february' => 'FEBRERO', 'March' => 'MARZO', 'May' => 'MAYO', 'June' => 'JUNIO','July' => 'JULIO', 'August' => 'AGOSTO', 'September' => 'SEPTIEMBRE', 'October' => 'OCTUBRE', 'November' => 'NOVIEMBRE', 'December' => 'DICIEMBRE'];
-            $f = new NumberFormatter("es", NumberFormatter::SPELLOUT);
-            $año = $f->format(date_format($date, 'Y'));
-            $dia = $f->format(date_format($date, 'd'));
-            $cuota=$contrato->invoice->cuotas()->first();
-            $cuota->fecha=date_create($cuota->fecha);
-            $store=optional(auth()->user())->store?:Store::find(env('STORE_ID'));
-            $user=$store->users()->where('users.id','!=',1)->first();
-        $data = [
-            'invoice' => $contrato->invoice,
-            'client' => $contrato->client,
-            'store' => Store::find(env('STORE_ID')),
-            'dia' => $dia,
-            'mes' => $meses[date_format($date, 'F')],
-            'año' => $año,
-            'cuotaDia'=>$f->format(date_format($cuota->fecha, 'd')),
-            'cuotaMes'=>$meses[date_format($cuota->fecha, 'F')],
-            'cuotaAño'=>$f->format(date_format($cuota->fecha, 'Y')),
-            'date' => $date,
-            'user'=>$user,
-            'contrato' => $contrato,
-            'cuota' => $cuota,
-            'contact' => $contrato->client->contact,
-            'f'=> $f,
-        ];
-        $PDF = App::make('dompdf.wrapper');
-        $pdf = $PDF->setOptions([
-            'logOutputFile' => null,
-            'isRemoteEnabled' => true
-            ])->loadView('pages.clients.contrato-pdf', $data);
-        //delete file if exists
-        $name='files'.env('STORE_ID').'/contratos/contrato'.$contrato->id.'.pdf';
-        if (Storage::disk('digitalocean')->exists($name)) {
-            Storage::disk('digitalocean')->delete($name);
-        }
-        Storage::disk('digitalocean')->put($name, $pdf->output(), 'public');
-            $url= Storage::url($name);
-            $contrato->client->pdfs()->create([
-                'pathLetter'=>$url,
-                'reference_id'=>$contrato->invoice->id,
-                'note' => 'Contrato Nº. ' . $contrato->id,
-            ]);
        
+       
+    }
+    public function createChasisIfNotExists($details, $invoice)
+    {
+        foreach($details as $detail){
+            $detail->product->chasis()->create([
+                'tipo'=>$this->tipo,
+                'marca'=>$this->marca,
+                'modelo'=>$this->modelo,
+                'color'=>$this->color,
+                'chasis'=>$this->chasis,
+                'year'=>$this->year,
+                'placa'=>$this->placa,
+                'invoice_id'=>$invoice->id,
+            ]);
+        };
     }
     public function createCuota($invoice){
         $fecha=Carbon::createFromDate($invoice->day);

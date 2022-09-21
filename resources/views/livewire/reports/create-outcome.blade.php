@@ -1,5 +1,5 @@
 <div>
-    <x-modal  maxWidth="max-w-xl" :fitV="false" title="Registrar nuevo gasto">
+    <x-modal :hideButton="$hideButton" :open="$open"  maxWidth="max-w-xl" :fitV="$payAll" title="Registrar nuevo gasto">
         <x-slot name="button">
             Nuevo gasto
         </x-slot>

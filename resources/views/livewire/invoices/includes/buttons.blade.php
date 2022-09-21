@@ -6,7 +6,7 @@
         </x-button>
     </div>
     <div class="w-full h-full flex flex-col items-center font-bold uppercase  justify-center text-center">
-        <x-button class="flex flex-col items-center font-bold uppercase rounded-xl py-4 space-y-2 w-full bg-slate-600" wire:click="refresh">
+        <x-button class="flex flex-col items-center font-bold uppercase rounded-xl py-4 space-y-2 w-full bg-slate-600" wire:click="refresh" wire:loading.attr='disabled'>
             <span class="fas fa-sync-alt text-4xl"></span>
             <span class="">Reiniciar</span>
         </x-button>

@@ -87,8 +87,17 @@ class OrderConfirm extends Component
     public function modalOpened()
     {
         $this->form = Invoice::find($this->invoice_id)
-            ->load('seller',  'client.contact', 'details.product.units', 'details.taxes', 'details.unit', 'payment.pdf', 'store.image', 'comprobante', 'pdf', 'place.preference')->toArray();
+            ->load('seller',  'client.contact', 'details.product.units', 'details.taxes', 'details.unit', 'payment.pdf', 'store.image', 'comprobante', 'pdf', 'place.preference','chasis')->toArray();
         $payment = $this->form['payment'];
+        if($this->form['chasis']){
+            $this->tipo = $this->form['chasis']['tipo'];
+            $this->marca = $this->form['chasis']['marca'];
+            $this->modelo = $this->form['chasis']['modelo'];
+            $this->color = $this->form['chasis']['color'];
+            $this->chasis = $this->form['chasis']['chasis'];
+            $this->year = $this->form['chasis']['year'];
+            $this->placa = $this->form['chasis']['placa'];
+        }
         unset($payment['id']);
         $this->form['name'] = $this->form['name'] ?: $this->form['client']['contact']['fullname'];
         unset($this->form['payment']);
@@ -100,4 +109,5 @@ class OrderConfirm extends Component
         $this->form['condition']=='De Contado' ? $this->createCuota=0 : $this->createCuota=1;
         $this->updatedForm($this->form['efectivo'], 'efectivo');
     }
+    
 }

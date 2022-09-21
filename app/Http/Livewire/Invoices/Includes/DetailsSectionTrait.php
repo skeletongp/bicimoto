@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Invoices\Includes;
 
+use App\Models\Chasis;
 use App\Models\Place;
 use App\Models\User;
 
@@ -9,8 +10,7 @@ trait DetailsSectionTrait
 {
     public $producto;
     public $product, $product_code, $product_name, $products, $stock, $unit, $open = false;
-
-
+    public $chasis, $facturable = true;
     function rules()
     {
         return invoiceCreateRules();
@@ -19,8 +19,21 @@ trait DetailsSectionTrait
     public function setProduct($product_code)
     {
         $code = str_pad($product_code, 3, '0', STR_PAD_LEFT);
-        $place=optional(auth()->user())->place?:Place::first();
-        $product = $place->products()->where('code', $code)->first();
+        $place = optional(auth()->user())->place ?: Place::first();
+        $chasis = Chasis::where('code', trim($product_code))
+            ->where('place_id', $place->id)
+            ->where('status', 'Pendiente')
+            ->first();
+        $product = nulL;
+        if ($chasis) {
+            $product = $chasis->product;
+            $this->chasis = $chasis;
+            $this->product_code = $product->code;
+            $this->render();
+        }
+        if (!$product) {
+            $product = $place->products()->where('code', $code)->first();
+        }
         $this->producto = $product;
         if ($product) {
             $productLoad = [
@@ -47,11 +60,14 @@ trait DetailsSectionTrait
         /* if ($this->cant > $this->stock && !auth()->user()->hasPermissionTo('Autorizar') && $this->product['type'] != 'Servicio') {
             $this->authorize('Vender producto fuera de Stock', 'validateAuthorization','confirmedAddItems','data=null','Autorizar');
         } else { */
-            $this->confirmedAddItems();
-       /*  } */
+        $this->confirmedAddItems();
+        /*  } */
+        if ($this->chasis) {
+            $this->facturable = false;
+        };
         $this->emit('focusCode');
     }
-    
+
     public function updatedCant()
     {
         if ($this->producto) {
@@ -61,7 +77,7 @@ trait DetailsSectionTrait
                 $this->price = $unt->price_special;
             } elseif ($this->condition == 'A Credito') {
                 $this->price = $unt->price_mayor;
-            } else{
+            } else {
                 $this->price = $unt->price_menor;
             }
             $pr = removeComma($this->price);
@@ -70,12 +86,12 @@ trait DetailsSectionTrait
                 $this->taxTotal = $sub * $this->producto->taxes->sum('rate');
                 $this->checkStock();
             }
-            $this->total =removeComma(formatNumber($sub + $this->taxTotal)  );
+            $this->total = removeComma(formatNumber($sub + $this->taxTotal));
         }
     }
     public function confirmedAddItems()
     {
-        $user=optional(auth()->user())?:User::first();
+        $user = optional(auth()->user()) ?: User::first();
         $this->price = str_replace(',', '', $this->price);
         $this->form['id'] = count($this->details);
         $this->form['cant'] = $this->cant;
@@ -91,7 +107,7 @@ trait DetailsSectionTrait
         $this->form['unit_pivot_id'] = $this->pivot_id;
         $this->form['user_id'] = $user->id;
         $this->form['store_id'] = env('STORE_ID');
-        $this->form['place_id'] = optional($user->place)->id?:1;
+        $this->form['place_id'] = optional($user->place)->id ?: 1;
         $this->form['product_name'] = $this->product['name'];
         $this->form['product_code'] = $this->product['code'];
         $this->form['taxes'] = $this->product['taxes'];
@@ -128,6 +144,7 @@ trait DetailsSectionTrait
         $this->pivot_id = $this->form['unit_pivot_id'];
         $this->removeItem($id);
         $this->emit('focusCode');
+        $this->facturable = true;
     }
 
     public function checkStock()
@@ -144,7 +161,7 @@ trait DetailsSectionTrait
     }
     public function freshUnitId()
     {
-        $place=optional(auth()->user())->place?:Place::first();
+        $place = optional(auth()->user())->place ?: Place::first();
         $unit = $place->units()->wherePivot('id', $this->unit_id)->first();
         if ($unit) {
             $this->unit = $unit;
@@ -163,17 +180,16 @@ trait DetailsSectionTrait
 
 
             $this->form['unit_name'] = $unit->symbol;
-            
+
             $pr = removeComma($this->price);
             $sub = removeComma(formatNumber((floatVal($this->cant)  * $pr) * (1 - ($this->discount / 100))));
             if ($this->product) {
                 $this->form['cost'] = $unit->pivot->cost;
-                $this->taxTotal =(floatVal($this->cant)  * $pr) * $this->producto->taxes->sum('rate');
+                $this->taxTotal = (floatVal($this->cant)  * $pr) * $this->producto->taxes->sum('rate');
                 $this->checkStock();
             }
-            $this->total =removeComma(formatNumber($sub + $this->taxTotal)  );
+            $this->total = removeComma(formatNumber($sub + $this->taxTotal));
             $this->pivot_id = $unit->pivot->id;
-
         }
     }
     public function updatedProductCode()

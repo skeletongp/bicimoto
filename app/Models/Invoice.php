@@ -134,5 +134,8 @@ public $primaryKey  = 'id';
     public function contrato(){
         return $this->hasOne(Contrato::class);
     }
+    public function chasis(){
+        return $this->hasOne(Chasis::class);
+    }
    
 }

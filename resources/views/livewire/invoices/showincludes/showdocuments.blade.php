@@ -16,8 +16,8 @@
     @endif
     @if ($document)
         <h1 class="font-bold uppercase text-xl ">Contrato del cliente</h1>
-        <iframe src="{{ $document->pathLetter }}#view=FitH" width="700" height="700" type="application/pdf">
-        </iframe>
+        <object data="data:application/pdf;base64,{{ $document}}" width="700" height="700" type="application/pdf">
+        </object>
     @else
         <img class="w-1/3" src="{{ env('NO_IMAGE') }}" alt="">
     @endif

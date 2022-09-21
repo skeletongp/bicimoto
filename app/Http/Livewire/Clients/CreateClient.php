@@ -13,14 +13,18 @@ class CreateClient extends Component
 {
     public $form, $avatar, $photo_path, $store_id, $role,  $name, $lastname, $cellphone, $code;
     use WithFileUploads;
-
-    public function render()
-    {
-
+    protected $listeners=['modalOpened'];
+    public function modalOpened(){
         $store = auth()->user()->store;
         $num = $store->clients()->count() + 1;
         $code = str_pad($num, 3, '0', STR_PAD_LEFT);
         $this->code = $code;
+        $this->form['code'] = $code;
+    }
+    public function render()
+    {
+
+       
         return view('livewire.clients.create-client');
     }
     protected $rules = [
@@ -57,6 +61,7 @@ class CreateClient extends Component
         $this->render();
         $this->emit('showAlert', 'Cliente registrado exitosamente', 'success');
         $this->emit('refreshLivewireDatatable');
+        $this->modalOpened();
     }
     public function updatedAvatar()
     {

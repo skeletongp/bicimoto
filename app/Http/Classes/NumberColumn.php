@@ -18,7 +18,11 @@ class NumberColumn extends LivewireDatatablesNumberColumn{
                     return  '<span class="'.$style.'">'.formatNumber($value).'</span>';
                 };
                 break;
-                
+                case 'integer':
+                    $this->callback = function ($value) use ( $style) {
+                        return  '<span class="'.$style.'">'.intval($value).'</span>';
+                    };
+                    break;   
             default:
                 # code...
                 break;

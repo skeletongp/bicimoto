@@ -164,12 +164,22 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('prueba', function (Request $request) {
-    $seeder = new ClientSeeder();
-
+    $seeder=new ClientSeeder();
     $seeder->run();
-    $invoices = Invoice::whereHas('payment')->get();
+    $invoices = Invoice::whereHas('contrato')->get();
     foreach($invoices as $invoice){
-        $invoice->update(['name'=>$invoice->client->contact->fullname]);
+        $contrato= $invoice->contrato;
+        $invoice->chasis()->updateOrCreate([
+            'tipo' => $contrato->tipo,
+            'marca' => $contrato->marca,
+            'modelo' => $contrato->modelo,
+            'color' => $contrato->color,
+            'placa' => $contrato->placa,
+            'year' => $contrato->year,
+            'placa' => $contrato->placa,
+            'product_id' => $invoice->details->first()->product_id,
+
+        ]);
     }
-    return redirect()->route('clients.index');
+    return redirect()->route('invoices.index');
 })->name('prueba');

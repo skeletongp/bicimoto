@@ -1,21 +1,20 @@
 [
     {
-        "id": "58",
-        "name": "Vladimir",
-        "lastname": "Guzmán",
+        "id": "28",
+        "name": "Rosa Ingrid",
+        "lastname": "López González",
         "email": "",
-        "address": "C. José María Lora, Camagüey, Sabana Grande de Palenque",
-        "cedula": "083-0000756-7",
+        "address": "C. Mauricio Báez, No. 31, Sabana Grande de Palenque",
+        "cedula": "001-1419324-6",
         "phone": "(809) 123-4576",
         "nacionality": "Dominicano",
-        "genre": "Masculino",
+        "genre": "Femenino",
         "civil_status": "Soltero",
         "cellphone": "(829) 765-4321",
-        "deuda": "78000",
-        "cuotas": "18",
-        "interes": "3",
-        "day": "2022-08-20",
+        "deuda": "71777.00",
+        "cuotas": "20",
+        "interes": "3.6805",
+        "day": "2022-07-22",
         "periodo": "mensual"
     }
-    
 ]

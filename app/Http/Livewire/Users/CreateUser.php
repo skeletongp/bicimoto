@@ -11,22 +11,12 @@ use Livewire\WithFileUploads;
 class CreateUser extends Component
 {
     public $form, $avatar, $photo_path, $store_id, $role, $loggeable;
+    public $roles=[], $places=[];
+    protected $listeners=['modalOpened'];
     use WithFileUploads;
     public function render()
     {
-        $store=auth()->user()->store;
-        $this->store_id=$store->id;
-        if(!Cache::get('storeRoles').env('STORE_ID')){
-            Cache::put('storeRoles'.env('STORE_ID'),implode(',',$store->roles->pluck('name')->toArray()));
-        }
-        $roles=explode(',',Cache::get('storeRoles'.env('STORE_ID')));
-        $places=auth()->user()->places->pluck('name','id');
-        $this->form['place_id']=array_key_first($places->toArray());
-        return view('livewire.users.create-user',
-        [
-            'roles'=>$roles,
-            'places'=>$places
-        ]);
+        return view('livewire.users.create-user');
     }
 
     protected $rules = [
@@ -35,12 +25,22 @@ class CreateUser extends Component
         'form.email' => 'required|string|max:100|unique:moso_master.users,email,NULL,id,deleted_at,NULL',
         'form.username' => 'required|string|max:35|unique:moso_master.users,username,NULL,id,deleted_at,NULL',
         'form.password' => 'required|string|min:8',
-        'form.cedula' => 'required|string|min:8',
         'form.phone' => 'required|string|max:25',
         'form.place_id' => 'required|numeric|exists:places,id',
         'role'=>'required|exists:roles,name'
     ];
-
+    public function modalOpened(){
+        $store=auth()->user()->store;
+        $this->store_id=$store->id;
+        if(!Cache::get('storeRoles').env('STORE_ID')){
+            Cache::put('storeRoles'.env('STORE_ID'),implode(',',$store->roles->pluck('name')->toArray()));
+        }
+        $roles=explode(',',Cache::get('storeRoles'.env('STORE_ID')));
+        $places=auth()->user()->places->pluck('name','id');
+        $this->form['place_id']=array_key_first($places->toArray());
+        $this->places=$places;
+        $this->roles=$roles;
+    }
     public function createUser()
     {
         $this->validate();
@@ -54,9 +54,10 @@ class CreateUser extends Component
             ]);
         }
         $user->assignRole($this->role);
-        setContable($user, '102', 'credit');
+        setContable($user, '102', 'debit');
         Cache::forget($store->id.'admins');
         $this->reset();
+        $this->modalOpened();
         $this->emit('showAlert','Usuario registrado exitosamente','success');
         $this->emit('refreshLivewireDatatable');
     }
@@ -68,7 +69,7 @@ class CreateUser extends Component
         ]);
         $path = cloudinary()->upload($this->avatar->getRealPath(),
         [
-            'folder' => 'carnibores/avatars',
+            'folder' => 'bicimoto/avatars',
             'transformation' => [
                       'width' => 250,
                       'height' => 250

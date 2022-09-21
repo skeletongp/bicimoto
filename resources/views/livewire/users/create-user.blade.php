@@ -1,6 +1,6 @@
 
 <div>
-    <x-modal :fitV="false" maxWidth="max-w-3xl">
+    <x-modal :fitV="false" maxWidth="max-w-3xl" :listenOpen="true">
         <x-slot name="title">
             <span> Nuevo Usuario</span>
         </x-slot>
@@ -45,13 +45,9 @@
                     </div>
                 </div>
                 <div class="  pb-6 flex items-start space-y-0 space-x-3">
-                    <div class="w-full">
-                        <x-base-input label="No. de Cédula"  type="text" id="new-cedula" class="cedula"
-                            wire:model.lazy="form.cedula" />
-                        <x-input-error for="form.cedula" />
-                    </div>
+                   
                     <div class="w-full pb-0 select2-div">
-                        <label class="block text-base pb-2 font-medium text-gray-900 dark:text-gray-300" for="role">Rol de usuario</label>
+                        <label for="role">Rol de usuario</label>
                         <x-select id="frole" wire:model.lazy="role" class=" select2">
                             <option value=""></option>
                             @foreach ($roles as $name)
@@ -60,12 +56,6 @@
                         </x-select>
                         <x-input-error for="role" />
                     </div>
-
-                    
-                </div>
-               
-                <input type="hidden" name="store_id" wire:model="store_id">
-                <div class="   pb-6 flex items-start space-y-0 space-x-3 ">
                     <div class="w-full pb-0">
                         <label for="place_id">Sucursal Predeterminada</label>
                         <x-select id="place_id" wire:model.lazy="form.place_id" class="select2">
@@ -75,6 +65,10 @@
                         </x-select>
                         <x-input-error for="form.place_id" />
                     </div>
+                </div>
+               
+                <input type="hidden" name="store_id" wire:model="store_id">
+                <div class="    pb-6 ">
                     <div class="w-full">
                         <label for="avatar" class="flex items-center space-x-4 pb-4 cursor-pointer">
                             <span class="fas fa-image text-xl"></span>

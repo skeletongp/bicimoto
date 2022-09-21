@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -82,6 +83,7 @@ trait GenerateInvoiceTrait
         } else {
             $this->sendInvoice();
         }
+        $this->facturable=true;
     }
 
     public function sendInvoice()
@@ -124,6 +126,12 @@ trait GenerateInvoiceTrait
                 'type' => $this->type,
             ]
         );
+        if($this->chasis){
+            $this->chasis->update([
+                'invoice_id'=>$invoice->id,
+                'status'=>'Entregado',
+            ]);
+        }
         $this->createPayment($invoice);
         $this->createDetails($invoice);
         if ($invoice->type != 'B00' && $invoice->type != 'B14') {
@@ -132,7 +140,7 @@ trait GenerateInvoiceTrait
         event(new NewInvoice($invoice));
         $this->reset('form', 'details', 'producto', 'price', 'client', 'client_code', 'product_code', 'product_name', 'name');
         $this->invoice = $invoice->load('seller', 'contable', 'client.contact', 'details.product.units', 'details.taxes', 'details.unit', 'payment', 'store.image', 'payments.pdf', 'comprobante', 'pdf', 'place.preference');
-        if ($place->preference->print_order=='yes') {
+        if (getPreference($place->id)->print_order=='yes') {
             $this->emit('printOrder', $this->invoice);
         }
         $dataFile = file_get_contents(storage_path('app/public/local/details.json'));
@@ -140,10 +148,11 @@ trait GenerateInvoiceTrait
         $name=$invoice->name?:$invoice->client->name;
         unset($data[$this->localDetail]);
         file_put_contents(storage_path('app/public/local/details.json'), json_encode($data));
-        if($place->preference->instant=='yes'){
+        if(getPreference($place->id)->instant=='yes'){
             $this->instant=true;
             $this->emit('modalOpened');
         }
+        Cache::forget('place_invoices_with_trashed'.$place->id);
         $this->mount();
     }
     public function createPayment($invoice)
@@ -210,4 +219,5 @@ trait GenerateInvoiceTrait
             }
         }
     }
+    
 }

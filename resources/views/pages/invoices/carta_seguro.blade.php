@@ -86,19 +86,19 @@
 
             <table style="width: 100%">
                 <tr>
-                    <td colspan="2"><b>TIPO:</b> {{ $contrato->tipo }}</td>
+                    <td colspan="2"><b>TIPO:</b> {{ $chasis->tipo }}</td>
+                </tr>chasis
+                <tr>
+                    <td><b>MARCA:</b> {{ $chasis->marca }}</td>
+                    <td><b>MODELO:</b> {{ $chasis->modelo }}</td>
                 </tr>
                 <tr>
-                    <td><b>MARCA:</b> {{ $contrato->marca }}</td>
-                    <td><b>MODELO:</b> {{ $contrato->modelo }}</td>
+                    <td><b>COLOR:</b> {{ $chasis->color }}</td>
+                    <td> <b>CHASIS:</b> {{ $chasis->chasis }}</td>
                 </tr>
                 <tr>
-                    <td><b>COLOR:</b> {{ $contrato->color }}</td>
-                    <td> <b>CHASIS:</b> {{ $contrato->chasis }}</td>
-                </tr>
-                <tr>
-                    <td><b>AÑO:</b> {{ $contrato->year }}</td>
-                    <td> <b>PLACA:</b> {{ $contrato->placa }}</td>
+                    <td><b>AÑO:</b> {{ $chasis->year }}</td>
+                    <td> <b>PLACA:</b> {{ $chasis->placa }}</td>
                 </tr>
             </table>
             </p>

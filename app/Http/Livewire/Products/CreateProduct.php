@@ -13,13 +13,14 @@ class CreateProduct extends Component
 {
     use AuthorizesRequests, WithFileUploads;
 
-    public $form=[], $units, $taxes, $places;
+    public $form=[], $units=[], $taxes=[], $places=[];
     public  $unitSelected = [], $taxSelected = [], $placeSelected = [];
     public $unit_id, $unit_price_mayor, $unit_price_menor, $unit_price_special, $unit_min, $unit_cost, $unit_margin;
     public $photo, $photo_path;
     public $activeTab="infoproduct";
 
     protected $queryString=['activeTab','unitSelected'];
+    protected $listeners=['modalOpened'];
 
     protected $rules = [
         'form.name' => 'required|string|max:35',
@@ -39,7 +40,7 @@ class CreateProduct extends Component
         'unit_min' => 'required|numeric',
         'unit_margin' => 'required|numeric',
     ];
-    public function mount()
+    public function modalOpened()
     {
         $store=auth()->user()->store;
         $this->unit_min=1;
@@ -52,12 +53,12 @@ class CreateProduct extends Component
         $this->form['type']='Producto';
         $this->form['origin']='Comprado';
         array_push($this->placeSelected, auth()->user()->place->id);
+        $this->taxes = getTaxes();
+        $this->units = getUnits();
+        $this->places = getPlaces();
     }
     public function render()
     {
-        $this->taxes = auth()->user()->store->taxes()->pluck('name', 'id');
-        $this->units = auth()->user()->store->units()->pluck('name', 'id');
-        $this->places = auth()->user()->places->pluck('name', 'id');
         return view('livewire.products.create-product');
     }
 
@@ -77,6 +78,7 @@ class CreateProduct extends Component
         $this->createTaxes($product);
         $this->attachToPlace($product);
         $this->reset();
+        
         $this->mount();
         Cache::forget('productCount'.env('STORE_ID'));
         $this->emit('showAlert','Producto registrado exitosamente','success');
@@ -94,6 +96,7 @@ class CreateProduct extends Component
     {
         foreach ($this->placeSelected as $placeId) {
             $this->createPrices($product, $placeId);
+            Cache::forget('products'.$placeId);
         }
     }
     public function createPrices(Product $product, $placeId)

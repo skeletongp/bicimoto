@@ -196,7 +196,7 @@
                 </div>
                 <div class="">
                     <x-base-input class="text-xl font-bold" type="text" wire:model.defer="chasis" 
-                        label="Chasis" id="form{{ $form['id'] }}.chasis">
+                        label="Chasis" id="form{{ $form['id'] }}.chasis" >
                     </x-base-input>
                 </div>
                 <div class="">

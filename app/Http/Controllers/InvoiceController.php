@@ -60,6 +60,7 @@ class InvoiceController extends Controller
         $cuotas = $invoice->cuotas()->orderBy('fecha')->get();
         $contact = $invoice->client->contact;
         $contrato = $invoice->contrato;
+        $chasis = $invoice->chasis;
         $pdf = App::make('dompdf.wrapper');
         $f = new NumberFormatter("es", NumberFormatter::SPELLOUT);
         $meses = ['January' => 'ENERO', 'february' => 'FEBRERO', 'March' => 'MARZO', 'May' => 'MAYO', 'June' => 'JUNIO', 'July' => 'JULIO', 'August' => 'AGOSTO', 'September' => 'SEPTIEMBRE', 'October' => 'OCTUBRE', 'November' => 'NOVIEMBRE', 'December' => 'DICIEMBRE'];

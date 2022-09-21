@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Settings;
 
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class SettingPreference extends Component
@@ -35,6 +36,7 @@ class SettingPreference extends Component
     {
         $this->validate();
         $this->preference->save();
+        Cache::forget('preference'.$this->place->id);
         $this->emit('showAlert','Preferencias actualizadas existosamente','success');
         $this->mount();
     }

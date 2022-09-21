@@ -26,7 +26,7 @@ Breadcrumbs::for('clients', function ($trail) {
 });
 Breadcrumbs::for('clients.show', function ($trail, $client) {
     $trail->parent('clients');
-    $trail->push($client->contact->fullname, route('clients.show', $client), ['icon'=>'fas fa-user']);
+    $trail->push($client->code.'-s'.$client->contact->fullname, route('clients.show', $client), ['icon'=>'fas fa-user']);
 });
 Breadcrumbs::for('clients.paymany', function ($trail,  $cuotas) {
     $trail->parent('clients');

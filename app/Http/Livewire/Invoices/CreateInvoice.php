@@ -28,19 +28,18 @@ class CreateInvoice extends Component
     public $instant=false;
     public  $unit, $unit_id;
     protected $listeners = ['selProducto', 'validateAuthorization', 'realoadClients', 'confirmedAddItems', 'sendInvoice'];
-    protected $queryString = ['details', 'client', 'client_code', 'vence', 'condition', 'type'];
+    protected $queryString = ['details', 'client', 'client_code', 'vence', 'condition', 'type','chasis', 'facturable'];
 
 
     public function mount()
     {
         
-        $store = optional(auth()->user())->store?:Store::first();
-        $place =optional( auth()->user())->place?:Place::first();
-        
-        $this->banks = $store->banks()->pluck('bank_name', 'id');
+        $store = getStore();
+        $place = getPlace();
+        $this->banks = getBanks();
         $this->vence = Carbon::now()->format('Y-m-d');
         $this->condition = 'DE CONTADO';
-        $this->type = $place->preference->comprobante_type;
+        $this->type = getPreference($place->id)->comprobante_type;
         $this->number = $place->id . '-' . str_pad($place->invoices()->withTrashed()->count() + 1, 7, '0', STR_PAD_LEFT);
         $this->clients = clientWithCode($store->id);
         $this->products = $store->products()->orderBy('name')->pluck('name', 'code');
@@ -84,8 +83,18 @@ class CreateInvoice extends Component
 
     public function refresh()
     {
-        $this->reset('form', 'details', 'producto', 'price', 'client', 'client_code', 'condition');
-        $this->render();
+        $this->form=[];
+        $this->details=[];
+        $this->producto=null;
+        $this->cant=0;
+        $this->price=0;
+        $this->discount=0;
+        $this->total=0;
+        $this->taxTotal=0;
+        $this->condition='DE CONTADO';
+        $this->chasis=false;
+        $this->facturable=true;
+
     }
 
     public function storageDetails()
@@ -134,5 +143,8 @@ class CreateInvoice extends Component
         $this->client_code='001';
         $this->name='';
         $this->updatedClientCode();
+    }
+    public function closeModal(){
+        $this->invoice=null;
     }
 }

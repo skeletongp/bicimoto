@@ -424,7 +424,7 @@
         </table>
 
         <table>
-            @if ($invoice->contrato)
+            @if ($invoice->chasis)
                 <br>
                 <tr class="">
                     <td colspan="6" style="text-transform: uppercase">
@@ -433,45 +433,45 @@
                                 <td style="border-top: .3px solid #ccc;  border-left: .3px solid #ccc;  ">
                                     <b>TIPO:</b>
                                 </td>
-                                <td style="border-top: .3px solid #ccc;">
-                                    {{ $invoice->contrato->tipo }}
+                                <td style="text-align:left; border-top: .3px solid #ccc;">
+                                    {{ $invoice->chasis->tipo }}
                                 </td>
 
                                 <td style="border-top: .3px solid #ccc;">
                                     <b>MARCA:</b>
                                 </td>
                                 <td style="  border-right: .3px solid #ccc; border-top: .3px solid #ccc; ">
-                                    {{ $invoice->contrato->marca }}
+                                    {{ $invoice->chasis->marca }}
                                 </td>
                             </tr>
                             <tr>
                                 <td style="  border-left: .3px solid #ccc;  ">
                                     <b>MODELO:</b>
                                 </td>
-                                <td>
-                                    {{ $invoice->contrato->modelo }}
+                                <td style="text-align:left">
+                                    {{ $invoice->chasis->modelo }}
                                 </td>
 
                                 <td style=" ">
                                     <b>CHASIS:</b>
                                 </td>
                                 <td style="  border-right: .3px solid #ccc;  ">
-                                    {{ $invoice->contrato->chasis }}
+                                    {{ $invoice->chasis->chasis }}
                                 </td>
                             </tr>
                             <tr>
                                 <td style="border-bottom: .3px solid #ccc;  border-left: .3px solid #ccc; ">
                                     <b>AÑO:</b>
                                 </td>
-                                <td style="border-bottom: .3px solid #ccc;   ">
-                                    {{ $invoice->contrato->year }}
+                                <td style="text-align:left; border-bottom: .3px solid #ccc;   ">
+                                    {{ $invoice->chasis->year }}
                                 </td>
 
                                 <td style="border-bottom: .3px solid #ccc; ">
                                     <b>PLACA:</b>
                                 </td>
                                 <td style="border-bottom: .3px solid #ccc;  border-right: .3px solid #ccc;  ">
-                                    {{ $invoice->contrato->placa }}
+                                    {{ $invoice->chasis->placa }}
                                 </td>
                             </tr>
                         </table>
