@@ -36,7 +36,7 @@ class CreateAnticipo extends Component
     public function updatedClientId()
     {
 
-        $this->client = Client::where('id', $this->clientId)->first();
+        $this->client = Client::where('code', $this->clientId)->first();
     }
     public function updatedPayway()
     {
