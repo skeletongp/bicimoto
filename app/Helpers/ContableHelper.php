@@ -54,6 +54,7 @@ function setContable($model, String $code, String $origin, $name = null, $place_
             'store_id' => $place->store->id,
             'balance' => 0,
         ]);
+        $model->contable()->save($count);
        
 }
 function setTransaction($concept, $ref, $amount, $debitable, $creditable, $otherPermission = null)
