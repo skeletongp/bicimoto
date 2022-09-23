@@ -163,7 +163,7 @@ class PayCuotas extends Component
     {
         $place = auth()->user()->place;
         $creditable =  $client->contable()->first();
-
+        $pago=$efectivo+$tarjeta+$transferencia;
         /* Registrar el pago del capital */
         setTransaction('Pago de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $efectivo > 0 ? $efectivo - $interes : 0, $place->cash(),  $creditable, 'Cobrar Facturas');
         setTransaction('Pago de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $tarjeta > 0 ? $tarjeta - $interes : 0, $place->check(),  $creditable, 'Cobrar Facturas');
@@ -177,15 +177,15 @@ class PayCuotas extends Component
         setTransaction('Interés de cuota del ' . Carbon::parse($cuota->fecha)->format('d/m/Y'), $ref, $transferencia > 0 ? $transferencia - $capital : 0, optional($bank)->contable,  $creditable, 'Cobrar Facturas');
         $anticipo=$place->findCount('206-01');
         if ($efectivo>0) {
-            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $place->cash(), 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo-$efectivo>0?$efectivo:$clientAnticipo->saldo, $anticipo, $place->cash(), 'Cobrar Facturas');
         } else if($tarjeta>0) {
-            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo-$tarjeta>0?$tarjeta:$clientAnticipo->saldo, $anticipo, $place->check(), 'Cobrar Facturas');
         } else if($transferencia>0) {
-            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo, $anticipo, $bank->contable, 'Cobrar Facturas');
+            setTransaction('Tomado de anticipo',$ref, $clientAnticipo->saldo-$transferencia>0?$transferencia:$clientAnticipo->saldo, $anticipo, $bank->contable, 'Cobrar Facturas');
         } 
         if($client->anticipo){
             $client->anticipo->update([
-                'saldo'=>0,
+                'saldo'=>$clientAnticipo->saldo-$pago>0?$clientAnticipo->saldo-$pago:0,
             ]);
         }
     }

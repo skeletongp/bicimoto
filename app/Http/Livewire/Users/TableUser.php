@@ -16,7 +16,7 @@ class TableUser extends LivewireDatatable
 {
     use AuthorizesRequests;
     public $exportable = true;
-    public $name = "Tabla Usuarios";
+    public $name = "Tabla de Usuarios";
     public  $hideable = "select";
     public $roles;
 
