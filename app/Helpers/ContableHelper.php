@@ -34,8 +34,7 @@ function setContable($model, String $code, String $origin, $name = null, $place_
         $type = 'nominal';
     }
     $cMain = CountMain::where('code', $code)->with('counts')->first();
-    $exist = $cMain->counts()->where('name', $name)->where('place_id', $place_id)->first();
-    if (!$exist) {
+   
         $place = Place::find($place_id);
         $bCode = Count::where('code', 'like', $code . '%')->where('place_id', $place_id)
             ->orderBy('code', 'desc')->first();
@@ -44,7 +43,7 @@ function setContable($model, String $code, String $origin, $name = null, $place_
         } else {
             $bCode = '-0';
         }
-        $count = $cMain->counts()->create([
+        $count = $cMain->counts()->updateOrCreate(['name'=>$name],[
             'code' => $code . '-' . str_pad(intval(Str::after($bCode, '-')) + 1, 2, '0', STR_PAD_LEFT),
             'name' => $name,
             'place_id' => $place_id ?: 1,
@@ -52,10 +51,10 @@ function setContable($model, String $code, String $origin, $name = null, $place_
             'type' => $type,
             'borrable' => $borrable,
             'currency' => $model->currency ?: 'DOP',
-            'store_id' => $place->store->id
+            'store_id' => $place->store->id,
+            'balance' => 0,
         ]);
-        $model->contable()->save($count);
-    }
+       
 }
 function setTransaction($concept, $ref, $amount, $debitable, $creditable, $otherPermission = null)
 {
