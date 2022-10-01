@@ -25,7 +25,9 @@ class CuotasActivas extends LivewireDatatable
             ->leftjoin('clients', 'clients.id', '=', 'cuotas.client_id')
             ->leftjoin('invoices', 'invoices.id', '=', 'cuotas.invoice_id')
             ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
-            ->where('invoices.place_id', $user->place_id);
+            ->where('invoices.place_id', $user->place_id)
+            ->where('invoices.deleted_at', null)
+            ;
         Cache::put('cuotasactivas' . env('STORE_ID'), $cuotas->count());
         return $cuotas;
     }

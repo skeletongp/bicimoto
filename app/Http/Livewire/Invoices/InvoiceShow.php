@@ -58,6 +58,8 @@ class InvoiceShow extends Component
         $this->render();
         if ($name == 'showclient') {
             return redirect()->route('invoices.show', [$this->invoice, 'includeName' => 'showclient', 'includeTitle' => 'Cliente']);
+        } else if($name=="showAbono"){
+            return redirect()->route('invoices.show', [$this->invoice, 'includeName' => 'showAbono', 'includeTitle' => 'Abonos']);
         }
     }
     public function loadClient()

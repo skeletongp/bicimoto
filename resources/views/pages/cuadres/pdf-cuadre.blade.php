@@ -210,7 +210,7 @@
                     </td>
 
                     <td style="width:17.5%; text-align:left; font-weight:bold">
-                        ${{ formatNumber($payment->payed-$payment->cambio) }}
+                        ${{ formatNumber($payment->payed) }}
                     </td>
                 </tr>
             @empty
@@ -255,7 +255,11 @@
         @endforeach
 
 
-
+        @php
+        $cobrados=$payments->sum('efectivo') - $payments->sum('cambio');
+        $otros=($cuadre->final+$entregadoHoy)-($cuadre->inicial+$cobrados);
+        $balance=$cobrados+$otros;
+    @endphp
       
         <tr style="font-weight: bold">
             <td colspan="4" style="padding-top:25px">
@@ -265,17 +269,56 @@
                 ${{ formatNumber($cuadre->inicial) }}
             </td>
         </tr>
-        <tr style="font-weight: bold">
-            <td colspan="4" style="padding-top:10px">
-                BALANCE =>
+        <tr style="">
+            <td colspan="4" style="padding-top:10px; padding-left:15px">
+              +  COBRADOS  =>
             </td>
-            <td colspan="2" style="padding-top:10px">
-               ${{ formatNumber(($payments->sum('efectivo') - $payments->sum('cambio'))) }} 
+            <td colspan="2" style="padding-top:10px; padding-left:15px">
+               ${{ formatNumber($cobrados) }} 
+            </td>
+        </tr>
+     
+        <tr style="">
+            <td colspan="4" style="padding-top:10px; padding-left:15px">
+               + OTROS =>
+            </td>
+            <td colspan="2" style="padding-top:10px; ">
+               ${{ formatNumber($otros) }} 
             </td>
         </tr>
         <tr style="font-weight: bold">
             <td colspan="4" style="padding-top:10px">
-                SALDO FINAL =>
+              +  BALANCE =>
+            </td>
+            <td colspan="2" style="padding-top:10px">
+                ${{ formatNumber($balance) }}
+            </td>
+        </tr>
+         <tr>
+            <td colspan="8">
+                <hr>
+            </td>
+         </tr>
+        <tr style="font-weight: bold">
+            <td colspan="4" style="padding-top:10px">
+                = CUADRE =>
+            </td>
+            <td colspan="2" style="padding-top:10px">
+                ${{ formatNumber($balance+$cuadre->inicial) }}
+            </td>
+        </tr>
+
+        <tr style="font-weight: bold">
+            <td colspan="4" style="padding-top:10px">
+                - ENTREGADOS =>
+            </td>
+            <td colspan="2" style="padding-top:10px">
+                ${{ formatNumber($entregadoHoy) }}
+            </td>
+        </tr>
+        <tr style="font-weight: bold">
+            <td colspan="4" style="padding-top:10px">
+               = SALDO FINAL =>
             </td>
             <td colspan="2" style="padding-top:10px">
                 ${{ formatNumber($cuadre->final) }}

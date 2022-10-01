@@ -27,7 +27,9 @@ class CuotasVencidas extends LivewireDatatable
             ->leftjoin('clients', 'clients.id', '=', 'cuotas.client_id')
             ->leftjoin('invoices', 'invoices.id', '=', 'cuotas.invoice_id')
             ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
-            ->where('invoices.place_id', $user->place_id);
+            ->where('invoices.place_id', $user->place_id)
+            ->where('invoices.deleted_at', null)
+            ;
         Cache::put('cuotasvencidas' . env('STORE_ID'), $cuotas->count());
         $cuotas->when($this->client_id, function ($query) {
             return $query->where('clients.id', $this->client_id);

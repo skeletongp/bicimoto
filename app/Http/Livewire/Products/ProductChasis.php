@@ -22,6 +22,7 @@ class ProductChasis extends LivewireDatatable
             ->leftJoin('clients', 'clients.id', '=', 'invoices.client_id')
             ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
             ->orderBy('chasis.id', 'desc')
+            ->groupBy('chasis.id')
             ;
 
         return $chasis;

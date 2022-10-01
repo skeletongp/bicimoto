@@ -29,11 +29,10 @@ class Client extends Model implements Searchable
 
     public function getSearchResult(): SearchResult
     {
-        $url = route('clients.show', $this->id);
         return new SearchResult(
             $this,
             $this->contact->fullname,
-            $url
+            route('clients.show', $this->id)
         );
     }
     function getPuntajeAttribute()

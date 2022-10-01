@@ -113,16 +113,14 @@
     @push('js')
         <script>
            
-            function searchPrinter() {
-                ConectorPlugin.obtenerImpresoras()
-                    .then(impresoras => {
-                        Livewire.emit('setPrinters', impresoras);
+           function searchPrinter() {
+                Impresora.getImpresoras()
+                    .then(listaDeImpresoras => {
+                        Livewire.emit('setPrinters', listaDeImpresoras)
                        
                     });
+              
             }
-            $(document).ready(function() {
-             
-            })
         </script>
     @endpush
 </div>

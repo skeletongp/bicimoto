@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cuadre;
 use App\Models\Invoice;
 use App\Models\Outcome;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -47,6 +48,9 @@ class CuadreController extends Controller
         $ctaCajaGeneral = $place->findCount('100-01')->balance;
         $efectivos = $place->counts()->where('code', 'like', '100%')->pluck('balance', 'name');
         $PDF = App::make('dompdf.wrapper');
+        $entregadoHoy=Transaction::where('day',Carbon::now()->format('Y-m-d'))
+        ->where('place_id',getPlace()->id)
+        ->where('debitable_id',99)->where('creditable_id',4)->sum('income');
         $data = [
             'payments' => $payments,
             'invoices' => $invoices,
@@ -55,6 +59,7 @@ class CuadreController extends Controller
             'ctaCajaGeneral' => $ctaCajaGeneral,
             'pdf' => $PDF,
             'efectivos' => $efectivos,
+            'entregadoHoy'=>$entregadoHoy
         ];
         $pdf = $PDF->loadView('pages.cuadres.pdf-cuadre', $data);
         file_put_contents('storage/cuadres/' . 'cuadre_diario_' . $date . $place->id . '.pdf', $pdf->output());

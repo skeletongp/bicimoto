@@ -20,16 +20,17 @@
                         </x-datalist>
                         <x-input-error for="cMainDebit_id"></x-input-error>
                     </div>
+                    @if (count($countsDebit))
                     <div class="w-full">
-                        <x-datalist inputId="cDetailDebit_id{{$cDetailCredit_id}}" model="cDetailDebit_id" listName="cDetailDebit_idList{{$cDetailCredit_id}}"
+                        <x-datalist inputId="cDetailDebit_id{{$cDetailDebit_id}}" model="cDetailDebit_id" listName="cDetailDebit_idList{{$cDetailDebit_id}}"
                             label="Cuenta Detalle">
                             @foreach ($countsDebit as $idDebit => $cDebit)
-                                {{ $cDebit }}
                                 <option data-value="{{ $idDebit }}" value="{{ $cDebit }}"></option>
                             @endforeach
                         </x-datalist>
                         <x-input-error for="cDetailDebit_id"></x-input-error>
                     </div>
+                    @endif
                 </div>
                 <h1 class="text-lg font-bold uppercase my-2 mt-4">Crédito</h1>
                 <div class="flex space-x-4 items-start">

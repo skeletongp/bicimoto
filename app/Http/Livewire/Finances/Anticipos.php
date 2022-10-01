@@ -30,6 +30,9 @@ class Anticipos extends LivewireDatatable
             Column::name('contacts.fullname')->label('Cliente')->searchable(),
             NumberColumn::name('anticipos.saldo')->label('Saldo')->formatear('money')->enableSummary(),
             DateColumn::name('anticipos.updated_at')->label('Fecha')->format('d/m/Y'),
+            Column::callback(['anticipos.id'], function($id){
+                return view('livewire.anticipos.action', ['anticipo_id' => $id]);
+            })->label('Opc.'),
         ];
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Clients;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Models\CountMain;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -45,7 +46,7 @@ class CreateClient extends Component
         $store = auth()->user()->store;
         $this->validate();
         $client = $store->clients()->create();
-        $contact=Contact::create($this->form);
+        $contact=Contact::create(Arr::except($this->form, ['code']));
           $client->contact()->associate($contact);
         $client->save();
         if ($this->photo_path) {

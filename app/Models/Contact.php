@@ -26,4 +26,8 @@ class Contact extends Model
     {
         return $this->name.' '.$this->lastname;
     }
+    public function client()
+    {
+        return $this->hasOne(Client::class);
+    }
 }

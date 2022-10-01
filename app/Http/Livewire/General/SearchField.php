@@ -65,6 +65,7 @@ class SearchField extends Component
           ->addSearchableAttribute('contacts.fullname')
           ->addSearchableAttribute('clients.code')
           ->addSearchableAttribute('contacts.address')
+          ->selectRaw('clients.*, contacts.fullname, contacts.address')
           ->whereIn('clients.id', $clients);
         })
         ->registerModel(Proceso::class, function(ModelSearchAspect $modelSearchAspect) use ($place){
