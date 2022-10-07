@@ -29,6 +29,7 @@
                 }
             }
             removeAccent = function(string) {
+                console.log(string);
                 string = string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 return string;
             };
