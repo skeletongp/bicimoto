@@ -29,12 +29,14 @@
                 }
             }
             removeAccent = function(string) {
-                if(typeof string !== 'string') return string;
                 string = string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 return string;
             };
-
+            
             function texto(impresora, string) {
+                if(typeof string !== 'string') {
+                    string = string.toString();
+                };
                 impresora.write(removeAccent(string.toUpperCase()));
             }
             var formatter = new Intl.NumberFormat('en-US', {
