@@ -29,13 +29,13 @@
                 }
             }
             removeAccent = function(string) {
-            string = string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return string;
-        };
+                string = string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return string;
+            };
 
-        function texto(impresora, string) {
-            impresora.write(removeAccent(string.toUpperCase()));
-        }
+            function texto(impresora, string) {
+                impresora.write(removeAccent(string.toUpperCase()));
+            }
             var formatter = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
@@ -48,7 +48,8 @@
                 .map(items => items[field])
                 .reduce((prev, curr) => parseFloat(prev) + parseFloat(curr), 0);
 
-            retry=0;
+            retry = 0;
+
             function printP(payment) {
                 obj = payment;
                 if (!obj.place.preference.printer) {
@@ -64,53 +65,53 @@
                 texto(conector, obj.payable.store.name + "\n");
                 conector.setEmphasize(0);
                 conector.setFontSize(1, 1)
-               texto(conector, 'RNC: ')
-               texto(conector, obj.payable.store.rnc + "\n");
-               texto(conector, obj.payable.store.phone + "\n");
-               texto(conector, obj.payable.store.address + "\n");
-               texto(conector, '--------------------------------------');
+                texto(conector, 'RNC: ')
+                texto(conector, obj.payable.store.rnc + "\n");
+                texto(conector, obj.payable.store.phone + "\n");
+                texto(conector, obj.payable.store.address + "\n");
+                texto(conector, '--------------------------------------');
                 conector.feed(1);
                 /* Fin Encabezado */
 
                 /* Sección Título */
                 conector.setEmphasize(1);
                 conector.setFontSize(2, 2);
-               texto(conector, 'RECIBO DE PAGO');
+                texto(conector, 'RECIBO DE PAGO');
                 conector.setEmphasize(0);
                 conector.setFontSize(1, 1);
                 conector.feed(1);
-               texto(conector, obj.cuotas + " / ");
-               texto(conector, obj.cuotasTotal);
+                texto(conector, obj.cuotas + " / ");
+                texto(conector, obj.cuotasTotal);
                 conector.feed(2)
                 /* Fin Sección */
 
                 /* Detalle Factura */
                 align(conector, 'left');
                 conector.setEmphasize(1);
-               texto(conector, "INICIAL: ");
+                texto(conector, "INICIAL: ");
                 conector.setEmphasize(0);
-               texto(conector, formatter.format(obj.payable.payment.total) + " | ")
+                texto(conector, formatter.format(obj.payable.payment.total) + " | ")
 
                 conector.setEmphasize(1);
-               texto(conector, "ACTUAL: ");
+                texto(conector, "ACTUAL: ");
                 conector.setEmphasize(0);
-               texto(conector, formatter.format(obj.payable.rest))
+                texto(conector, formatter.format(obj.payable.rest))
                 conector.feed(1);
 
 
 
                 conector.setEmphasize(1);
-               texto(conector, 'FECHA: ')
+                texto(conector, 'FECHA: ')
                 conector.setEmphasize(0);
-               texto(conector, obj.day + " | ");
+                texto(conector, obj.day + " | ");
 
-               texto(conector, 'FACT. NO.: ')
+                texto(conector, 'FACT. NO.: ')
                 conector.setEmphasize(0);
-               texto(conector, obj.payable.number);
+                texto(conector, obj.payable.number);
                 conector.feed(1);
 
                 align(conector, 'center');
-               texto(conector, '--------------------------------------');
+                texto(conector, '--------------------------------------');
                 conector.feed(1);
                 /* Fin detalle */
 
@@ -118,30 +119,30 @@
                 /* Datos del cliente */
                 align(conector, 'left');
                 conector.setEmphasize(1);
-               texto(conector, 'CLIENTE: ')
+                texto(conector, 'CLIENTE: ')
                 conector.setEmphasize(0);
-               texto(conector, obj.payable.name );
+                texto(conector, obj.payable.name);
                 conector.feed(1);
 
                 conector.setEmphasize(1);
-               texto(conector, 'CÉDULA: ');
+                texto(conector, 'CÉDULA: ');
                 conector.setEmphasize(0);
-               texto(conector, obj.payer.contact.cedula ? obj.payer.contact.cedula : '0000000000')
-               texto(conector, ' / ');
+                texto(conector, obj.payer.contact.cedula ? obj.payer.contact.cedula : '0000000000')
+                texto(conector, ' / ');
 
                 conector.setEmphasize(1);
-               texto(conector, 'TEL: ');
+                texto(conector, 'TEL: ');
                 conector.setEmphasize(0);
-               texto(conector, obj.payer.contact.cellphone);
+                texto(conector, obj.payer.contact.cellphone);
                 conector.feed(1);
 
                 conector.setEmphasize(1);
-               texto(conector, 'DIR: ');
+                texto(conector, 'DIR: ');
                 conector.setEmphasize(0);
-               texto(conector, obj.payer.contact.address ? obj.payer.contact.address : 'N/D');
+                texto(conector, obj.payer.contact.address ? obj.payer.contact.address : 'N/D');
                 conector.feed(1);
                 align(conector, 'center');
-               texto(conector, '--------------------------------------');
+                texto(conector, '--------------------------------------');
                 conector.feed(1);
                 /* Fin Cliente */
 
@@ -149,7 +150,7 @@
                 conector.setEmphasize(1);
                 align(conector, 'center');
                 conector.setFontSize(2, 1);
-               texto(conector, 'DETALLES DEL PAGO')
+                texto(conector, 'DETALLES DEL PAGO')
                 conector.setFontSize(1, 1);
                 conector.feed(1)
                 conector.setEmphasize(0);
@@ -160,84 +161,84 @@
 
                 if (obj.efectivo > 0) {
                     conector.setEmphasize(1);
-                   texto(conector, 'EFECTIVO: ');
+                    texto(conector, 'EFECTIVO: ');
                     conector.setEmphasize(0);
-                   texto(conector, formatter.format(obj.efectivo - obj.cambio));
+                    texto(conector, formatter.format(obj.efectivo - obj.cambio));
                     conector.feed(1);
                 }
 
                 if (obj.transferencia > 0) {
                     conector.setEmphasize(1);
-                   texto(conector, 'TRANSFERENCIA: ');
+                    texto(conector, 'TRANSFERENCIA: ');
                     conector.setEmphasize(0);
-                   texto(conector, formatter.format(obj.transferencia - obj.cambio));
+                    texto(conector, formatter.format(obj.transferencia - obj.cambio));
                     conector.feed(1);
                 }
 
                 if (obj.tarjeta > 0) {
                     conector.setEmphasize(1);
-                   texto(conector, 'OTROS: ');
+                    texto(conector, 'OTROS: ');
                     conector.setEmphasize(0);
-                   texto(conector, formatter.format(obj.tarjeta - obj.cambio));
+                    texto(conector, formatter.format(obj.tarjeta - obj.cambio));
                     conector.feed(1);
                 }
                 conector.feed(1);
 
                 conector.setEmphasize(1);
-               texto(conector, 'SALDO ANTERIOR: ')
+                texto(conector, 'SALDO ANTERIOR: ')
                 conector.setEmphasize(0);
-               texto(conector, formatter.format(obj.total));
+                texto(conector, formatter.format(obj.total));
                 conector.feed(1);
 
                 conector.setEmphasize(1);
-               texto(conector, 'INTERÉS: ');
+                texto(conector, 'INTERÉS: ');
                 conector.setEmphasize(0);
-               texto(conector, formatter.format(obj.cuota.interes) + " | ");
+                texto(conector, formatter.format(obj.cuota.interes) + " | ");
                 conector.setEmphasize(1);
-               texto(conector, 'CAPITAL: ');
+                texto(conector, 'CAPITAL: ');
                 conector.setEmphasize(0);
-               texto(conector, formatter.format(obj.cuota.capital));
+                texto(conector, formatter.format(obj.cuota.capital));
                 conector.feed(1);
 
                 conector.setEmphasize(1);
-               texto(conector, 'INTERÉS POR MORA: ');
+                texto(conector, 'INTERÉS POR MORA: ');
                 conector.setEmphasize(0);
-               texto(conector, formatter.format(obj.cuota.mora));
+                texto(conector, formatter.format(obj.cuota.mora));
                 conector.feed(1);
 
                 conector.setEmphasize(1);
-               texto(conector, 'PAGARÉ: ');
+                texto(conector, 'PAGARÉ: ');
                 conector.setEmphasize(0);
-               texto(conector, formatter.format(obj.cuota.debe));
+                texto(conector, formatter.format(obj.cuota.debe));
                 conector.feed(1);
 
                 conector.setEmphasize(1);
-               texto(conector, 'SALDO RESTANTE: ');
+                texto(conector, 'SALDO RESTANTE: ');
                 conector.setEmphasize(0);
-               texto(conector, formatter.format(obj.rest));
+                texto(conector, formatter.format(obj.rest));
                 conector.feed(1);
 
                 conector.setEmphasize(1);
-               texto(conector, 'PRÓXIMO PAGO: ');
+                texto(conector, 'PRÓXIMO PAGO: ');
                 conector.setEmphasize(0);
-               texto(conector, obj.proxima.fecha);
+                texto(conector, obj.proxima.fecha);
                 conector.feed(1);
 
                 align(conector, 'center');
-               texto(conector, '--------------------------------------');
+                texto(conector, '--------------------------------------');
                 conector.feed(1);
                 /* Fin Detalles */
                 /* Sección personas */
 
                 conector.setEmphasize(1);
-               texto(conector, 'CAJERO: ');
+                texto(conector, 'CAJERO: ');
                 conector.setEmphasize(0);
-               texto(conector, obj.contable.fullname);
+                texto(conector, obj.contable.fullname);
                 conector.feed(2);
                 /* Fin sección */
 
                 /* Pie */
-               texto(conector, '-------- GRACIAS POR PREFERIRNOS --------\n');
+                texto(conector, '-------- GRACIAS POR PREFERIRNOS --------\n');
                 conector.feed(2);
                 /* Fin pie */
 
@@ -249,9 +250,9 @@
                             console.log("Impreso correctamente");
                         } else {
                             Livewire.emit('printPayment', obj);
-                            if(retry<3){
-                            retry++;
-                           }
+                            if (retry < 3) {
+                                retry++;
+                            }
                             console.log("Error. La respuesta es: " + respuestaAlImprimir);
                         }
                     });
