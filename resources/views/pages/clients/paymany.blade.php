@@ -12,6 +12,7 @@
         <script>
             Livewire.on('printPayment', function(payment) {
                 printP(payment);
+                window.location.href='/';
             })
 
             function align(conector, dir) {
