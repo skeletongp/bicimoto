@@ -10,9 +10,11 @@
     </div>
     @push('js')
         <script>
+            let int=1;
+            console.log(int++);
             Livewire.on('printPayment', function(payment) {
                 printP(payment);
-                window.location.href='/';
+                
             })
 
             function align(conector, dir) {
