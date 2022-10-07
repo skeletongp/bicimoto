@@ -10,11 +10,10 @@
     </div>
     @push('js')
         <script>
-            let int=1;
-            console.log(int++);
             Livewire.on('printPayment', function(payment) {
                 printP(payment);
-                
+                let int = 1;
+                console.log(int++);
             })
 
             function align(conector, dir) {
@@ -34,9 +33,9 @@
                 string = string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 return string;
             };
-            
+
             function texto(impresora, string) {
-                if(typeof string !== 'string') {
+                if (typeof string !== 'string') {
                     string = string.toString();
                 };
                 impresora.write(removeAccent(string.toUpperCase()));
