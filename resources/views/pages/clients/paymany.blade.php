@@ -52,7 +52,6 @@
                 .map(items => items[field])
                 .reduce((prev, curr) => parseFloat(prev) + parseFloat(curr), 0);
 
-            retry = 0;
 
             function printP(payment) {
                 obj = payment;
@@ -254,9 +253,7 @@
                             console.log("Impreso correctamente");
                         } else {
                             Livewire.emit('printPayment', obj);
-                            if (retry < 3) {
-                                retry++;
-                            }
+                            
                             console.log("Error. La respuesta es: " + respuestaAlImprimir);
                         }
                     });
