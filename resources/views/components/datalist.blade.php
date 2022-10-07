@@ -35,6 +35,7 @@
                 setValue = $('#' + list + ' [value="' + value + '"]').data('value');
                 if (model) {
                     @this.set(model, setValue);
+                    console.log(model, setValue)
                 }
             })
             input.on('keypress', function(e) {

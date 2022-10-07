@@ -75,7 +75,7 @@ trait OrderConfirmTrait
 
         $this->closeComprobante($invoice->comprobante, $invoice);
         $invoice = Invoice::whereId($this->form['id'])->with('seller', 'contable', 'client.contact', 'details.product.units', 'details.taxes', 'details.unit', 'payment', 'store.image', 'payments.pdf', 'comprobante', 'pdf', 'place.preference')->first();
-        if($this->createCuota){
+        if($this->createCuota || $this->chasis){
             $this->createCuota($invoice);
             $this->createContrato($invoice);
         }
@@ -87,7 +87,7 @@ trait OrderConfirmTrait
     }
     public function createContrato($invoice){
         $contrato=new Contrato();
-        $contrato->cuotas=$this->cuotas;
+        $contrato->cuotas=$this->cuotas?:0;
         $contrato->interes=$this->interes;
         $contrato->client_id=$invoice->client_id;
         $contrato->place_id=$invoice->place_id;

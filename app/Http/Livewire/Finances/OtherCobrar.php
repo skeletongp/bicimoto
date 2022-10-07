@@ -11,7 +11,7 @@ use Livewire\Component;
 class OtherCobrar extends Component
 {
     use Confirm;
-    public $countMains=[], $cobrables=[], $cMainDebit_id, $cDetailDebit_id='100-01', $cMainCredit_id, $cDetailCredit_id, $countsDebit = [], $countsCredit = [];
+    public $countMains=[], $cobrables=[], $cMainDebit_id, $cDetailDebit_id, $cMainCredit_id, $cDetailCredit_id, $countsDebit = [], $countsCredit = [];
     public $cMainDebitName, $cDetailDebitName, $cMainCreditName, $cDetailCreditName, $creditable_code;
     public $concept, $ref, $amount;
     protected $listeners = ['validateAuthorization', 'createTransaction', 'modalOpened'];
@@ -44,7 +44,7 @@ class OtherCobrar extends Component
         $this->cMainDebitName = $this->cobrables[$this->cMainDebit_id];
         $this->cMainCreditName= $this->countMains[$this->cMainCredit_id];
         $countMain = CountMain::whereId($this->cMainDebit_id)->with('counts')->first();
-        $this->countsDebit = $countMain->counts()->select(
+        $this->countsDebit = Count::where('count_main_id',$countMain->id)->select(
             DB::raw('CONCAT(code," - ",name) AS name'),
             'id'
             )->pluck('name', 'id');
@@ -63,7 +63,7 @@ class OtherCobrar extends Component
     public function createTransaction()
     {
         $this->validate();
-        $debitable = Count::whereCode($this->cDetailDebit_id)->first();
+        $debitable = Count::whereId($this->cDetailDebit_id)->first();
         $creditable = Count::whereId($this->cDetailCredit_id)->first();
         $trans=setTransaction($this->concept, $this->ref, $this->amount, $debitable, $creditable);
         if($trans){
