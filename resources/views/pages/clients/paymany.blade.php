@@ -61,7 +61,7 @@
                 align(conector, 'center');
                 conector.setEmphasize(1);
                 conector.setFontSize(2, 3)
-                texto(conector, obj.payable.store.name.toUpperCase() + "\n");
+                texto(conector, obj.payable.store.name + "\n");
                 conector.setEmphasize(0);
                 conector.setFontSize(1, 1)
                texto(conector, 'RNC: ')
@@ -120,7 +120,7 @@
                 conector.setEmphasize(1);
                texto(conector, 'CLIENTE: ')
                 conector.setEmphasize(0);
-               texto(conector, obj.payable.name ? obj.payable.name.toUpperCase() : obj.payer.contact.fullname.toUpperCase());
+               texto(conector, obj.payable.name );
                 conector.feed(1);
 
                 conector.setEmphasize(1);
