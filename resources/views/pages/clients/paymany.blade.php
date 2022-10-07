@@ -36,7 +36,6 @@
         function texto(impresora, string) {
             impresora.write(removeAccent(string.toUpperCase()));
         }
-        var formatter =
             var formatter = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
