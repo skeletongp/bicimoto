@@ -11,7 +11,6 @@
     @push('js')
         <script>
             Livewire.on('printPayment', function(payment) {
-                console.log(payment);
                 printP(payment);
             })
 
