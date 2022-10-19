@@ -8,17 +8,16 @@ use Mediconesystems\LivewireDatatables\Action;
 use Mediconesystems\LivewireDatatables\Column;
 use Mediconesystems\LivewireDatatables\Http\Livewire\LivewireDatatable;
 
-class ProductChasis extends LivewireDatatable
+class Allchasis extends LivewireDatatable
 {
-    public $product_id;
     public $padding = 'px-2';
     public $hideable = 'select';
     public $headTitle = "Registro de chasis";
     public function builder()
     {
         $place = getPlace();
-        $chasis = Chasis::where('product_id', $this->product_id)
-            ->where('chasis.place_id', $place->id)
+        $chasis = Chasis::
+            where('chasis.place_id', $place->id)
             ->leftjoin('invoices', 'invoices.id', '=', 'chasis.invoice_id')
             ->leftJoin('clients', 'clients.id', '=', 'invoices.client_id')
             ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
@@ -64,8 +63,8 @@ class ProductChasis extends LivewireDatatable
         return [
 
             Action::value('print')->label('Impresión')->callback(function ($mode, $items) {
-                if (count($items) > 50) {
-                    $this->emit('showAlert','No se puede imprimir más de 50 registros','error');
+                if (count($items) > 250) {
+                    $this->emit('showAlert','No se puede imprimir más de 250 registros','error');
                 } else {
                     return redirect()->route('products.chasis', ['chasis' => $items]);
                 }

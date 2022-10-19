@@ -254,7 +254,6 @@
                         } else {
                             Livewire.emit('printPayment', obj);
                             
-                            console.log("Error. La respuesta es: " + respuestaAlImprimir);
                         }
                     });
 

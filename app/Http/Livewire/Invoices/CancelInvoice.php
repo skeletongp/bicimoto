@@ -36,6 +36,11 @@ class CancelInvoice extends Component
         $this->deleteDetails($details);
         $this->deleteTaxes($invoice);
         $this->deletePayments($invoice);
+
+        if ($invoice->chasis) {
+            $invoice->chasis->update(['status' => 'Pendiente']);
+        }
+
         $invoice->delete();
         $this->emit('showAlert', 'Factura borrada correctamente', 'success');
         $this->emit('refreshLivewireDatatable');

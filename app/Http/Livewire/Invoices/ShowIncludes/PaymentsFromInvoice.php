@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Invoices\ShowIncludes;
 
+use App\Models\Payment;
 use Mediconesystems\LivewireDatatables\Action;
 use Mediconesystems\LivewireDatatables\Column;
 use Mediconesystems\LivewireDatatables\DateColumn;
@@ -48,6 +49,7 @@ class PaymentsFromInvoice extends LivewireDatatable
             Column::callback(['payer_id', 'id'], function ($payer, $id)  {
                 return  "<span class='far fa-print cursor-pointer' wire:click='print($id)'> </span>";
             })->label('Print')->contentAlignCenter(),
+            Column::delete()->label('Del.')
         ];
     }
     public function print($id)
@@ -56,5 +58,32 @@ class PaymentsFromInvoice extends LivewireDatatable
         $result=arrayFind($payments, 'id', $id);
         $this->emit('printPayment', $result);
     }
+    public function delete($id)
+    {
+        $user=auth()->user();
+        if($user->hasRole('Super Admin')){
+            $place=getPlace();
+            $payment=Payment::with('payable.client','payer')->whereId($id)->first();
+          
+            $this->backToInvoice($payment->payable, $payment->payed-$payment->cambio);
+            setTransaction('Reversión pago de '.$payment->payer->name, $payment->payable->number, $payment->payed-$payment->cambio, $payment->payer->contable, $place->cash());
+            $payment->delete();
+            $this->emit('alert', 'El pago ha sido eliminado');
+        }else{
+            $this->emit('alert', 'No puede eliminar pagos','error');
+        }
+        $payment->delete();
+        $this->emit('alert', ['type' => 'success', 'message' => 'Pago eliminado']);
+    }
+    public function backToInvoice($invoice, $payed){
+        $invoice->update([
+            'rest' => $invoice->rest + $payed,
+        ]);
+        $invoice->client->update([
+            'debt'=>$invoice->client->invoices->sum('rest'),
+            'limit'=>$invoice->client->limit+$payed
+        ]);
+    }
+    
     
 }

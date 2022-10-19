@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chasis;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -66,4 +67,21 @@ class ProductController extends Controller
         Cache::put('productCatalogue_'.env('STORE_ID'), $url);
         return view('pages.products.view-catalogue', compact('url'));
     }
+    public function chasis(Request $request){
+        $chasis=Chasis::whereIn('chasis.id', $request->chasis)->where('status','Pendiente')
+        ->where('product_id','!=',1)
+        ->groupBy('chasis.id')
+        ->get();
+        $PDF = App::make('dompdf.wrapper');
+        $data = [
+            'chasis' => $chasis,
+    
+        ];
+        $pdf = $PDF->loadView('pages.products.chasis_pdf', $data);
+        Cache::put('chasis_'.env('STORE_ID'), base64_encode($pdf->output()));
+       return view('pages.products.chasis_preview');
+   }
+   public function allchasis(){
+    return view('pages.products.allchasis');
+   }
 }

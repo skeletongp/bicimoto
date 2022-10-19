@@ -36,6 +36,11 @@ trait DetailsSectionTrait
         }
         $this->producto = $product;
         if ($product) {
+            if($product->chasis()->count() && !$chasis){
+                $this->emit('showAlert', 'Ingrese el código de Chasis del producto');
+                $this->product_code = '';
+                return ;
+            }
             $productLoad = [
                 'name' => $product->name,
                 'code' => $product->code,

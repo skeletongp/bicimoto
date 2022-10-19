@@ -44,15 +44,19 @@
     <table style="width: 100%">
         @foreach ($chasis as $chasis)
             <tr>
-                <td>
+                <td style="width:50%">
                     <span style="font-weight: bold; font-size:xx-large">{{ $chasis->code }}</span><br>
-                    <span style="font-weight: bold; font-size:large">{{ $chasis->marca }} {{ $chasis->modelo }} {{ $chasis->year }}</span><br>
+                    <span style="font-weight: bold; font-size:large">{{ $chasis->marca }} {{ $chasis->modelo }}
+                        {{ $chasis->year }}</span><br>
                     <span style="font-weight: bold; font-size:medium">{{ $chasis->chasis }} </span><br>
                 </td>
                 <td>
-                    <span style="font-weight: bold; font-size:xx-large">{{ $chasis->code }}</span><br>
-                    <span style="font-weight: bold; font-size:large">{{ $chasis->marca }} {{ $chasis->modelo }} {{ $chasis->year }}</span><br>
-                    <span style="font-weight: bold; font-size:medium">{{ $chasis->chasis }} </span><br>
+                    <div style="transform:scale(0.5)">
+                        <span style="font-weight: bold; font-size:medium">{{ $chasis->code }}</span><br>
+                        <span style="font-weight: bold; font-size:small">{{ $chasis->marca }} {{ $chasis->modelo }}
+                            {{ $chasis->year }}</span><br>
+                        <span style="font-weight: bold; font-size:x-small">{{ $chasis->chasis }} </span><br>
+                    </div>
                 </td>
             </tr>
         @endforeach

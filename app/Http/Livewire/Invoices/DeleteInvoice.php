@@ -29,6 +29,9 @@ class DeleteInvoice extends Component
             'debt'=>$invoice->client->invoices->sum('rest'),
             'limit'=>$invoice->client->limit+$invoice->rest
         ]);
+        if($invoice->chasis){
+            $invoice->chasis->update(['status'=>'Pendiente']);
+        }
         $invoice->delete();
         
         $this->emit('showAlert', 'Factura anulada existosamente', 'success');

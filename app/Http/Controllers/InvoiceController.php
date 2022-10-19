@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cuota;
 use App\Models\Invoice;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
@@ -49,10 +51,32 @@ class InvoiceController extends Controller
         $pdf->loadView('pages.invoices.amortizacion-pdf', compact('cuotas', 'invoice', 'payment'));
         return $pdf->download('amortización ' . $invoice->number . '.pdf');
     }
+    public function vencidas()
+    {
+        $cuotas=
+        Cuota::where('cuotas.fecha', '<', date('Y-m-d'))
+        ->where('cuotas.status', '!=', 'pagado')
+        ->orderBy('cuotas.fecha')
+        ->leftjoin('clients', 'clients.id', '=', 'cuotas.client_id')
+        ->leftjoin('invoices', 'invoices.id', '=', 'cuotas.invoice_id')
+        ->leftJoin('contacts', 'contacts.id', '=', 'clients.contact_id')
+        ->where('invoices.place_id', getPlace()->id)
+        ->where('invoices.deleted_at', null)
+        ->selectRaw('count(cuotas.id) as cant, sum(capital) as capital, sum(interes) as interes, sum(mora) as mora, sum(debe) as debe, contacts.fullname as client, contacts.phone as phone, invoices.number')
+        ->groupBy('clients.id')
+        ->orderBy('contacts.name')
+        ->get();
+        ;
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('pages.invoices.vencidas-pdf', compact('cuotas'));
+        return $pdf->download('Cuotas vencidas ' .date('d/m/Y') . '.pdf');
+    }
     public function pendientes()
     {
+        
         return view('pages.invoices.pendientes');
     }
+    
     public function carta(Invoice $invoice, $to = 'Seguro')
     {
         $payment = $invoice->payment;

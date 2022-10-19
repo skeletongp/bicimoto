@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('invoices/amortizacion/{invoice}', 'amortizacion')->name('invoices.amortizacion');
             Route::get('invoices/create', 'create')->name('invoices.create');
             Route::get('invoices/orders', 'orders')->name('orders');
+            Route::get('invoices/vencidas', 'vencidas')->name('vencidas');
             Route::get('invoices/cuotas/{invoice}', 'cuotas')->name('invoices.cuotas');
             Route::get('invoices/show/{invoice}', 'show')->name('invoices.show');
             Route::get('invoices/pendientes', 'pendientes')->name('invoices.pendientes');
@@ -85,8 +86,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('products/report', 'report')->name('products.report');
             Route::get('products/catalogue', 'catalogue')->name('products.catalogue');
             Route::get('products/create', 'create')->name('products.create');
+            Route::get('products/allchasis', 'allchasis')->name('products.allchasis');
             Route::get('products/sum', 'sum')->name('products.sum');
             Route::get('products/edit/{product}', 'edit')->name('products.edit');
+            Route::get('products/chasis', 'chasis')->name('products.chasis');
             Route::get('products/{product}', 'show')->name('products.show');
         });
 

@@ -79,9 +79,13 @@ class PayCuotas extends Component
         }
         $this->validate();
         $cuota = Cuota::find($cuota_id)->load('invoice');
-        $invoice = $cuota->invoice;
-        $this->amount -= $cuota->debe;
-        $this->createPayment($invoice, $cuota->capital, $cuota->interes, $cuota->debe, $cuota);
+        if($cuota->status=='pendiente'){
+            $invoice = $cuota->invoice;
+            $this->amount -= $cuota->debe;
+            $this->createPayment($invoice, $cuota->capital, $cuota->interes, $cuota->debe, $cuota);
+        } else{
+            $this->emit('alert', 'Esta cuota ya fue pagada');
+        }
     }
     public function createPayment($invoice, $capital, $interes, $debe, $cuota)
     {

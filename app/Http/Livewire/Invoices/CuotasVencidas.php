@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Invoices;
 use App\Http\Classes\NumberColumn;
 use App\Models\Cuota;
 use App\Models\Place;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Mediconesystems\LivewireDatatables\Action;
 use Mediconesystems\LivewireDatatables\Column;
@@ -83,6 +84,33 @@ class CuotasVencidas extends LivewireDatatable
 
             Action::value('edit')->label('Cobrar cuotas')->callback(function ($mode, $items) {
                 return redirect()->route('clients.paymany', ['cuotas' => implode(',', $items)]);
+            }),
+            Action::value('print')->label('imprimir')->callback(function ($mode, $items) {
+                foreach($this->builder()->get() as $cuota){
+                    
+                        $place=optional(auth()->user())->place?:Place::first();
+                        $mora = $place->preference->mora_rate/100;
+                        if (
+                            $cuota->fecha < Carbon::now()->subDays(5)->format('Y-m-d')
+                            && $cuota->updated_at->format('Y-m-d H:i') ==  $cuota->created_at->format('Y-m-d H:i')
+                        ) {
+                            
+                            $cuota->mora= $cuota->debe *$mora;
+                            $cuota->debe = $cuota->debe * (1+$mora);
+                            $cuota->save();
+                            $invoice=$cuota->invoice->load('payments');
+                            $invoice->update([
+                                'rest'=>$invoice->rest+$cuota->mora,
+                            ]);
+                            $payment=$invoice->payments->last();
+                            $payment->update([
+                                'total'=>$payment->total+$cuota->mora,
+                                'rest'=>$payment->rest+$cuota->mora,
+                            ]);
+                            $cuota->touch();
+                        }
+                return redirect()->route('vencidas');
+            }
             }),
 
         ];

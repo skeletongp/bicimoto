@@ -33,7 +33,7 @@ class CuadreController extends Controller
             ->leftJoin('moso_master.users', 'users.id', '=', 'payments.contable_id')
             ->orderBy('payments.created_at', 'desc')
             ->select('payments.*', 'invoices.name as name', 'invoices.number', 'contacts.fullname as client_name')
-            ->with('payer', 'payable')->get();
+            ->with('payer', 'payable')->groupBy('payments.id')->get();
        
         $gastos = $place->payments()->where('payable_type', Outcome::class)
             ->join('invoices', 'invoices.id', '=', 'payments.payable_id')
