@@ -40,8 +40,9 @@
                     @include('pages.clients.includes.crediticio-data')
                    
                 </div>
-                <div class=" py-2 mx-auto  relative ">
+                <div class=" py-2 mx-auto  relative space-y-4 ">
                     @livewire('invoices.cuotas-vencidas', ['client_id' => $client->id], key(uniqid()))
+                    @livewire('anticipos.anticipo-list', ['client_code' => $client->code], key(uniqid()))
                 </div>
             </div>
         </div>

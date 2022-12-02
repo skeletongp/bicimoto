@@ -10,6 +10,7 @@ trait DetailsSectionTrait
 {
     public $producto;
     public $product, $product_code, $product_name, $products, $stock, $unit, $open = false;
+    public $pivot_id;
     public $chasis, $facturable = true;
     function rules()
     {
@@ -62,11 +63,11 @@ trait DetailsSectionTrait
     {
         $this->validate(['product' => 'required']);
 
-        /* if ($this->cant > $this->stock && !auth()->user()->hasPermissionTo('Autorizar') && $this->product['type'] != 'Servicio') {
+        if ($this->cant > $this->stock && !auth()->user()->hasPermissionTo('Autorizar') && $this->product['type'] != 'Servicio') {
             $this->authorize('Vender producto fuera de Stock', 'validateAuthorization','confirmedAddItems','data=null','Autorizar');
-        } else { */
+        } else {
         $this->confirmedAddItems();
-        /*  } */
+         }
         if ($this->chasis) {
             $this->facturable = false;
         };

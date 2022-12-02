@@ -22,7 +22,7 @@ class CuotasVencidas extends LivewireDatatable
         $user = auth()->user();
         $this->client_id?$this->hideable=null:$this->hideable="select";
         $cuotas =
-            Cuota::where('cuotas.fecha', '<', date('Y-m-d'))
+            Cuota::where('cuotas.fecha', '<', Carbon::now()->subDays('5')->format('Y-m-d'))
             ->where('cuotas.status', '!=', 'pagado')
             ->orderBy('cuotas.fecha')
             ->leftjoin('clients', 'clients.id', '=', 'cuotas.client_id')

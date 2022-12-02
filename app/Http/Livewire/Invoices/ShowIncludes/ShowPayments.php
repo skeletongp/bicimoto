@@ -13,7 +13,7 @@ trait ShowPayments
 {
 
 
-    public $banks, $payment=['efectivo'=>0, 'tarjeta'=>0,'transferencia'=>0], $reference, $bank, $bank_id, $cobrable = true;
+    public $banks, $payment = ['efectivo' => 0, 'tarjeta' => 0, 'transferencia' => 0], $reference, $bank, $bank_id, $cobrable = true;
 
     public function rules2(): array
     {
@@ -104,7 +104,7 @@ trait ShowPayments
         ]);
         if ($invoice->cuotas->count()) {
             $this->remakeAmortizacion($payment, $invoice);
-        } else{
+        } else {
             $invoice->client->update([
                 'debt' => $invoice->client->invoices->sum('rest'),
                 'limit' => $invoice->client->limit + $payment->payed
@@ -144,7 +144,9 @@ trait ShowPayments
         $interes = $invoice->contrato->interes;
         $periodo = $invoice->cuotas()->first()->periodo;
         $invoice->cuotas()->where('status', 'pendiente')->delete();
-        $this->createNewCuota($invoice, $date, $interes, $cuotas,  $prevInteres, $payment, $periodo);
+        if ($invoice->rest > 1000) {
+            $this->createNewCuota($invoice, $date, $interes, $cuotas,  $prevInteres, $payment, $periodo);
+        }
     }
     public function createNewCuota($invoice, $date, $interes, $cuotas, $prevInteres, $payment, $periodo)
     {

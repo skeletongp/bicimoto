@@ -14,6 +14,8 @@ use Mediconesystems\LivewireDatatables\Http\Livewire\LivewireDatatable;
 class CuotasActivas extends LivewireDatatable
 {
     public $padding = "px-2";
+    public $pageName='activas';
+
     public $headTitle = "Cuotas activas de los siguientes 5 días";
     public function builder()
     {

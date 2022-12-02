@@ -16,6 +16,7 @@ class CountTrans extends LivewireDatatable
     public $count_id;
     public $padding="px-2";
     public $hideable='select';
+    use UniqueDateTrait;
     public function builder()
     {
         $count=Count::whereId($this->count_id)->first();
@@ -33,7 +34,7 @@ class CountTrans extends LivewireDatatable
     public function columns()
     {
         return [
-            DateColumn::name('transactions.created_at')->label('Fecha')->format('d/m/Y H:i'),
+            DateColumn::name('transactions.created_at')->label('Fecha')->filterable(),
             Column::callback('concepto', function($concepto){
                 return ellipsis($concepto,30);
             })->label('Concepto'),

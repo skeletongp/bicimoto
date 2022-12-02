@@ -23,6 +23,7 @@ use App\Http\Livewire\Clients\CreateClient;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Models\Contrato;
+use App\Models\Cuota;
 use App\Models\Invoice;
 use App\Models\Place;
 use App\Models\Store;
@@ -167,8 +168,10 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('prueba', function (Request $request) {
+   
     $seeder=new ClientSeeder();
     $seeder->run();
+    /* 
     $invoices = Invoice::whereHas('contrato')->get();
     foreach($invoices as $invoice){
         $contrato= $invoice->contrato;
@@ -183,6 +186,17 @@ Route::get('prueba', function (Request $request) {
             'product_id' => $invoice->details->first()->product_id,
 
         ]);
-    }
+    } */
+   /*  $cuotas=Cuota::where('client_id',44)->get();
+    $cuotas->each(function($cuota){
+      if($cuota->status=='pendiente'){
+        $cuota->update([
+            'fecha'=>str_replace('01','16',$cuota->fecha)
+        ]);
+      }
+    });
+
+    dd($cuotas); */
+
     return redirect()->route('invoices.index');
 })->name('prueba');

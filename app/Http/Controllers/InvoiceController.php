@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cuota;
 use App\Models\Invoice;
+use App\Models\Place;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -54,7 +55,7 @@ class InvoiceController extends Controller
     public function vencidas()
     {
         $cuotas=
-        Cuota::where('cuotas.fecha', '<', date('Y-m-d'))
+        Cuota::where('cuotas.fecha', '<', Carbon::now()->subDays('5')->format('Y-m-d'))
         ->where('cuotas.status', '!=', 'pagado')
         ->orderBy('cuotas.fecha')
         ->leftjoin('clients', 'clients.id', '=', 'cuotas.client_id')
@@ -73,7 +74,19 @@ class InvoiceController extends Controller
     }
     public function pendientes()
     {
-        
+        $cuotas=
+        Cuota::where('cuotas.fecha', '<', Carbon::now()->subDays('5')->format('Y-m-d'))
+        ->where('cuotas.status', '!=', 'pagado')
+        ->whereNotNull('invoice_id')
+        ->with('invoice.payments')
+        ->get();
+        ;
+       
+        foreach ($cuotas as $cuota) {
+           if($cuota->invoice){
+            $this->adjustMora($cuota);
+           }
+        }
         return view('pages.invoices.pendientes');
     }
     
@@ -96,5 +109,29 @@ class InvoiceController extends Controller
         }
 
         return $pdf->download('Carta de ruta para '.$to.' ' . $invoice->number . '.pdf');
+    }
+    public function adjustMora($cuota)
+    {
+        $place=getPlace();
+        $mora = $place->preference->mora_rate/100;
+        if (
+            $cuota->fecha < Carbon::now()->subDays(5)->format('Y-m-d')
+            && $cuota->updated_at->format('Y-m-d H:i') ==  $cuota->created_at->format('Y-m-d H:i')
+        ) {
+            
+            $cuota->mora= $cuota->debe *$mora;
+            $cuota->debe = $cuota->debe * (1+$mora);
+            $cuota->save();
+            $invoice=$cuota->invoice;
+            $invoice->update([
+                'rest'=>$invoice->rest+$cuota->mora,
+            ]);
+            $payment=$invoice->payments->last();
+            $payment->update([
+                'total'=>$payment->total+$cuota->mora,
+                'rest'=>$payment->rest+$cuota->mora,
+            ]);
+            $cuota->touch();
+        }
     }
 }

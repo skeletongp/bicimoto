@@ -137,6 +137,9 @@ class InvoiceShow extends Component
             case 'showpayments':
                 $this->loadPayments();
                 break;
+                case 'showAbono':
+                    $this->loadPayments();
+                    break;
             case 'showattach':
                 $this->loadAttach();
                 break;

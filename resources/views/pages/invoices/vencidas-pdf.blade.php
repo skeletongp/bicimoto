@@ -13,10 +13,11 @@
 
         * {
             background-color: transparent;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
+           
             text-align: center;
             border: 1px solid #eee;
             color: #777;
@@ -31,6 +32,7 @@
             margin-bottom: 0px;
             padding-bottom: 0px;
             color: #000;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         body h3 {
@@ -181,7 +183,12 @@
                 </td>
             </tr>
             <br>
-           
+            <tr>
+                <td colspan="7" style=" text-align:center; width: 100%; padding:10px;">
+                    <b style="text-transform: uppercase; font-size:large; font-weight:bold; ">
+                        Pagarés en estado de mora</b><br />
+                </td>
+            </tr>
 
             <tr class="heading" style="padding-top: 10px">
                 <td>Cant.</td>

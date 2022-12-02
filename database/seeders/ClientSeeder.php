@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Place;
 use App\Models\ProductPlaceUnit;
 use App\Models\Store;
+use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -38,13 +39,17 @@ class ClientSeeder extends Seeder
     public function createClient($data)
     {
         $store = Store::find(env('STORE_ID'));
-        $client = $store->clients()->create([
-            'limit' => $data['deuda'],
-            'code' => str_pad($data['id'],4,'0', STR_PAD_LEFT),
-        ]);
-        $contact = Contact::create(Arr::except($data, ['deuda','cuotas', 'interes', 'day','periodo','id']));
-        $client->contact()->associate($contact);
-        $client->save();
+        $contact=Contact::where('email', $data['email'])->first();
+        $client=optional($contact)->client;
+        if(!$client){
+            $client = $store->clients()->create([
+                'limit' => $data['deuda'],
+                'code' => str_pad($data['id'],4,'0', STR_PAD_LEFT),
+            ]);
+            $contact = Contact::create(Arr::except($data, ['deuda','cuotas', 'interes', 'day','periodo','id']));
+            $client->contact()->associate($contact);
+            $client->save();
+        }
         setContable($client, '101', 'debit', $contact->name . ' ' . $contact->lastname, null, true);
         $this->addItem($data['deuda'],$data['interes'],$data['cuotas'], $client, $data['day'], $data['periodo']);
     }
@@ -57,9 +62,12 @@ class ClientSeeder extends Seeder
 
         ];
         $place=Place::first();
+        $unit = $place->units()->wherePivot('id', 1)->first();
         $createInvoice = new CreateInvoice();
         $createInvoice->number = $place->id . '-' . str_pad($place->invoices()->withTrashed()->count() + 1, 7, '0', STR_PAD_LEFT);
-        $createInvoice->setProduct('001');
+        $createInvoice->setProduct('MN-1114-128');
+        $createInvoice->unit=$unit;
+        $createInvoice->unit_id=1;
         $createInvoice->form = $data;
         $createInvoice->cant =1;
         $createInvoice->price = $deuda;
