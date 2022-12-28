@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte Comprobantes 606</title>
+    <title>Reporte Comprobantes 607</title>
     <style>
         * {
             font-family: Arial, Helvetica, sans-serif;
@@ -111,13 +111,13 @@
         }
 
         @media only screen and (max-width: 600px) {
-            .outcome-box table tr.top table td {
+            .invoice-box table tr.top table td {
                 width: 100%;
                 display: block;
                 text-align: center;
             }
 
-            .outcome-box table tr.information table td {
+            .invoice-box table tr.information table td {
                 width: 100%;
                 display: block;
                 text-align: center;
@@ -131,7 +131,10 @@
         tfoot {
             display: table-footer-group;
         }
-        @page { size: a1 portrait; } 
+
+        @page {
+            size: letter portrait;
+        }
     </style>
 </head>
 
@@ -161,111 +164,39 @@
         </tr>
     </table>
     <h2 style="text-transform: uppercase">
-        Comprobantes para el 606 ({{ \Carbon\Carbon::parse($start_at)->format('Ym') }})
+        Comprobantes para el 608 ({{ \Carbon\Carbon::parse($start_at)->format('Ym') }})
     </h2>
 
     <table>
         <thead>
             <tr>
-                <th style="text-align: left">RNC</th>
-                <th style="text-align: left">ID</th>
-                <th style="text-align: left">Tipo Gasto</th>
                 <th style="text-align: left">NCF</th>
-                <th style="text-align: left">NCF Mod.</th>
-                <th style="text-align: left">F. Compr.</th>
-                <th style="text-align: left">F. Pago</th>
-                <th style="text-align: left">Servicios</th>
-                <th style="text-align: left">Bienes</th>
-                <th style="text-align: left">Monto</th>
-                <th style="text-align: left">ITBIS</th>
-                <th style="text-align: left">Selectivo</th>
-                <th style="text-align: left">ITBIS Ret.</th>
-                <th style="text-align: left">Otros</th>
-                <th style="text-align: left">Propina</th>
-                <th style="text-align: left">Forma Pago</th>
-               
+                <th style="text-align: left">Fecha</th>
+                <th style="text-align: left">Tipo</th>
+                <th style="text-align: left">Desglose</th>
+
             </tr>
         </thead>
         <tbody class="cuerpo">
-           {{--  <tr>
-                <td colspan="9">
-                    <hr>
-                    <div
-                        style="width: 100%; text-align:center; font-size:large; font-weight:bold; text-transform:uppercase; padding-top:10px; padding-bottom:10px">
-                        INGRESOS POR VENTAS Y PENDIENTES COBRADOS
-                    </div>
-                </td>
-            </tr> --}}
-            @forelse ($outcomes as $ind=>  $outcome)
-                @php
-                    $docId = $outcome->rnc ;
-                    $docId=str_replace('-', '',$docId);
-                    $docId=='0000000000'?$docId=ellipsis($outcome->provider,15):$docId=$docId;
-                @endphp
-                <tr style="font-size: normal; {{ fmod($ind+1, 2) == 0 ? 'background-color:#EEE' : '' }}">
+
+            @forelse ($comprobantes as $ind=>  $comprobante)
+
+                <tr style="width:20%; font-size: normal; {{ fmod($ind + 1, 2) == 0 ? 'background-color:#EEE' : '' }}">
                     <td style=" text-align: left">
-                        {{ $docId }} 
+                        {{ $comprobante->ncf }}
                     </td>
 
-                    <td style="width:5%;  text-align: left">
-                        {{ strlen($docId) == 9 ? 1 : 2 }}
+                    <td style="width:20%;  text-align: left">
+                        {{ formatDate($comprobante->day,'Ymd') }}
                     </td>
-                    <td style="width:8%;  text-align: left">
-                        {{$outcome->type}}
+                    <td style=" width:20%; text-align: left">
+                        {{ $comprobante->motivo }}
                     </td>
-                    <td style="  text-align: left">
-                        {{ $outcome->ncf }}
+                    <td style=" width:40%; text-align: left">
+                        {{ App\Models\Comprobante::MOTIVOS[$comprobante->motivo] }}
                     </td>
 
-                    <td style=" text-align: left">
-                        {{ '-' }}
-                    </td>
-                    
-                    <td style=" text-align: left">
-                        {{ \Carbon\Carbon::parse($outcome->created_at)->format('Ymd') }}
-                    </td>
-                    <td style=" text-align: left">
-                        {{ \Carbon\Carbon::parse($outcome->day)->format('Ymd') }}
-                    </td>
-                    <td style=" text-align: left;  font-weight:bold">
-                        ${{ formatNumber($outcome->services) }}
-                    </td>
-                    <td style=" text-align: left;  font-weight:bold">
-                        ${{ formatNumber($outcome->products) }}
-                    </td>
-                    <td style=" text-align: left;  font-weight:bold">
-                        ${{ formatNumber($outcome->services+$outcome->products) }}
-                    </td>
-                    <td style=" text-align: left">
-                        ${{ formatNumber($outcome->itbis) }}
-                    </td>
-                    <td style=" text-align: left">
-                        ${{ formatNumber($outcome->selectivo) }}
-                    </td>
-                    <td style=" text-align: left">
-                        ${{ formatNumber($outcome->retenido) }}
-                    </td>
-                    <td style=" text-align: left;  font-weight:bold">
-                        ${{ formatNumber($outcome->other) }}
-                    </td>
-                    <td style=" text-align: left;  font-weight:bold">
-                        ${{ formatNumber($outcome->propina) }}
-                    </td>
-                    <td style=" text-align:left; ">
-                        @if ($outcome->efectivo>0 && $outcome->transferencia>0)
-                            Mixto
-                        @elseif($outcome->rest>0 && ($outcome->efectivo>0 || $outcome->transferencia>0))
-                            Mixto
-                        @elseif($outcome->efectivo>0)
-                            Efectivo
-                        @elseif($outcome->transferencia>0)
-                            Transferencia
-                        @elseif($outcome->rest>0)
-                            Crédito
 
-                        @endif
-                    </td>
-                   
                 </tr>
             @empty
                 <tr>
@@ -283,12 +214,14 @@
                                             $font = $fontMetrics->get_font("helvarialetica", "bold");
                                             $pdf->page_text(18, 18, auth()->user()->store->name.". Página: {PAGE_NUM} de {PAGE_COUNT}  ", $font, 12, array(0,0,0));
                                             $pdf->page_text(18, 32, date('d/m/Y'), $font, 12, array(0,0,0));
-                                            $pdf->page_text(18, 1640, "Reporte de comprobantes para el 606", $font, 12, array(0,0,0));
+                                            $pdf->page_text(18, 1640, "Reporte de comprobantes para el 607", $font, 12, array(0,0,0));
                                         }</script>
-    @if ($outcomes->count() > (18 * $outcomes->count()) / 2 + 2)
+    @if ($comprobantes->count() > (18 * $comprobantes->count()) / 2 + 2)
         <div style="page-break-after: always"></div>
     @endif
-   
+
+
+
 </body>
 
 </html>

@@ -33,6 +33,7 @@ class ProviderTable extends LivewireDatatable
             })->label('Crédito')->searchable()->headerAlignCenter(),
             Column::name('phone')->label('Teléfono')->searchable()->headerAlignCenter(),
             Column::name('RNC')->label('No. Doc.')->searchable()->headerAlignCenter(),
+            Column::name('address')->label('Dirección')->searchable()->headerAlignCenter(),
             $this->editColumn(),
             $this->deleteColumn(),
         ];

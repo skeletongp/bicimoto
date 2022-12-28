@@ -19,15 +19,16 @@ class OrderConfirm extends Component
     public $payway = 'Efectivo';
     protected $listeners = ['payInvoice', 'validateAuthorization', 'reload' => 'render', 'modalOpened'];
     public $invoice_id;
-    public $createCuota = 0;
+    public $createCuota = 0, $garante=0;
     public $cuotas, $periodo='mensual', $interes=3;
     public $tipo="ND", $marca="ND", $modelo="ND", $color="ND", $chasis="ND", $year="ND", $placa='EN TRÁMITE';
     public $instant=false;
-    
+
     public function mount($invoice_id)
     {
         $this->form['id'] = $invoice_id;
         $this->form['rest'] = 0;
+        $this->form['hasGarante'] = 0;
     }
 
     public function updatedCopyCant()
@@ -87,7 +88,7 @@ class OrderConfirm extends Component
     public function modalOpened()
     {
         $this->form = Invoice::find($this->invoice_id)
-            ->load('seller',  'client.contact', 'details.product.units', 'details.taxes', 'details.unit', 'payment.pdf', 'store.image', 'comprobante', 'pdf', 'place.preference','chasis')->toArray();
+            ->load('seller',  'client.contact','client.relacionado', 'details.product.units', 'details.taxes', 'details.unit', 'payment.pdf', 'store.image', 'comprobante', 'pdf', 'place.preference','chasis')->toArray();
         $payment = $this->form['payment'];
         if($this->form['chasis']){
             $this->tipo = $this->form['chasis']['tipo'];
@@ -100,6 +101,8 @@ class OrderConfirm extends Component
         }
         unset($payment['id']);
         $this->form['name'] = $this->form['name'] ?: $this->form['client']['contact']['fullname'];
+
+        $this->form['hasGarante']=$this->form['client']['relacionado']?1:0;
         unset($this->form['payment']);
         $this->form = array_merge($this->form, $payment);
         /*   if ($invoice['client']['debt']>0 || $invoice['condition']!='De Contado') {
@@ -109,5 +112,5 @@ class OrderConfirm extends Component
         $this->form['condition']=='De Contado' ? $this->createCuota=0 : $this->createCuota=1;
         $this->updatedForm($this->form['efectivo'], 'efectivo');
     }
-    
+
 }

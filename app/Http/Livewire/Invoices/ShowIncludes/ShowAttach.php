@@ -25,6 +25,7 @@ trait ShowAttach
         $data = [
             'invoice' => $contrato->invoice,
             'client' => $contrato->client,
+            'relacionado' => $contrato->client->relacionado,
             'store' => Store::find(env('STORE_ID')),
             'dia' => $dia,
             'mes' => $meses[date_format($date, 'F')],
@@ -39,6 +40,7 @@ trait ShowAttach
             'contact' => $contrato->client->contact,
             'f' => $f,
         ];
+
         $PDF = App::make('dompdf.wrapper');
         $pdf = $PDF->setOptions([
             'logOutputFile' => null,
@@ -49,8 +51,8 @@ trait ShowAttach
         }else{
             $this->document = null;
         }
-        
-        
-        
+
+
+
     }
 }

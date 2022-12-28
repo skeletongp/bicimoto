@@ -2,16 +2,16 @@
     <x-modal :fitV='false' maxWidth="max-w-4xl">
         <x-slot name="title">
             <div class="flex justify-between items-center">
-                <span> Añadir / Actualizar Cónyuge</span>
+                <span> Añadir / Actualizar Relacionado</span>
 
             </div>
         </x-slot>
         <x-slot name="button">
             <span class="fas w-6 text-center fa-user-plus mr-2"></span>
-            <span> Cónyuge</span>
+            <span> Relaciondo</span>
         </x-slot>
         <div class="relative pt-8">
-            <form wire:submit.prevent="createConyuge">
+            <form wire:submit.prevent="createRelacionado">
                 <div class="flex space-x-4">
                     <div class="w-full overflow-hidden">
 
@@ -105,10 +105,10 @@
                                 <x-input-error for="form.genre" />
                             </div>
                         </div>
-                        
+
 
                     </div>
-                    
+
                 </div>
                 <div class="py-3 flex justify-end items-center">
                     <x-button>Guardar</x-button>

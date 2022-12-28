@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class EditContrato extends Component
 {
-    public $contrato_id, $contrato;
+    public $contrato_id, $contrato, $chasis;
     use OrderConfirmTrait;
     protected $listeners=['modalOpened'];
     protected $rules=[
@@ -26,12 +26,27 @@ class EditContrato extends Component
     }
     public function modalOpened(){
         $this->contrato=Contrato::find($this->contrato_id);
+        $this->chasis=$this->contrato->invoice->chasis;
         $this->render();
     }
     public function editContrato(){
         $this->validate();
+
+
         $this->contrato->save();
-        $this->saveContratoPDF($this->contrato);
+
+        if($this->chasis){
+            $this->chasis->update([
+                'tipo'=>$this->contrato->tipo,
+                'marca'=>$this->contrato->marca,
+                'modelo'=>$this->contrato->modelo,
+                'color'=>$this->contrato->color,
+                'chasis'=>$this->contrato->chasis,
+                'year'=>$this->contrato->year,
+                'placa'=>$this->contrato->placa,
+            ]);
+        }
+
         $this->emit('showAlert','Contrato editado exitosamente','success');
     }
 

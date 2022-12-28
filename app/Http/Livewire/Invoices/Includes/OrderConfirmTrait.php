@@ -20,11 +20,10 @@ trait OrderConfirmTrait
     public $action, $invoice;
     public function tryPayInvoice()
     {
-        $invoice = Invoice::whereId($this->form['id'])->first();
         $condition = ($this->form['condition'] == 'De Contado'|| $this->form['client']['id']==1) && $this->form['rest'] > 0;
-        
+
         if ($condition && !auth()->user()->hasPermissionTo('Autorizar')) {
-           
+
             $this->authorize('Fiar factura de contado o a Genérico', 'validateAuthorization','payInvoice','data=null','Autorizar');
         } else {
             $this->payInvoice();
@@ -33,6 +32,11 @@ trait OrderConfirmTrait
     public function payInvoice()
     {
         $user=optional(auth())->user()?:User::find(1);
+
+        if(!$this->form['hasGarante'] && $this->garante){
+            $this->emit('showAlert', 'Debe añadir un relacionado a los datos del cliente', 'warning', 2500);
+            return;
+        }
         $invoice = Invoice::find($this->form['id'])->load('seller',  'client', 'details.product.units', 'details.taxes', 'details.unit', 'payment.pdf', 'store.image', 'comprobante', 'pdf', 'place.preference');
         if($this->chasis && $this->chasis!='ND'){
             $this->form['rest']=$this->form['rest']+4000;
@@ -43,10 +47,10 @@ trait OrderConfirmTrait
             return;
         }
         if ($this->form['rest'] <= 0) {
-           
+
             $this->form['condition'] = 'De Contado';
         } else {
-           
+
         }
         $this->form['status'] = 'cerrada';
         $pagos = ['Efectivo' => $invoice->efectivo, 'Tarjeta' => $invoice->tarjeta, 'Transferencia' => $invoice->transferencia];
@@ -88,6 +92,7 @@ trait OrderConfirmTrait
     public function createContrato($invoice){
         $contrato=new Contrato();
         $contrato->cuotas=$this->cuotas?:0;
+        $contrato->garante=$this->garante;
         $contrato->interes=$this->interes;
         $contrato->client_id=$invoice->client_id;
         $contrato->place_id=$invoice->place_id;
@@ -103,8 +108,8 @@ trait OrderConfirmTrait
         $this->saveContratoPDF($contrato);
     }
     public function saveContratoPDF($contrato){
-       
-       
+
+
     }
     public function createChasisIfNotExists($details, $invoice)
     {
@@ -142,7 +147,7 @@ trait OrderConfirmTrait
         }
         $place=$invoice->place;
         $client=$invoice->client;
-            setTransaction('Reg. Interés de venta', $invoice->number, $amortizacion->suma-$invoice->rest, 
+            setTransaction('Reg. Interés de venta', $invoice->number, $amortizacion->suma-$invoice->rest,
             $client->contable()->first(), $place->findCount('402-02'), 'Cobrar Facturas');
         $invoice->update([
             'rest'=>$amortizacion->suma,

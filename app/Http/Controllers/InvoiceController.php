@@ -81,7 +81,7 @@ class InvoiceController extends Controller
         ->with('invoice.payments')
         ->get();
         ;
-       
+
         foreach ($cuotas as $cuota) {
            if($cuota->invoice){
             $this->adjustMora($cuota);
@@ -89,7 +89,7 @@ class InvoiceController extends Controller
         }
         return view('pages.invoices.pendientes');
     }
-    
+
     public function carta(Invoice $invoice, $to = 'Seguro')
     {
         $payment = $invoice->payment;
@@ -118,7 +118,7 @@ class InvoiceController extends Controller
             $cuota->fecha < Carbon::now()->subDays(5)->format('Y-m-d')
             && $cuota->updated_at->format('Y-m-d H:i') ==  $cuota->created_at->format('Y-m-d H:i')
         ) {
-            
+
             $cuota->mora= $cuota->debe *$mora;
             $cuota->debe = $cuota->debe * (1+$mora);
             $cuota->save();

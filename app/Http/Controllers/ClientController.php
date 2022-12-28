@@ -19,10 +19,10 @@ class ClientController extends Controller
     public function show($client_id)
     {
         $client=Client::whereId($client_id)->first();
-        $conyuge=$client->conyuge;
+        $relacionado=$client->relacionado;
         $laboral=$client->laboral;
         $crediticio=$client->crediticio;
-        
+
         return view('pages.clients.show',get_defined_vars());
     }
 

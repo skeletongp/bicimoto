@@ -22,10 +22,10 @@ class Client extends Model implements Searchable
     protected $with = ['contact', 'store'];
 
     protected $guarded = [
-        
+
     ];
-    
-   
+
+
 
     public function getSearchResult(): SearchResult
     {
@@ -52,7 +52,7 @@ class Client extends Model implements Searchable
             $puntaje=1-($outcomes/$incomes);
             $puntaje*=100;
         }
-        
+
         return $puntaje;
     }
 
@@ -78,7 +78,7 @@ class Client extends Model implements Searchable
         );
     }
 
-   
+
     public function contable()
     {
         $place_id = 1;
@@ -123,9 +123,9 @@ class Client extends Model implements Searchable
     {
         return $this->belongsTo(Contact::class);
     }
-     function conyuge()
+     function relacionado()
     {
-        return $this->hasOne(Conyuge::class);
+        return $this->hasOne(Relacionado::class);
     }
     function laboral()
     {

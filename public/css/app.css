@@ -759,9 +759,6 @@ input:checked + .toggle-bg {
   white-space: nowrap;
   border-width: 0;
 }
-.pointer-events-none {
-  pointer-events: none;
-}
 .invisible {
   visibility: hidden;
 }
@@ -813,11 +810,11 @@ input:checked + .toggle-bg {
 .top-full {
   top: 100%;
 }
-.top-2 {
-  top: 0.5rem;
-}
 .top-16 {
   top: 4rem;
+}
+.top-2 {
+  top: 0.5rem;
 }
 .top-\[4\.5rem\] {
   top: 4.5rem;
@@ -861,11 +858,11 @@ input:checked + .toggle-bg {
 .col-span-5 {
   grid-column: span 5 / span 5;
 }
-.col-span-3 {
-  grid-column: span 3 / span 3;
-}
 .col-span-1 {
   grid-column: span 1 / span 1;
+}
+.col-span-3 {
+  grid-column: span 3 / span 3;
 }
 .float-right {
   float: right;
@@ -1353,9 +1350,6 @@ input:checked + .toggle-bg {
 .max-w-3xl {
   max-width: 48rem;
 }
-.max-w-lg {
-  max-width: 32rem;
-}
 .max-w-\[6rem\] {
   max-width: 6rem;
 }
@@ -1364,6 +1358,9 @@ input:checked + .toggle-bg {
 }
 .max-w-\[12rem\] {
   max-width: 12rem;
+}
+.max-w-lg {
+  max-width: 32rem;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -2226,6 +2223,9 @@ input:checked + .toggle-bg {
 .pl-0 {
   padding-left: 0px;
 }
+.pt-7 {
+  padding-top: 1.75rem;
+}
 .pb-6 {
   padding-bottom: 1.5rem;
 }
@@ -2234,6 +2234,9 @@ input:checked + .toggle-bg {
 }
 .pt-2 {
   padding-top: 0.5rem;
+}
+.pr-4 {
+  padding-right: 1rem;
 }
 .pl-3 {
   padding-left: 0.75rem;
@@ -2244,17 +2247,11 @@ input:checked + .toggle-bg {
 .pt-4 {
   padding-top: 1rem;
 }
-.pr-4 {
-  padding-right: 1rem;
-}
 .pb-3 {
   padding-bottom: 0.75rem;
 }
 .pt-1 {
   padding-top: 0.25rem;
-}
-.pt-16 {
-  padding-top: 4rem;
 }
 .pt-12 {
   padding-top: 3rem;
@@ -2268,11 +2265,14 @@ input:checked + .toggle-bg {
 .pl-1 {
   padding-left: 0.25rem;
 }
-.pr-8 {
-  padding-right: 2rem;
-}
 .pr-1 {
   padding-right: 0.25rem;
+}
+.pr-\[1\.75rem\] {
+  padding-right: 1.75rem;
+}
+.pr-8 {
+  padding-right: 2rem;
 }
 .pt-0 {
   padding-top: 0px;
@@ -2288,9 +2288,6 @@ input:checked + .toggle-bg {
 }
 .pr-0 {
   padding-right: 0px;
-}
-.pt-7 {
-  padding-top: 1.75rem;
 }
 .pt-3 {
   padding-top: 0.75rem;
@@ -3573,8 +3570,8 @@ input:checked + .toggle-bg {
     width: 12rem;
   }
 
-  .md\:max-w-7xl {
-    max-width: 80rem;
+  .md\:max-w-\[768px\] {
+    max-width: 768px;
   }
 
   .md\:flex-1 {
@@ -3688,12 +3685,24 @@ input:checked + .toggle-bg {
     width: 50%;
   }
 
+  .lg\:w-full {
+    width: 100%;
+  }
+
   .lg\:w-\[24rem\] {
     width: 24rem;
   }
 
+  .lg\:w-\[9\.75rem\] {
+    width: 9.75rem;
+  }
+
   .lg\:w-60 {
     width: 15rem;
+  }
+
+  .lg\:max-w-\[1024px\] {
+    max-width: 1024px;
   }
 
   .lg\:grid-cols-3 {
@@ -3740,6 +3749,12 @@ input:checked + .toggle-bg {
     margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
+  .lg\:space-x-2 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
   .lg\:space-x-6 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-x-reverse: 0;
     margin-right: calc(1.5rem * var(--tw-space-x-reverse));
@@ -3781,9 +3796,18 @@ input:checked + .toggle-bg {
     padding-right: 0.75rem;
   }
 
+  .lg\:pr-\[1\.75rem\] {
+    padding-right: 1.75rem;
+  }
+
   .lg\:text-xl {
     font-size: 1.25rem;
     line-height: 1.75rem;
+  }
+
+  .lg\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   .lg\:text-lg {
@@ -3796,6 +3820,10 @@ input:checked + .toggle-bg {
   }
 }
 @media (min-width: 1280px) {
+
+  .xl\:max-w-7xl {
+    max-width: 80rem;
+  }
 
   .xl\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));

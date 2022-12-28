@@ -5,18 +5,18 @@ namespace App\Http\Livewire\Clients;
 use App\Models\Contact;
 use Livewire\Component;
 
-class UpdateOrCreateConyuge extends Component
+class UpdateOrCreateRelacionado extends Component
 {
     public $client;
-    public $form,   $role, $cltDocType, $name, $lastname, $cellphone, $contact_id, $conyuge_id;
+    public $form,   $role, $cltDocType, $name, $lastname, $cellphone, $contact_id, $relacionado_id;
 
     public function mount()
     {
-        $this->contact_id = optional($this->client->conyuge)->contact_id;
-        $this->conyuge_id = optional($this->client->conyuge)->id;
-        $this->form = optional($this->client->conyuge)->contact? $this->client->conyuge->contact->toArray() : [];
-        if (optional($this->client->conyuge)->contact) {
-            if (strlen($this->client->conyuge->contact->cedula) == 13) {
+        $this->contact_id = optional($this->client->relacionado)->contact_id;
+        $this->relacionado_id = optional($this->client->relacionado)->id;
+        $this->form = optional($this->client->relacionado)->contact? $this->client->relacionado->contact->toArray() : [];
+        if (optional($this->client->relacionado)->contact) {
+            if (strlen($this->client->relacionado->contact->cedula) == 13) {
                 $this->cltDocType = 'Cédula';
             } else {
                 $this->cltDocType = 'RNC';
@@ -26,7 +26,7 @@ class UpdateOrCreateConyuge extends Component
 
     public function render()
     {
-        return view('livewire.clients.update-or-create-conyuge');
+        return view('livewire.clients.update-or-create-relacionado');
     }
     function rules()
     {
@@ -44,18 +44,18 @@ class UpdateOrCreateConyuge extends Component
             'cltDocType' => 'required',
         ];
     }
-    public function createConyuge()
+    public function createRelacionado()
     {
 
         $store = auth()->user()->store;
         $this->validate();
         $client = $this->client;
-        $conyuge = $client->conyuge()->updateOrCreate([
-            'id' => $this->conyuge_id,
+        $relacionado = $client->relacionado()->updateOrCreate([
+            'id' => $this->relacionado_id,
         ], []);
         $contact = Contact::updateOrCreate(['id' => $this->contact_id], $this->form);
-        $conyuge->contact()->associate($contact);
-        $conyuge->save();
+        $relacionado->contact()->associate($contact);
+        $relacionado->save();
         return redirect(request()->header('Referer'));
     }
 }

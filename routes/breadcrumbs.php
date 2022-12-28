@@ -26,11 +26,11 @@ Breadcrumbs::for('clients', function ($trail) {
 });
 Breadcrumbs::for('clients.show', function ($trail, $client) {
     $trail->parent('clients');
-    $trail->push($client->code.'-s'.$client->contact->fullname, route('clients.show', $client), ['icon'=>'fas fa-user']);
+    $trail->push($client->contact->name, route('clients.show', $client), ['icon'=>'fas fa-user']);
 });
-Breadcrumbs::for('clients.paymany', function ($trail,  $cuotas) {
+Breadcrumbs::for('clients.paymany', function ($trail,  $invoices) {
     $trail->parent('clients');
-    $trail->push('Cobrar cuotas', route('clients.paymany', $cuotas), ['icon'=>'fas fa-dollar-sign']);
+    $trail->push('Cobrar facturas', route('clients.paymany', $invoices), ['icon'=>'fas fa-dollar-sign']);
 });
 // Proveedores
 Breadcrumbs::for('providers', function ($trail) {
@@ -46,10 +46,6 @@ Breadcrumbs::for('invoices', function ($trail) {
 Breadcrumbs::for('invoices.create', function ($trail) {
     $trail->parent('invoices');
     $trail->push('Nueva Factura', route('invoices.create'));
-});
-Breadcrumbs::for('invoices.pendientes', function ($trail) {
-    $trail->parent('invoices');
-    $trail->push('Pagarés Pendientes', route('invoices.pendientes'));
 });
 Breadcrumbs::for('invoices.orders', function ($trail) {
     $trail->parent('invoices');
@@ -77,7 +73,7 @@ Breadcrumbs::for('products.create', function ($trail) {
 });
 Breadcrumbs::for('products.show', function ($trail, $product) {
     $trail->parent('products');
-    $trail->push($product->name, route('products.show', $product));
+    $trail->push($product->code.'-'.$product->name, route('products.show', $product));
 });
 Breadcrumbs::for('products.sum', function ($trail) {
     $trail->parent('products');
@@ -207,6 +203,17 @@ Breadcrumbs::for('provisions', function($trial){
 Breadcrumbs::for('recurrents', function($trial){
     $trial->parent('home');
     $trial->push('Obligaciones',route('recurrents.index',['icon'=>'far fa-donate fa-lg']));
+});
+
+
+/* Categorías */
+Breadcrumbs::for('categories', function ($trail) {
+    $trail->parent('products');
+    $trail->push('Categorías', route('categories.index'));
+});
+Breadcrumbs::for('categories.show', function ($trail, $category) {
+    $trail->parent('categories');
+    $trail->push($category->name, route('categories.show', $category->id));
 });
 
 

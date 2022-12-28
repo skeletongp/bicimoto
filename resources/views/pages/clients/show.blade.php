@@ -4,9 +4,9 @@
     @endslot
     @slot('rightButton')
    <div class="flex space-x-4 items-center">
-    @livewire('clients.update-or-create-conyuge', ['client' => $client], key(uniqid()))        
-    @livewire('clients.update-or-create-laboral', ['client' => $client], key(uniqid()))        
-    @livewire('clients.update-or-create-crediticio', ['client' => $client], key(uniqid()))        
+    @livewire('clients.update-or-create-relacionado', ['client' => $client], key(uniqid()))
+    @livewire('clients.update-or-create-laboral', ['client' => $client], key(uniqid()))
+    @livewire('clients.update-or-create-crediticio', ['client' => $client], key(uniqid()))
    </div>
     @endslot
     <div class="w-full mx-auto my-5 p-4">
@@ -16,7 +16,7 @@
                 {{-- Personal Data --}}
 
                 @include('pages.clients.includes.personal-data')
-                
+
                 {{-- End of Personal Data --}}
 
                 <div class="my-4"></div>
@@ -30,15 +30,15 @@
                     <!-- End of Experience and education grid -->
                 </div>
                 <!-- End of profile tab -->
-            </div> 
+            </div>
             <!-- Right Side -->
             <div class="w-full ">
                 <!-- Profile Card -->
                 <div class="bg-white border-t-4 border-gray-200">
-                    @include('pages.clients.includes.conyuge-data')
+                    @include('pages.clients.includes.relacionado-data')
                     @include('pages.clients.includes.laboral-data')
                     @include('pages.clients.includes.crediticio-data')
-                   
+
                 </div>
                 <div class=" py-2 mx-auto  relative space-y-4 ">
                     @livewire('invoices.cuotas-vencidas', ['client_id' => $client->id], key(uniqid()))

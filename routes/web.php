@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\CuadreController;
@@ -19,20 +20,10 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
-use App\Http\Livewire\Clients\CreateClient;
-use App\Models\Client;
-use App\Models\Contact;
-use App\Models\Contrato;
-use App\Models\Cuota;
-use App\Models\Invoice;
-use App\Models\Place;
-use App\Models\Store;
 use Database\Seeders\ClientSeeder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +84,13 @@ Route::middleware(['auth'])->group(function () {
             Route::get('products/chasis', 'chasis')->name('products.chasis');
             Route::get('products/{product}', 'show')->name('products.show');
         });
+        Route::controller(CategoryController::class)->group(function () {
+            Route::get('categories', 'index')->name('categories.index');
+            Route::get('categories/create', 'create')->name('categories.create');
+            Route::get('categories/edit/{category}', 'edit')->name('categories.edit');
+            Route::get('categories/{category}', 'show')->name('categories.show');
+        });
+        
 
         Route::controller(StoreController::class)->group(function () {
             Route::get('stores', 'index')->name('stores.index');
@@ -132,8 +130,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('catalogue', 'catalogue')->name('contables.catalogue');
             Route::get('view_catalogue', 'view_catalogue')->name('contables.view_catalogue');
             Route::get('results', 'results')->name('contables.results');
-            Route::get('report_607', 'report_607')->name('contables.report_607');
             Route::get('report_606', 'report_606')->name('contables.report_606');
+            Route::get('report_607', 'report_607')->name('contables.report_607');
+            Route::get('report_608', 'report_608')->name('contables.report_608');
             Route::get('countview/{code}', 'countview')->name('contables.countview');
             Route::get('counttrans/{id}', 'counttrans')->name('contables.counttrans');
         });

@@ -18,11 +18,11 @@
         if ($invoice->type == 'cotize') {
             $img = asset('/images/cotizacion.png');
         }
-        
+
     @endphp
     <style>
         @page {
-            size: 215.9mm 355.6mm  ;
+            size: 215.9mm 355.6mm;
         }
 
         * {
@@ -167,33 +167,148 @@
 
 
 <body>
-   
-    <div class="invoice-box" id="box" style="position: relative; font-family:'Times New Roman', Times, serif; font-size:12; line-height:1.5">
-      
+
+    <div class="invoice-box" id="box"
+        style="position: relative; font-family:'Times New Roman', Times, serif; font-size:12; line-height:1.5">
+
         <main style="padding:10px; text-align:justify;">
             <b>ACTO NÚMERO _________________, (____________________) FOLIO NÚMERO (_____________)</b> <br>
-            En la ciudad de Sabana Grande de Palenque, municipio homónimo, Provincia San Cristóbal, República Dominicana, a los <b style="text-transform: uppercase">{{ $dia }}
-                ({{ date_format($date, 'd') }}) días del mes de {{ $mes }} del año {{ $año }} ({{ date_format($date, 'Y') }})</b>, por ante mí, <b>LIC. DENNIS ANASTASIO REYES AQUINO</b>, dominicano, casado, mayor de edad, titular de la cédula de Identidad y Electoral No. <b>002-0069529-4</b>, Abogado Notario Públio de los del número pra el Municipio de Saban Grande de Palenque, matriculado en el Colegio Dominicano de Notarios, Inc. con el <b>No. 7575</b>, con estudio profesional instalado en la Calle Mella, No. 96, sector Camagüey, Municipio Sabana Grande de Palenque, Provincia San Cristóbal, República Dominicana, asistido de los testigos que la final de este acto serán nombrados coompareció personalmente {{$contact->genre=='Masculino'?'el señor':'la señora'}} <b style="text-transform: uppercase">{{$contact->fullname}}</b>, {{$contact->nacionality}}, mayor de edad, {{$contact->civil_status}}, titular de la Cédula de Identidad y Electoral No. <b >{{$contact->cedula}}</b>, con domicilio y residencia citado en {{$contact->address}}. Encontrándome en mi despacho y en regular ejercicio de mis funciones, comparacieron libre y voluntariamente, los señores de la razón social <b style="text-transform: uppercase"> {{$store->name}}</b>, Registro Nacional de Contribuyente (RNC) No. <b>{{$store->rnc}}</b>, con domicilio social en {{$store->address}}, debidamente representada por su Gerente General, el señor <b style="text-transform: uppercase">{{$user->fullname}}</b>, dominicano, mayor de edad, titular de la cédula de Identidad y Electoral No. <b style="text-transform: uppercase">{{$user->cedula}}</b>, domiciliado y residente en la Calle Romualdo Tejeda, No. 29, de esta misma ciudad, y como personas jurídicas cada uno ante el presente documento y en lo adelante se llamará <b>EL ACRREDOR</b>, y <b>EL DEUDOR</b> del presente <b>PAGARÉ NOTARIAL</b> me declaran que convienen y pactan lo siguiente:  <b>PRIMERO:</b> Que cada uno de ellos comparecen libre y voluntariamente y sus expresiones son la más pura y fiel expresión de su voluntad; <b>SEGUNDO:</b> Que <b> EL DEUDOR </b>  <b style="text-transform: uppercase">{{$contact->fullname}}, RECONOCE ADEUDAR</b> a <b> EL ACREEDOR </b>  la razón social <b style="text-transform: uppercase"> {{$store->name}}</b> la suma de <b style="text-transform: uppercase"> {{$f->format($invoice->payment->rest)}} PESOS DOMINICANOS (RD${{formatNumber($invoice->payment->rest)}}) </b>, en efectivo e intereses, por concepto de préstamo que éste último le hace en este mismo instante en presencia del infrascrito Notario; <b>TERCERO:</b> Que hasta el pago integral de dicho préstamo <b>EL DEUDOR</b> {{$contact->genre=='Masculino'?'el señor':'la señora'}} <b style="text-transform: uppercase">{{$contact->fullname}}</b>, se obliga a cumplir de la manera siguiente y a pagar o entregar en <b>CUOTAS</b> los días {{$dia}} ({{date_format($date, 'd')}}) de cada mes  en manos de <b>EL ACREEDOR</b> la razón social <b style="text-transform: uppercase"> {{$store->name}}</b>  y su representante el señor <b style="text-transform: uppercase">{{$user->fullname}}</b> la suma de <b style="text-transform: uppercase">({{$f->format($cuota->debe)}}) PESOS DOMINICANOS (RD${{formatNumber($cuota->debe)}})</b> , por un periodo de <b style="text-transform: uppercase">{{$f->format($contrato->cuotas)}} ({{$contrato->cuotas}})</b> cuotas continuas, comenzando a pagar el <b style="text-transform: uppercase"> {{$cuotaDia}} ({{date_format($cuota->fecha, 'd')}}) DEL MES DE {{$cuotaMes}} del año {{ $cuotaAño }}</b> hasta finalizar su compromiso y depositará en manos y domicilio de EL ACREEDOR la razón social <b style="text-transform: uppercase"> {{$store->name}}</b>  y su representante el señor <b style="text-transform: uppercase">{{$user->fullname}}</b> cada mes de su obligación de pago,  esta sería la fecha real del pago del préstamo; <b>CUARTO:</b> Que <b>EL DEUDOR</b> {{$contact->genre=='Masculino'?'el señor':'la señora'}} <b style="text-transform: uppercase">{{$contact->fullname}}</b> se obliga a pagar el monto total de dicho préstamo, a <b>EL ACREEDOR</b> la razón social <b style="text-transform: uppercase"> {{$store->name}}</b>  y su representante el señor<b style="text-transform: uppercase">{{$user->fullname}}</b>, quien acepta, el plazo descrito anteriormente en el artículo Tercero; <b>QUINTO:</b> Que <b>EL DEUDOR</b> {{$contact->genre=='Masculino'?'el señor':'la señora'}} <b style="text-transform: uppercase">{{$contact->fullname}}</b> podrá liberarse por anticipado de la totalidad o de fracciones del capital adeudado previo pago del mismo al vencimiento de lo acordado en el artículo Tercero; SÉXTO: Que <b>EL DEUDOR</b> {{$contact->genre=='Masculino'?'el señor':'la señora'}} <b style="text-transform: uppercase">{{$contact->fullname}}</b> en garantía y hace entrega de la matricula o  título provisional del producto @if ($contrato->chasis)<b>TIPO:</b> {{$contrato->tipo}} <b>COLOR:</b>  {{$contrato->color}}, <b>AÑO:</b> {{$contrato->year}}, <b>MARCA:</b> {{$contrato->marca}}, <b>MODELO:</b> {{$contrato->modelo}}, <b>CHASIS:</b> {{$contrato->chasis}} @endif objeto de este contrato, según consta en la matricula o título provisional del mismo y  todos sus bienes muebles e inmuebles presentes y futuros en garantía de dicha deuda, que podrá ser cobrada sin necesidad de intervención judicial al tenor de lo estipulado en el artículo 1134 del Código Civil, que indica que las convenciones legalmente formadas tienen fuerza de ley para quienes las han hecho, así como en virtud del artículo 545 del Código de Procedimiento Civil. <b>SEPTIMO:</b> <b>EL DEUDOR</b> {{$contact->genre=='Masculino'?'el señor':'la señora'}} <b style="text-transform: uppercase">{{$contact->fullname}}</b> compromete a pagar a <b>EL ACREEDOR</b> la razón social <b style="text-transform: uppercase"> {{$store->name}}</b> y su representante el señor <b>ROBERT ALBERTO NUÑEZ</b>, por la suma indicada, con un interés de un <b style="text-transform: uppercase">{{$f->format($contrato->place->preference->mora_rate)}} POR CIENTO ({{$contrato->place->preference->mora_rate}}%)</b> sobre la cuota atrasada, si llegase a incumplir el compromiso de pago con las cuotas mensuales   que deberá ser pagado junto con la suma del préstamo el día de pago de la única cuota establecida y de no cumplir será sumatoria al momento de su saldo. <b>OCTAVO:</b> Que, para la ejecución de las presentes condiciones, las Partes eligen domicilio en sus respectivos indicados y someterán sus diferencias, si las hubiera, a los tribunales competentes de la República Dominicana si fuere necesario. <b>HECHO, REDACTADO, TRANSCRITO Y FIRMADO</b> en dos originales, en mi presencia y en la de los testigos señores <b>JOSÉ MANUEL VALDEZ GUILLEN</b>  y <b>OGLIVE CERDA</b>,  dominicanos, mayores de edad, solteros, titulares de las cédulas de identidad y electoral: <b>402-2344547-5</b> y <b>402-4478139-5</b> respectivamente, ambos de este domicilio y residencia, testigos instrumentales requeridos al efecto, libres de tachas y excepciones que establece la ley, personas a quienes también doy fe conocer, quienes después de aprobarlo, comparecientes y testigos, lo han firmado y rubricado junto conmigo y ante mí, notario infrascrito que Certifica y da fe., considerándolo <b> BUENO Y VALIDO</b>.
+            En la ciudad de Sabana Grande de Palenque, municipio homónimo, Provincia San Cristóbal, República
+            Dominicana, a los <b style="text-transform: uppercase">{{ $dia }}
+                ({{ date_format($date, 'd') }}) días del mes de {{ $mes }} del año {{ $año }}
+                ({{ date_format($date, 'Y') }})</b>, por ante mí, <b>LIC. DENNIS ANASTASIO REYES AQUINO</b>, dominicano,
+            casado, mayor de edad, titular de la cédula de Identidad y Electoral No. <b>002-0069529-4</b>, Abogado
+            Notario Públio de los del número pra el Municipio de Saban Grande de Palenque, matriculado en el Colegio
+            Dominicano de Notarios, Inc. con el <b>No. 7575</b>, con estudio profesional instalado en la Calle Mella,
+            No. 96, sector Camagüey, Municipio Sabana Grande de Palenque, Provincia San Cristóbal, República Dominicana,
+            asistido de los testigos que la final de este acto serán nombrados coompareció personalmente
+            {{ $contact->genre == 'Masculino' ? 'el señor' : 'la señora' }} <b
+                style="text-transform: uppercase">{{ $contact->fullname }}</b>, {{ $contact->nacionality }}, mayor de
+            edad, {{ $contact->civil_status }}, titular de la Cédula de Identidad y Electoral No.
+            <b>{{ $contact->cedula }}</b>, con domicilio y residencia citado en {{ $contact->address }}. Encontrándome
+            en mi despacho y en regular ejercicio de mis funciones, comparacieron libre y voluntariamente, los señores
+            de la razón social <b style="text-transform: uppercase"> {{ $store->name }}</b>, Registro Nacional de
+            Contribuyente (RNC) No. <b>{{ $store->rnc }}</b>, con domicilio social en {{ $store->address }},
+            debidamente representada por su Gerente General, el señor <b
+                style="text-transform: uppercase">{{ $user->fullname }}</b>, dominicano, mayor de edad, titular de la
+            cédula de Identidad y Electoral No. <b style="text-transform: uppercase">{{ $user->cedula }}</b>,
+            domiciliado y residente en la Calle Romualdo Tejeda, No. 29, de esta misma ciudad, y como personas jurídicas
+            cada uno ante el presente documento y en lo adelante se llamará <b>EL ACRREDOR</b>, y <b>EL DEUDOR</b> del
+            presente <b>PAGARÉ NOTARIAL</b> me declaran que convienen y pactan lo siguiente:
+
+            <br> <br>
+            <b>PRIMERO:</b> Que cada
+            uno de ellos comparecen libre y voluntariamente y sus expresiones son la más pura y fiel expresión de su
+            voluntad;
+
+            <br><br>
+
+            <b>SEGUNDO:</b> Que <b> EL DEUDOR </b> <b
+                style="text-transform: uppercase">{{ $contact->fullname }}, RECONOCE ADEUDAR</b> a <b> EL ACREEDOR </b>
+            la razón social <b style="text-transform: uppercase"> {{ $store->name }}</b> la suma de <b
+                style="text-transform: uppercase"> {{ $f->format($invoice->payment->rest) }} PESOS DOMINICANOS
+                (RD${{ formatNumber($invoice->payment->rest) }}) </b>, en efectivo e intereses, por concepto de
+            préstamo que éste último le hace en este mismo instante en presencia del infrascrito Notario;
+
+            <br> <br><b>TERCERO:</b> Que hasta el pago integral de dicho préstamo <b>EL DEUDOR</b>
+            {{ $contact->genre == 'Masculino' ? 'el señor' : 'la señora' }} <b
+                style="text-transform: uppercase">{{ $contact->fullname }}</b>, se obliga a cumplir de la manera
+            siguiente y a pagar o entregar en <b>CUOTAS</b> los días {{ $dia }}
+            ({{ date_format($date, 'd') }}) de cada mes en manos de <b>EL ACREEDOR</b> la razón social <b
+                style="text-transform: uppercase"> {{ $store->name }}</b> y su representante el señor <b
+                style="text-transform: uppercase">{{ $user->fullname }}</b> la suma de <b
+                style="text-transform: uppercase">({{ $f->format($cuota->debe) }}) PESOS DOMINICANOS
+                (RD${{ formatNumber($cuota->debe) }})</b> , por un periodo de <b
+                style="text-transform: uppercase">{{ $f->format($contrato->cuotas) }} ({{ $contrato->cuotas }})</b>
+            cuotas continuas, comenzando a pagar el <b style="text-transform: uppercase"> {{ $cuotaDia }}
+                ({{ date_format($cuota->fecha, 'd') }}) DEL MES DE {{ $cuotaMes }} del año
+                {{ $cuotaAño }}</b> hasta finalizar su compromiso y depositará en manos y domicilio de EL ACREEDOR
+            la razón social <b style="text-transform: uppercase"> {{ $store->name }}</b> y su representante el señor
+            <b style="text-transform: uppercase">{{ $user->fullname }}</b> cada mes de su obligación de pago, esta
+            sería la fecha real del pago del préstamo;
+
+
+            <br> <br>
+            <b>CUARTO:</b> Que <b>EL DEUDOR</b>
+            {{ $contact->genre == 'Masculino' ? 'el señor' : 'la señora' }} <b
+                style="text-transform: uppercase">{{ $contact->fullname }}</b> se obliga a pagar el monto total de
+            dicho préstamo, a <b>EL ACREEDOR</b> la razón social <b style="text-transform: uppercase">
+                {{ $store->name }}</b> y su representante el señor<b
+                style="text-transform: uppercase">{{ $user->fullname }}</b>, quien acepta, el plazo descrito
+            anteriormente en el artículo Tercero;
+
+
+            <br> <br><b>QUINTO:</b> Que <b>EL DEUDOR</b>
+            {{ $contact->genre == 'Masculino' ? 'el señor' : 'la señora' }} <b
+                style="text-transform: uppercase">{{ $contact->fullname }}</b> podrá liberarse por anticipado de la
+            totalidad o de fracciones del capital adeudado previo pago del mismo al vencimiento de lo acordado en el
+            artículo Tercero;
+
+
+            <br> <br>
+
+            <b>SEXTO</b>: Que <b>EL DEUDOR</b> {{ $contact->genre == 'Masculino' ? 'el señor' : 'la señora' }} <b
+                style="text-transform: uppercase">{{ $contact->fullname }}</b> en garantía y hace entrega de la
+            matricula o título provisional del producto @if ($contrato->chasis)
+                <b>TIPO:</b> {{ $contrato->tipo }} <b>COLOR:</b> {{ $contrato->color }}, <b>AÑO:</b>
+                {{ $contrato->year }}, <b>MARCA:</b> {{ $contrato->marca }}, <b>MODELO:</b> {{ $contrato->modelo }},
+                <b>CHASIS:</b> {{ $contrato->chasis }}
+            @endif objeto de este contrato, según consta en la matricula o título provisional del
+            mismo y todos sus bienes muebles e inmuebles presentes y futuros en garantía de dicha deuda, que podrá ser
+            cobrada sin necesidad de intervención judicial al tenor de lo estipulado en el artículo 1134 del Código
+            Civil, que indica que las convenciones legalmente formadas tienen fuerza de ley para quienes las han hecho,
+            así como en virtud del artículo 545 del Código de Procedimiento Civil.
+
+
+            <br> <br>
+            <b>SEPTIMO:</b> <b>EL DEUDOR</b>
+            {{ $contact->genre == 'Masculino' ? 'el señor' : 'la señora' }} <b
+                style="text-transform: uppercase">{{ $contact->fullname }}</b> se compromete a pagar a <b>EL ACREEDOR</b>
+            la razón social <b style="text-transform: uppercase"> {{ $store->name }}</b> y su representante el señor
+            <b>ROBERT ALBERTO NUÑEZ</b>, por la suma indicada, con un interés de un <b
+                style="text-transform: uppercase">{{ $f->format($contrato->place->preference->mora_rate) }} POR CIENTO
+                ({{ $contrato->place->preference->mora_rate }}%)</b> sobre la cuota atrasada, si llegase a incumplir el
+            compromiso de pago con las cuotas mensuales que deberá ser pagado junto con la suma del préstamo el día de
+            pago de la única cuota establecida y de no cumplir será sumatoria al momento de su saldo.
+
+            <br> <br><b>OCTAVO:</b>
+            Que, para la ejecución de las presentes condiciones, las Partes eligen domicilio en sus respectivos
+            indicados y someterán sus diferencias, si las hubiera, a los tribunales competentes de la República
+            Dominicana si fuere necesario.
+
+            @if ($contrato->garante)
+            <br> <br><b>NOVENO:</b>
+            Queda instrumentado como <b>GARANTE</b> del presente acuerdo {{ $relacionado->contact->genre == 'Masculino' ? 'el señor' : 'la señora' }} <b
+                style="text-transform: uppercase">{{ $relacionado->contact->fullname }}</b> con cédula de identidad y electoral <b> {{ $relacionado->contact->cedula }}</b>, con domicilio y residencia en <b>{{ $relacionado->contact->address }}</b>, quien se compromete a avalar y representar a <b>EL DEUDOR</b> y, en caso de éste faltar a su compromiso de pago, se obliga a pagar el total de las obligaciones contraídas en nombre de <b>EL DEUDOR</b>, con los intereses y demás costos que se generen, sin perjuicio de las acciones legales que correspondan.
+            @endif
+
+            <br> <br><b>HECHO, REDACTADO, TRANSCRITO Y FIRMADO</b> en dos originales, en mi
+            presencia y en la de los señores <b style="text-transform: uppercase">{{$contrato->garante?$relacionado->contact->fullname.' (GARANTE)':'ANA MERCEDES MONTAÑO (TESTIGO)'}} </b> y <b>JOHANNA GISELL RIVERA (TESTIGO)</b>,
+            dominicanos, mayores de edad, solteros, titulares de las cédulas de identidad y electoral:
+            <b>{{$contrato->garante? $relacionado->contact->cedula:'001-0462029-9'}}</b> y <b>001-1336056-4</b> respectivamente, ambos de este domicilio y residencia, testigos
+            instrumentales requeridos al efecto, libres de tachas y excepciones que establece la ley, personas a quienes
+            también doy fe conocer, quienes después de aprobarlo, comparecientes y testigos, lo han firmado y rubricado
+            junto conmigo y ante mí, notario infrascrito que Certifica y da fe., considerándolo <b> BUENO Y VALIDO</b>.
 
         </main>
         <br>
 
-      
+
         <table>
             <tr>
                 <td style="padding-top: 30px; text-align:center">
                     <div>
-                        <b style="text-transform: uppercase"> {{$store->name}}</b><br>
-                        <b style="text-transform: uppercase">{{$user->fullname}}</b>
+                        <b style="text-transform: uppercase"> {{ $store->name }}</b><br>
+                        <b style="text-transform: uppercase">{{ $user->fullname }}</b>
                     </div>
                     <div
                         style="border-top: solid 1px #222; padding-top: 4px; width:100%; text-align:center; margin-right: 20px">
-                            ACREEDOR</div>
+                        ACREEDOR</div>
                 </td>
                 <td style="padding-top: 30px; text-align:center">
                     <div>
                         <br>
-                        <b style="text-transform: uppercase"> {{ellipsis($contact->fullname,50)}}</b><br>
+                        <b style="text-transform: uppercase"> {{ ellipsis($contact->fullname, 50) }}</b><br>
                     </div>
                     <div
                         style="border-top: solid 1px #222; padding-top: 4px; width:100%; text-align:center; margin-left: 10px">
@@ -202,16 +317,26 @@
             </tr>
             <tr>
                 <td style="padding-top: 80px; text-align:center">
-                    <div>
-                        <b>JOSÉ MANUEL VALDEZ GUILLÉN</b>
-                    </div>
-                    <div
+                    @if ($contrato->garante)
+                        <div style="text-transform: uppercase">
+                            <b>{{ ellipsis($relacionado->contact->fullname, 50) }}</b>
+                        </div>
+                        <div
                         style="border-top: solid 1px #222; padding-top: 4px; width:100%; text-align:center; margin-right: 20px">
-                            TESTIGO</div>
+                        GARANTE</div>
+                    @else
+                        <div>
+                            <b>ANA MERCEDES MONTAÑO</b>
+                        </div>
+                        <div
+                        style="border-top: solid 1px #222; padding-top: 4px; width:100%; text-align:center; margin-right: 20px">
+                        TESTIGO</div>
+                    @endif
+
                 </td>
                 <td style="padding-top: 80px; text-align:center">
                     <div>
-                        <b style="text-transform: uppercase"> OGLIVE CERDA</b><br>
+                        <b style="text-transform: uppercase"> JOHANNA GISELL RIVERA</b><br>
                     </div>
                     <div
                         style="border-top: solid 1px #222; padding-top: 4px; width:100%; text-align:center; margin-left: 10px">
@@ -225,16 +350,16 @@
                     </div>
                     <div
                         style="border-top: solid 1px #222; padding-top: 4px; width:100%; text-align:center; margin-right: 20px; max-width:60%; margin:auto">
-                            ABOGADO-NOTARIO</div>
+                        ABOGADO-NOTARIO</div>
                 </td>
-             
+
             </tr>
         </table>
-     
+
 
     </div>
-    
-    
+
+
 
 </body>
 

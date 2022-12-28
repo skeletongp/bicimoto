@@ -7,6 +7,7 @@ use App\Http\Livewire\Invoices\OrderConfirm;
 use App\Models\Contact;
 use App\Models\Invoice;
 use App\Models\Place;
+use App\Models\Product;
 use App\Models\ProductPlaceUnit;
 use App\Models\Store;
 use App\Models\Unit;
@@ -61,6 +62,7 @@ class ClientSeeder extends Seeder
             'cost'=>0,
 
         ];
+
         $place=Place::first();
         $unit = $place->units()->wherePivot('id', 1)->first();
         $createInvoice = new CreateInvoice();
@@ -68,6 +70,7 @@ class ClientSeeder extends Seeder
         $createInvoice->setProduct('MN-1114-128');
         $createInvoice->unit=$unit;
         $createInvoice->unit_id=1;
+        $createInvoice->product=Product::find(1);
         $createInvoice->form = $data;
         $createInvoice->cant =1;
         $createInvoice->price = $deuda;
